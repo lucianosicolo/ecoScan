@@ -1,0 +1,323 @@
+<main class="profile-container">
+
+  <!-- Presentación -->
+  <section class="profile-hero">
+    <div class="hero-decoration"></div>
+
+    <button
+      type="button"
+      class="avatar-wrapper"
+      (click)="changeProfilePhoto()"
+      aria-label="Cambiar foto de perfil"
+    >
+      <img
+        *ngIf="user.photo"
+        [src]="user.photo"
+        [alt]="user.name"
+      />
+
+      <span *ngIf="!user.photo">
+        {{ getInitials() }}
+      </span>
+
+      <div class="camera-badge">
+        <ion-icon name="camera-outline"></ion-icon>
+      </div>
+    </button>
+
+    <div class="profile-main-information">
+      <h1>{{ user.name }}</h1>
+      <p>{{ user.email }}</p>
+
+      <div class="eco-level">
+        <ion-icon name="leaf"></ion-icon>
+        <span>{{ ecoLevel }}</span>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="edit-profile-button"
+      (click)="toggleEdit()"
+    >
+      <ion-icon
+        [name]="editing ? 'close-outline' : 'create-outline'"
+      ></ion-icon>
+
+      <span>{{ editing ? 'Cancelar' : 'Editar' }}</span>
+    </button>
+  </section>
+
+  <!-- Impacto -->
+  <section class="profile-section">
+    <div class="section-heading">
+      <div>
+        <span class="section-label">TU ACTIVIDAD</span>
+        <h2>Resumen de actividad</h2>
+      </div>
+    </div>
+
+    <div class="impact-card">
+
+      <article class="impact-item">
+        <div class="impact-icon green-icon">
+          <ion-icon name="scan-outline"></ion-icon>
+        </div>
+
+        <strong>{{ user.totalScans }}</strong>
+        <span>Identificados</span>
+      </article>
+
+      <div class="impact-divider"></div>
+
+      <article class="impact-item">
+        <div class="impact-icon lime-icon">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+        </div>
+
+        <strong>{{ user.suitableWaste }}</strong>
+        <span>Aptos</span>
+      </article>
+
+      <div class="impact-divider"></div>
+
+      <article class="impact-item">
+        <div class="impact-icon blue-icon">
+          <ion-icon name="trophy-outline"></ion-icon>
+        </div>
+
+        <strong>{{ recyclingPercentage }}%</strong>
+        <span>Clasificados aptos</span>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- Progreso -->
+  <section class="progress-card">
+    <div class="progress-header">
+      <div class="progress-icon">
+        <ion-icon name="leaf-outline"></ion-icon>
+      </div>
+
+      <div>
+        <span>NIVEL DE ACTIVIDAD</span>
+        <h3>{{ ecoLevel }}</h3>
+      </div>
+
+      <strong>{{ levelProgress }}%</strong>
+    </div>
+
+    <div class="progress-track">
+      <div
+        class="progress-value"
+        [style.width.%]="levelProgress"
+      ></div>
+    </div>
+
+    <p>
+      Te faltan {{ scansToNextLevel }} identificaciones para alcanzar
+      el próximo nivel.
+    </p>
+  </section>
+
+  <!-- Información personal -->
+  <section class="profile-section">
+    <div class="section-heading">
+      <div>
+        <span class="section-label">CUENTA</span>
+        <h2>Información personal</h2>
+      </div>
+    </div>
+
+    <div class="information-card">
+
+      <!-- Nombre -->
+      <div class="information-row">
+        <div class="row-icon">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+
+        <div class="row-content">
+          <span>Nombre completo</span>
+
+          <strong *ngIf="!editing">
+            {{ user.name }}
+          </strong>
+
+          <ion-input
+            *ngIf="editing"
+            name="name"
+            [(ngModel)]="editableUser.name"
+            placeholder="Nombre completo"
+          ></ion-input>
+        </div>
+      </div>
+
+      <!-- Correo -->
+      <div class="information-row">
+        <div class="row-icon">
+          <ion-icon name="mail-outline"></ion-icon>
+        </div>
+
+        <div class="row-content">
+          <span>Correo electrónico</span>
+
+          <strong *ngIf="!editing">
+            {{ user.email }}
+          </strong>
+
+          <ion-input
+            *ngIf="editing"
+            name="email"
+            type="email"
+            [(ngModel)]="editableUser.email"
+            placeholder="Correo electrónico"
+          ></ion-input>
+        </div>
+      </div>
+
+      <!-- Ubicación -->
+      <div class="information-row">
+        <div class="row-icon">
+          <ion-icon name="location-outline"></ion-icon>
+        </div>
+
+        <div class="row-content">
+          <span>Ciudad</span>
+
+          <strong *ngIf="!editing">
+            {{ user.city }}
+          </strong>
+
+          <ion-input
+            *ngIf="editing"
+            name="city"
+            [(ngModel)]="editableUser.city"
+            placeholder="Ciudad"
+          ></ion-input>
+        </div>
+      </div>
+
+      <!-- Fecha de registro -->
+      <div class="information-row">
+        <div class="row-icon">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </div>
+
+        <div class="row-content">
+          <span>Miembro desde</span>
+          <strong>{{ user.memberSince }}</strong>
+        </div>
+      </div>
+
+    </div>
+
+    <ion-button
+      *ngIf="editing"
+      expand="block"
+      class="save-button"
+      [disabled]="saving"
+      (click)="saveProfile()"
+    >
+      <ion-spinner
+        *ngIf="saving"
+        name="crescent"
+      ></ion-spinner>
+
+      <ng-container *ngIf="!saving">
+        <span>Guardar cambios</span>
+        <ion-icon
+          slot="end"
+          name="checkmark-outline"
+        ></ion-icon>
+      </ng-container>
+    </ion-button>
+  </section>
+
+  <!-- Preferencias -->
+  <section class="profile-section">
+    <div class="section-heading">
+      <div>
+        <span class="section-label">CONFIGURACIÓN</span>
+        <h2>Preferencias</h2>
+      </div>
+    </div>
+
+    <div class="settings-card">
+
+      <div class="setting-row">
+        <div class="setting-icon">
+          <ion-icon name="notifications-outline"></ion-icon>
+        </div>
+
+        <div class="setting-information">
+          <strong>Notificaciones</strong>
+          <span>Recibir consejos y recordatorios</span>
+        </div>
+
+     <ion-toggle
+  [(ngModel)]="notificationsEnabled"
+  (ionChange)="saveNotificationPreference()"
+  aria-label="Activar notificaciones"
+></ion-toggle>
+      </div>
+
+      <button
+        type="button"
+        class="setting-row setting-button"
+        (click)="openHelp()"
+      >
+        <div class="setting-icon">
+          <ion-icon name="help-circle-outline"></ion-icon>
+        </div>
+
+        <div class="setting-information">
+          <strong>Ayuda y preguntas frecuentes</strong>
+          <span>Conocé cómo funciona EcoScan</span>
+        </div>
+
+        <ion-icon
+          class="row-arrow"
+          name="chevron-forward-outline"
+        ></ion-icon>
+      </button>
+
+      <button
+        type="button"
+        class="setting-row setting-button"
+        (click)="openAbout()"
+      >
+        <div class="setting-icon">
+          <ion-icon name="information-circle-outline"></ion-icon>
+        </div>
+
+        <div class="setting-information">
+          <strong>Acerca de EcoScan</strong>
+          <span>Información y versión de la aplicación</span>
+        </div>
+
+        <ion-icon
+          class="row-arrow"
+          name="chevron-forward-outline"
+        ></ion-icon>
+      </button>
+
+    </div>
+  </section>
+
+  <!-- Cerrar sesión -->
+  <button
+    type="button"
+    class="logout-button"
+    (click)="logout()"
+  >
+    <ion-icon name="log-out-outline"></ion-icon>
+    <span>Cerrar sesión</span>
+  </button>
+
+  <p class="version-text">
+    EcoScan · Versión 1.0.0
+  </p>
+
+</main>

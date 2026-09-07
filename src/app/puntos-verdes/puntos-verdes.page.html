@@ -1,0 +1,144 @@
+<main class="points-container">
+
+  <!-- Presentación -->
+  <section class="points-intro">
+    <span class="section-label">RECICLAJE CERCANO</span>
+    <h1>Puntos verdes</h1>
+
+    <p>
+      Encontrá lugares cercanos donde podés llevar tus residuos reciclables.
+    </p>
+  </section>
+
+  <!-- Buscador -->
+  <section class="search-section">
+    <div class="search-container">
+      <ion-icon name="search-outline"></ion-icon>
+
+      <ion-input [(ngModel)]="searchTerm" placeholder="Buscar por nombre o dirección"
+        (ionInput)="filterPoints()"></ion-input>
+
+      <button *ngIf="searchTerm" type="button" (click)="clearSearch()" aria-label="Limpiar búsqueda">
+        <ion-icon name="close-circle"></ion-icon>
+      </button>
+    </div>
+
+    <button type="button" class="location-button" (click)="centerOnUser()" aria-label="Usar mi ubicación">
+      <ion-icon name="locate-outline"></ion-icon>
+    </button>
+  </section>
+
+  <!-- Filtros -->
+  <section class="material-filters">
+    <button *ngFor="let filter of materialFilters" type="button" [class.active]="selectedMaterial === filter.value"
+      (click)="selectMaterial(filter.value)">
+      <ion-icon [name]="filter.icon"></ion-icon>
+      <span>{{ filter.label }}</span>
+    </button>
+  </section>
+
+  <!-- Mapa -->
+  <section class="map-card">
+    <div #map class="google-map"></div>
+
+    <div *ngIf="loadingLocation" class="map-loading">
+      <ion-spinner name="crescent"></ion-spinner>
+      <span>Buscando tu ubicación...</span>
+    </div>
+
+    <div class="map-counter">
+      <ion-icon name="location"></ion-icon>
+
+      <span>
+        {{ filteredPoints.length }}
+        {{ filteredPoints.length === 1 ? 'punto' : 'puntos' }}
+      </span>
+    </div>
+  </section>
+
+  <!-- Lista -->
+  <section class="nearby-section">
+    <div class="section-heading">
+      <div>
+        <span class="section-label">CERCA DE VOS</span>
+        <h2>Puntos disponibles</h2>
+      </div>
+
+     <button
+  type="button"
+  class="order-button"
+  [disabled]="!hasUserLocation"
+  (click)="orderByDistance()"
+>
+  <ion-icon name="swap-vertical-outline"></ion-icon>
+
+  {{ hasUserLocation
+    ? 'Distancia'
+    : 'Activá ubicación'
+  }}
+</button>
+    </div>
+
+    <div class="points-list">
+
+      <article *ngFor="let point of filteredPoints" class="point-card" [class.selected]="selectedPoint?.id === point.id"
+        (click)="selectPoint(point)">
+        <div class="point-top">
+          <div class="point-icon">
+            <ion-icon name="location"></ion-icon>
+          </div>
+
+          <div class="point-main-information">
+            <div class="point-title">
+              <h3>{{ point.name }}</h3>
+
+              <span *ngIf="point.distance !== null">
+                {{ point.distance | number:'1.1-1' }} km
+              </span>
+            </div>
+
+            <p>{{ point.address }}</p>
+
+            <div class="availability">
+              <span class="availability-dot" [class.closed]="!point.open"></span>
+
+              <strong>
+                Horario informado
+              </strong>
+
+              <span *ngIf="point.schedule">
+                · {{ point.schedule }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="accepted-materials">
+          <span *ngFor="let material of point.materials" class="material-badge">
+            {{ getMaterialLabel(material) }}
+          </span>
+        </div>
+
+        <div class="point-actions">
+          <button type="button" class="details-button" (click)="viewDetails(point, $event)">
+            <ion-icon name="map-outline"></ion-icon>
+            Ver en el mapa
+          </button>
+
+          <button type="button" class="directions-button" (click)="openDirections(point, $event)">
+            <ion-icon name="navigate-outline"></ion-icon>
+            Cómo llegar
+          </button>
+        </div>
+      </article>
+
+    </div>
+
+    <div *ngIf="filteredPoints.length === 0" class="empty-state">
+      <ion-icon name="location-outline"></ion-icon>
+      <h3>No encontramos puntos verdes</h3>
+      <p>Probá cambiando el material o la búsqueda.</p>
+    </div>
+  </section>
+
+</main>

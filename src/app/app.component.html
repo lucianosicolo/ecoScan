@@ -1,0 +1,249 @@
+<ion-app>
+  <ion-menu
+    contentId="main-content"
+    type="overlay"
+    class="main-menu"
+  >
+    <ion-header class="ion-no-border">
+      <ion-toolbar class="menu-header">
+        <div class="menu-brand">
+          <div class="brand-icon">
+            <img
+              src="assets/icon/logo.png"
+              alt="EcoScan"
+              class="brand-logo"
+            />
+          </div>
+
+          <div class="brand-information">
+            <strong>
+              Eco<span>Scan</span>
+            </strong>
+
+            <small>
+              Reciclá de forma más simple
+            </small>
+          </div>
+        </div>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="menu-content">
+      <!-- Usuario -->
+
+      <button
+        type="button"
+        class="menu-user"
+        (click)="navigateTo('/app/perfil')"
+      >
+        <div class="user-avatar">
+          <span>LS</span>
+        </div>
+
+        <div class="user-information">
+          <strong>Luciano Sicolo</strong>
+          <span>Explorador ecológico</span>
+        </div>
+
+        <ion-icon
+          class="user-arrow"
+          name="chevron-forward-outline"
+        ></ion-icon>
+      </button>
+
+      <!-- Navegación -->
+
+      <div class="menu-section-title">
+        NAVEGACIÓN
+      </div>
+
+      <ion-list
+        lines="none"
+        class="menu-list"
+      >
+        <ion-menu-toggle auto-hide="false">
+          <ion-item
+            routerLink="/app/home"
+            routerDirection="root"
+            routerLinkActive="selected"
+            [routerLinkActiveOptions]="{
+              exact: true
+            }"
+            detail="false"
+          >
+            <div
+              slot="start"
+              class="menu-item-icon"
+            >
+              <ion-icon
+                name="home-outline"
+              ></ion-icon>
+            </div>
+
+            <ion-label>Inicio</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+
+        <ion-menu-toggle auto-hide="false">
+          <ion-item
+            routerLink="/app/historial"
+            routerDirection="root"
+            routerLinkActive="selected"
+            detail="false"
+          >
+            <div
+              slot="start"
+              class="menu-item-icon"
+            >
+              <ion-icon
+                name="time-outline"
+              ></ion-icon>
+            </div>
+
+            <ion-label>
+              Historial de escaneos
+            </ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+
+        <ion-menu-toggle auto-hide="false">
+          <ion-item
+            routerLink="/app/puntos-verdes"
+            routerDirection="root"
+            routerLinkActive="selected"
+            detail="false"
+          >
+            <div
+              slot="start"
+              class="menu-item-icon"
+            >
+              <ion-icon
+                name="location-outline"
+              ></ion-icon>
+            </div>
+
+            <ion-label>
+              Puntos verdes
+            </ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+
+        <ion-menu-toggle auto-hide="false">
+          <ion-item
+            routerLink="/app/perfil"
+            routerDirection="root"
+            routerLinkActive="selected"
+            detail="false"
+          >
+            <div
+              slot="start"
+              class="menu-item-icon"
+            >
+              <ion-icon
+                name="person-outline"
+              ></ion-icon>
+            </div>
+
+            <ion-label>Mi perfil</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+
+      <!-- Información -->
+
+      <div class="menu-section-title secondary-title">
+        INFORMACIÓN
+      </div>
+
+      <ion-list
+        lines="none"
+        class="menu-list"
+      >
+        <ion-item
+          button
+          detail="true"
+          (click)="openHelp()"
+        >
+          <div
+            slot="start"
+            class="menu-item-icon"
+          >
+            <ion-icon
+              name="help-circle-outline"
+            ></ion-icon>
+          </div>
+
+          <ion-label>
+            Cómo funciona EcoScan
+          </ion-label>
+        </ion-item>
+
+        <ion-item
+          button
+          detail="true"
+          (click)="openAbout()"
+        >
+          <div
+            slot="start"
+            class="menu-item-icon"
+          >
+            <ion-icon
+              name="information-circle-outline"
+            ></ion-icon>
+          </div>
+
+          <ion-label>
+            Acerca de la aplicación
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!-- Consejo -->
+
+      <section class="menu-tip">
+        <div class="tip-icon">
+          <ion-icon
+            name="leaf-outline"
+          ></ion-icon>
+        </div>
+
+        <div>
+          <strong>Consejo ecológico</strong>
+
+          <p>
+            Mantené los materiales limpios y
+            secos antes de llevarlos a reciclar.
+          </p>
+        </div>
+      </section>
+    </ion-content>
+
+    <ion-footer
+      class="ion-no-border menu-footer"
+    >
+      <ion-toolbar>
+        <ion-button
+          expand="block"
+          fill="clear"
+          class="logout-button"
+          (click)="logout()"
+        >
+          <ion-icon
+            slot="start"
+            name="log-out-outline"
+          ></ion-icon>
+
+          Cerrar sesión
+        </ion-button>
+
+        <p class="menu-version">
+          EcoScan · Versión 1.0.0
+        </p>
+      </ion-toolbar>
+    </ion-footer>
+  </ion-menu>
+
+  <ion-router-outlet
+    id="main-content"
+  ></ion-router-outlet>
+</ion-app>

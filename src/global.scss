@@ -1,0 +1,73 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+// @import "@ionic/angular/css/palettes/dark.always.css";
+// @import "@ionic/angular/css/palettes/dark.class.css";
+// @import "@ionic/angular/css/palettes/dark.system.css"; //fue comentada 5/8/2026
+
+// Clases globales
+.title {
+    text-align: center;
+    font-size: 3em;
+}
+
+.subtitle {
+    text-align: center;
+    font-size: 1.5em;
+}
+:root {
+  color-scheme: light;
+
+  --ion-background-color: #f3f5f1;
+  --ion-background-color-rgb: 243, 245, 241;
+
+  --ion-text-color: #1c211c;
+  --ion-text-color-rgb: 28, 33, 28;
+
+  --ion-card-background: #ffffff;
+  --ion-item-background: #ffffff;
+
+  --ion-color-primary: #4da934;
+  --ion-color-primary-rgb: 77, 169, 52;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #44942e;
+  --ion-color-primary-tint: #5fb248;
+}
+
+html,
+body {
+  color-scheme: light;
+  background: #f3f5f1;
+}

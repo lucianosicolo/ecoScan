@@ -1,0 +1,521 @@
+:host {
+  --ecoscan-primary: #25a865;
+  --ecoscan-primary-dark: #147a48;
+  --ecoscan-primary-light: #63d796;
+  --ecoscan-accent: #c6f45d;
+
+  --ecoscan-background: #f3f8f4;
+  --ecoscan-surface: #ffffff;
+  --ecoscan-text: #17251d;
+  --ecoscan-muted: #6c7b72;
+  --ecoscan-border: #dce7df;
+  --ecoscan-error: #d94848;
+}
+
+/* Fondo general */
+
+.login-content {
+  --background:
+    radial-gradient(
+      circle at 12% 5%,
+      rgba(99, 215, 150, 0.22),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 92% 88%,
+      rgba(198, 244, 93, 0.17),
+      transparent 30%
+    ),
+    linear-gradient(
+      155deg,
+      #edf7f0 0%,
+      #f8faf8 48%,
+      #ffffff 100%
+    );
+
+  --color: var(--ecoscan-text);
+}
+
+.login-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  max-width: 470px;
+  min-height: 100%;
+  margin: 0 auto;
+
+  padding:
+    calc(28px + env(safe-area-inset-top))
+    20px
+    calc(22px + env(safe-area-inset-bottom));
+}
+
+/* Marca */
+
+.brand-section {
+  margin-bottom: 24px;
+  text-align: center;
+
+  h1 {
+    margin: 10px 0 2px;
+    color: var(--ecoscan-text);
+    font-size: 34px;
+    font-weight: 850;
+    letter-spacing: -1.5px;
+
+    span {
+      color: var(--ecoscan-primary);
+    }
+  }
+
+  p {
+    margin: 0;
+    color: var(--ecoscan-muted);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+}
+
+.logo-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 92px;
+  height: 92px;
+  margin: 0 auto;
+
+  color: #ffffff;
+  background:
+    linear-gradient(
+      145deg,
+      var(--ecoscan-primary-light),
+      var(--ecoscan-primary-dark)
+    );
+
+  border: 5px solid rgba(255, 255, 255, 0.9);
+  border-radius: 28px;
+
+  box-shadow:
+    0 16px 35px rgba(26, 129, 76, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+
+  transform: rotate(-3deg);
+}
+
+.scan-icon {
+  font-size: 48px;
+  transform: rotate(3deg);
+}
+
+.leaf-badge {
+  position: absolute;
+  right: -9px;
+  bottom: -7px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  color: var(--ecoscan-primary-dark);
+  background: var(--ecoscan-accent);
+
+  border: 4px solid #ffffff;
+  border-radius: 50%;
+
+  box-shadow: 0 5px 12px rgba(27, 77, 48, 0.2);
+
+  ion-icon {
+    font-size: 17px;
+  }
+}
+
+/* Tarjeta */
+
+.login-card {
+  position: relative;
+  padding: 25px 21px;
+
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(214, 228, 218, 0.95);
+  border-radius: 24px;
+
+  box-shadow:
+    0 20px 55px rgba(31, 74, 49, 0.12);
+
+  overflow: hidden;
+
+  &::before {
+    content: '';
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 5px;
+
+    background:
+      linear-gradient(
+        90deg,
+        var(--ecoscan-primary-dark),
+        var(--ecoscan-primary),
+        var(--ecoscan-accent)
+      );
+  }
+}
+
+.login-heading {
+  margin-bottom: 24px;
+
+  .welcome-label {
+    display: inline-block;
+    margin-bottom: 7px;
+
+    color: var(--ecoscan-primary);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+  }
+
+  h2 {
+    margin: 0 0 6px;
+
+    color: var(--ecoscan-text);
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  p {
+    max-width: 340px;
+    margin: 0;
+
+    color: var(--ecoscan-muted);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+}
+
+/* Campos */
+
+.form-group {
+  margin-bottom: 18px;
+
+  > label {
+    display: block;
+    margin: 0 0 7px;
+
+    color: #3f5046;
+    font-size: 12px;
+    font-weight: 700;
+  }
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+
+  min-height: 54px;
+  padding-left: 15px;
+
+  background: #f7faf8;
+  border: 1.5px solid var(--ecoscan-border);
+  border-radius: 14px;
+
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+
+  > ion-icon {
+    flex-shrink: 0;
+    color: #829087;
+    font-size: 20px;
+
+    transition: color 160ms ease;
+  }
+
+  ion-input {
+    min-height: 52px;
+
+    --background: transparent;
+    --color: var(--ecoscan-text);
+    --placeholder-color: #97a39b;
+    --placeholder-opacity: 1;
+    --padding-start: 12px;
+    --padding-end: 12px;
+
+    font-size: 14px;
+  }
+
+  &:focus-within {
+    background: #ffffff;
+    border-color: var(--ecoscan-primary);
+
+    box-shadow:
+      0 0 0 3px rgba(37, 168, 101, 0.12);
+
+    transform: translateY(-1px);
+
+    > ion-icon {
+      color: var(--ecoscan-primary);
+    }
+  }
+}
+
+.password-container {
+  padding-right: 4px;
+}
+
+.password-button {
+  flex-shrink: 0;
+
+  width: 44px;
+  height: 44px;
+  margin: 0;
+
+  --color: #758179;
+  --padding-start: 0;
+  --padding-end: 0;
+
+  ion-icon {
+    font-size: 20px;
+  }
+}
+
+.input-error {
+  border-color: var(--ecoscan-error);
+
+  &:focus-within {
+    border-color: var(--ecoscan-error);
+
+    box-shadow:
+      0 0 0 3px rgba(217, 72, 72, 0.1);
+  }
+}
+
+.error-message {
+  display: block;
+  margin: 6px 3px 0;
+
+  color: var(--ecoscan-error);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Opciones */
+
+.login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+  margin: 3px 0 22px;
+
+  ion-checkbox {
+    --size: 18px;
+    --border-radius: 5px;
+    --checkbox-background-checked: var(--ecoscan-primary);
+    --border-color-checked: var(--ecoscan-primary);
+
+    color: #5f6d64;
+    font-size: 12px;
+  }
+}
+
+.forgot-button,
+.register-section button {
+  padding: 5px 0;
+
+  color: var(--ecoscan-primary-dark);
+  background: transparent;
+  border: 0;
+
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+/* Botón principal */
+
+.login-button {
+  height: 54px;
+  margin: 0;
+
+  --background:
+    linear-gradient(
+      135deg,
+      var(--ecoscan-primary),
+      var(--ecoscan-primary-dark)
+    );
+
+  --background-hover: #16864e;
+  --background-activated: #116c3f;
+  --color: #ffffff;
+  --border-radius: 14px;
+
+  --box-shadow:
+    0 10px 24px rgba(24, 132, 75, 0.28);
+
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: none;
+
+  ion-icon {
+    font-size: 18px;
+  }
+
+  ion-spinner {
+    width: 22px;
+    height: 22px;
+  }
+
+  &::part(native) {
+    transition:
+      transform 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  &:active::part(native) {
+    transform: scale(0.985);
+  }
+}
+
+/* Registro */
+
+.register-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  gap: 4px;
+  margin-top: 20px;
+  padding-top: 18px;
+
+  border-top: 1px solid #edf1ee;
+
+  span {
+    color: var(--ecoscan-muted);
+    font-size: 12px;
+  }
+}
+
+/* Mensaje ecológico */
+
+.eco-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+  margin: 20px auto 0;
+  padding: 9px 14px;
+
+  color: #557060;
+  background: rgba(235, 247, 238, 0.75);
+  border: 1px solid rgba(196, 222, 203, 0.65);
+  border-radius: 12px;
+
+  ion-icon {
+    flex-shrink: 0;
+    color: var(--ecoscan-primary);
+    font-size: 17px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 10px;
+    line-height: 1.35;
+  }
+}
+
+.footer-text {
+  margin: 14px 0 0;
+
+  color: #8a968e;
+  font-size: 9px;
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+
+/* Evita el botón de contraseña propio de algunos navegadores */
+
+ion-input::part(native)::-ms-reveal,
+ion-input::part(native)::-ms-clear {
+  display: none;
+}
+
+/* Pantallas pequeñas */
+
+@media (max-width: 370px) {
+  .login-page {
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  .login-card {
+    padding: 23px 17px;
+  }
+
+  .login-options {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+.register-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 22px;
+  font-size: 13px;
+  text-align: center;
+
+  span {
+    color: #727b74;
+  }
+
+  a {
+    color: #239853;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:active {
+      opacity: 0.7;
+    }
+  }
+}
+
+@media (max-width: 360px) {
+  .register-section {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+/* Escritorio */
+
+@media (min-width: 768px) {
+  .login-page {
+    max-width: 470px;
+  }
+
+  .login-card {
+    padding: 30px;
+  }
+}
