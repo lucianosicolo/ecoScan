@@ -36,10 +36,7 @@ const routes: Routes = [
     path: '**',
     redirectTo: 'login'
   },
-  {
-    path: 'historial',
-    loadChildren: () => import('./historial/historial.module').then(m => m.HistorialPageModule)
-  },
+ 
 
 
 

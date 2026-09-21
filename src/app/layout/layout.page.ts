@@ -13,13 +13,13 @@ import {
 } from '@angular/router';
 
 import {
+  takeUntilDestroyed,
+} from '@angular/core/rxjs-interop';
+
+import {
   filter,
   firstValueFrom,
 } from 'rxjs';
-
-import {
-  takeUntilDestroyed,
-} from '@angular/core/rxjs-interop';
 
 import {
   AlertController,
@@ -37,6 +37,11 @@ import {
   ScanResult,
   ScanService,
 } from '../scan/services/scan.service';
+
+import {
+  ScanUiService,
+} from '../scan/services/scan-ui.service';
+
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.page.html',
@@ -44,12 +49,87 @@ import {
   standalone: false,
 })
 export class LayoutPage implements AfterViewInit {
+
   hasNotifications = false;
 
   scanResult: ScanResult | null = null;
-  isScanOptionsOpen = false;
-  isScanResultOpen = false
 
+  isScanOptionsOpen = false;
+  isScanResultOpen = false;
+  isScanning = false;
+
+  scanPreviewUrl: string | null = null;
+  scanStatusIndex = 0;
+
+  @ViewChild('layoutContent')
+  private layoutContent!: IonContent;
+
+  readonly scanStatuses: string[] = [
+    'Procesando imagen',
+    'Identificando el residuo',
+    'Analizando el material',
+    'Comprobando reciclabilidad',
+  ];
+
+  private scanStatusInterval:
+    ReturnType<typeof setInterval> | null = null;
+
+  constructor(
+    private readonly location: Location,
+    private readonly router: Router,
+    private readonly destroyRef: DestroyRef,
+    private readonly alertController:
+      AlertController,
+    private readonly scanService:
+      ScanService,
+    private readonly scanUiService:
+      ScanUiService,
+  ) {
+    this.scanUiService.open$
+      .pipe(
+        takeUntilDestroyed(
+          this.destroyRef,
+        ),
+      )
+      .subscribe(() => {
+        this.openScanOptions();
+      });
+  }
+
+  ngAfterViewInit(): void {
+    this.router.events
+      .pipe(
+        filter(
+          (event): event is NavigationEnd =>
+            event instanceof NavigationEnd,
+        ),
+        takeUntilDestroyed(
+          this.destroyRef,
+        ),
+      )
+      .subscribe(() => {
+        void this.layoutContent.scrollToTop(0);
+      });
+  }
+
+  get currentScanStatus(): string {
+    return this.scanStatuses[
+      this.scanStatusIndex
+    ];
+  }
+
+  get isHomePage(): boolean {
+    return (
+      this.router.url === '/app' ||
+      this.router.url.startsWith(
+        '/app/home',
+      )
+    );
+  }
+
+  openScanOptions(): void {
+    this.isScanOptionsOpen = true;
+  }
 
   closeScanOptions(): void {
     this.isScanOptionsOpen = false;
@@ -70,39 +150,6 @@ export class LayoutPage implements AfterViewInit {
       void this.selectFromGallery();
     }, 200);
   }
-  isScanning = false;
-  scanPreviewUrl: string | null = null;
-  scanStatusIndex = 0;
-  @ViewChild('layoutContent')
-  private layoutContent!: IonContent;
-  readonly scanStatuses: string[] = [
-    'Procesando imagen',
-    'Identificando el residuo',
-    'Analizando el material',
-    'Comprobando reciclabilidad',
-  ];
-
-  private scanStatusInterval:
-    ReturnType<typeof setInterval> | null = null;
-
-  get currentScanStatus(): string {
-    return this.scanStatuses[
-      this.scanStatusIndex
-    ];
-  }
-  constructor(
-    private readonly location: Location,
-    private readonly router: Router,
-    private readonly destroyRef: DestroyRef,
-    private readonly alertController:
-      AlertController,
-    private readonly scanService:
-      ScanService,
-  ) { }
-
-  openScanOptions(): void {
-    this.isScanOptionsOpen = true;
-  }
 
   async takePhoto(): Promise<void> {
     try {
@@ -120,21 +167,7 @@ export class LayoutPage implements AfterViewInit {
       await this.handleCameraError(error);
     }
   }
-  ngAfterViewInit(): void {
-    this.router.events
-      .pipe(
-        filter(
-          (event): event is NavigationEnd =>
-            event instanceof NavigationEnd,
-        ),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(() => {
-        void this.layoutContent.scrollToTop(
-          0,
-        );
-      });
-  }
+
   async selectFromGallery(): Promise<void> {
     try {
       const photo = await Camera.getPhoto({
@@ -151,9 +184,11 @@ export class LayoutPage implements AfterViewInit {
       await this.handleCameraError(error);
     }
   }
+
   private async processPhoto(
     photo: Photo,
   ): Promise<void> {
+
     if (!photo.webPath) {
       await this.showError(
         'No se pudo leer la imagen seleccionada.',
@@ -162,7 +197,9 @@ export class LayoutPage implements AfterViewInit {
       return;
     }
 
-    this.startScanning(photo.webPath);
+    this.startScanning(
+      photo.webPath,
+    );
 
     try {
       const imageResponse =
@@ -177,17 +214,20 @@ export class LayoutPage implements AfterViewInit {
       const filename =
         `residuo-${Date.now()}.${extension}`;
 
-      const result = await firstValueFrom(
-        this.scanService.analyzeImage(
-          imageBlob,
-          filename,
-        ),
-      );
+      const result =
+        await firstValueFrom(
+          this.scanService.analyzeImage(
+            imageBlob,
+            filename,
+          ),
+        );
 
       this.stopScanning();
 
       await this.pause(250);
-      await this.showResult(result);
+
+      this.showResult(result);
+
     } catch (error: unknown) {
       console.error(
         'Error al escanear:',
@@ -197,11 +237,16 @@ export class LayoutPage implements AfterViewInit {
       this.stopScanning();
 
       const message =
-        this.getHttpErrorMessage(error);
+        this.getHttpErrorMessage(
+          error,
+        );
 
-      await this.showError(message);
+      await this.showError(
+        message,
+      );
     }
   }
+
   private showResult(
     result: ScanResult,
   ): void {
@@ -219,30 +264,40 @@ export class LayoutPage implements AfterViewInit {
   onScanResultDismissed(): void {
     this.scanResult = null;
   }
+
   private startScanning(
     previewUrl: string,
   ): void {
-    this.scanPreviewUrl = previewUrl;
+    this.scanPreviewUrl =
+      previewUrl;
+
     this.scanStatusIndex = 0;
     this.isScanning = true;
 
     if (this.scanStatusInterval) {
-      clearInterval(this.scanStatusInterval);
+      clearInterval(
+        this.scanStatusInterval,
+      );
     }
 
-    this.scanStatusInterval = setInterval(() => {
-      this.scanStatusIndex =
-        (
-          this.scanStatusIndex + 1
-        ) % this.scanStatuses.length;
-    }, 1800);
+    this.scanStatusInterval =
+      setInterval(() => {
+        this.scanStatusIndex =
+          (
+            this.scanStatusIndex + 1
+          ) %
+          this.scanStatuses.length;
+      }, 1800);
   }
 
   private stopScanning(): void {
     this.isScanning = false;
 
     if (this.scanStatusInterval) {
-      clearInterval(this.scanStatusInterval);
+      clearInterval(
+        this.scanStatusInterval,
+      );
+
       this.scanStatusInterval = null;
     }
 
@@ -254,13 +309,20 @@ export class LayoutPage implements AfterViewInit {
   private pause(
     milliseconds: number,
   ): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(resolve, milliseconds);
-    });
+    return new Promise(
+      (resolve) => {
+        setTimeout(
+          resolve,
+          milliseconds,
+        );
+      },
+    );
   }
+
   getCategoryName(
     category: ScanResult['categoria'],
   ): string {
+
     const categoryNames: Record<
       ScanResult['categoria'],
       string
@@ -273,12 +335,15 @@ export class LayoutPage implements AfterViewInit {
       desconocido: 'Desconocido',
     };
 
-    return categoryNames[category];
+    return categoryNames[
+      category
+    ];
   }
 
   getResultIcon(
     category: ScanResult['categoria'],
   ): string {
+
     const categoryIcons: Record<
       ScanResult['categoria'],
       string
@@ -291,12 +356,56 @@ export class LayoutPage implements AfterViewInit {
       desconocido: 'help-outline',
     };
 
-    return categoryIcons[category];
+    return categoryIcons[
+      category
+    ];
+  }
+
+  getStatusName(
+    status: ScanResult['estado'],
+  ): string {
+
+    const names: Record<
+      ScanResult['estado'],
+      string
+    > = {
+      apto: 'Listo para reciclar',
+      no_apto:
+        'No apto para reciclar',
+      desconocido:
+        'Fuera del alcance',
+    };
+
+    return names[
+      status
+    ];
+  }
+
+  getStatusIcon(
+    status: ScanResult['estado'],
+  ): string {
+
+    const icons: Record<
+      ScanResult['estado'],
+      string
+    > = {
+      apto:
+        'checkmark-circle-outline',
+      no_apto:
+        'close-circle-outline',
+      desconocido:
+        'help-circle-outline',
+    };
+
+    return icons[
+      status
+    ];
   }
 
   private async handleCameraError(
     error: unknown,
   ): Promise<void> {
+
     const message =
       error instanceof Error
         ? error.message
@@ -306,7 +415,9 @@ export class LayoutPage implements AfterViewInit {
       message.toLowerCase();
 
     const wasCancelled =
-      normalizedMessage.includes('cancel') ||
+      normalizedMessage.includes(
+        'cancel',
+      ) ||
       normalizedMessage.includes(
         'user cancelled',
       );
@@ -328,25 +439,33 @@ export class LayoutPage implements AfterViewInit {
   private getHttpErrorMessage(
     error: unknown,
   ): string {
+
     if (
       typeof error === 'object' &&
       error !== null &&
       'error' in error
     ) {
-      const httpError = error as {
-        error?: {
-          message?: string | string[];
+
+      const httpError =
+        error as {
+          error?: {
+            message?:
+              string | string[];
+          };
         };
-      };
 
       const message =
         httpError.error?.message;
 
-      if (Array.isArray(message)) {
+      if (
+        Array.isArray(message)
+      ) {
         return message.join('. ');
       }
 
-      if (typeof message === 'string') {
+      if (
+        typeof message === 'string'
+      ) {
         return message;
       }
     }
@@ -360,9 +479,11 @@ export class LayoutPage implements AfterViewInit {
   private async showError(
     message: string,
   ): Promise<void> {
+
     const alert =
       await this.alertController.create({
-        header: 'Ocurrió un problema',
+        header:
+          'Ocurrió un problema',
         message,
         buttons: ['Aceptar'],
       });
@@ -371,71 +492,6 @@ export class LayoutPage implements AfterViewInit {
   }
 
   goBack(): void {
-    if (
-      this.router.url.startsWith(
-        '/app/nuevo-pago',
-      )
-    ) {
-      void this.router.navigateByUrl(
-        '/app/pagos',
-      );
-
-      return;
-    }
-
     this.location.back();
-  }
-
-  get isHomePage(): boolean {
-    return (
-      this.router.url === '/app' ||
-      this.router.url.startsWith(
-        '/app/home',
-      )
-    );
-  }
-
-  get isPaymentsPage(): boolean {
-    return (
-      this.router.url.startsWith(
-        '/app/pagos',
-      ) ||
-      this.router.url.startsWith(
-        '/app/nuevo-pago',
-      )
-    );
-  }
-  getStatusName(
-    status: ScanResult['estado'],
-  ): string {
-    const names: Record<
-      ScanResult['estado'],
-      string
-    > = {
-      listo: 'Listo para reciclar',
-      requiere_preparacion:
-        'Requiere preparación',
-      no_apto: 'No apto para reciclar',
-      desconocido: 'Fuera del alcance',
-    };
-
-    return names[status];
-  }
-
-  getStatusIcon(
-    status: ScanResult['estado'],
-  ): string {
-    const icons: Record<
-      ScanResult['estado'],
-      string
-    > = {
-      listo: 'checkmark-circle-outline',
-      requiere_preparacion:
-        'construct-outline',
-      no_apto: 'close-circle-outline',
-      desconocido: 'help-circle-outline',
-    };
-
-    return icons[status];
   }
 }

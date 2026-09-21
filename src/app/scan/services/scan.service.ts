@@ -21,8 +21,7 @@ export interface ScanResult {
   observacion: string;
 }
 export type RecyclingStatus =
-  | 'listo'
-  | 'requiere_preparacion'
+  | 'apto'
   | 'no_apto'
   | 'desconocido';
 

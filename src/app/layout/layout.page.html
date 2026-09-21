@@ -3,10 +3,21 @@
 
     <!-- Menú o volver -->
     <ion-buttons slot="start" class="header-side">
-      <ion-menu-button *ngIf="isHomePage" auto-hide="false" aria-label="Abrir menú"></ion-menu-button>
+      <ion-menu-button
+        *ngIf="isHomePage"
+        auto-hide="false"
+        aria-label="Abrir menú"
+      ></ion-menu-button>
 
-      <ion-button *ngIf="!isHomePage" (click)="goBack()" aria-label="Volver">
-        <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+      <ion-button
+        *ngIf="!isHomePage"
+        (click)="goBack()"
+        aria-label="Volver"
+      >
+        <ion-icon
+          slot="icon-only"
+          name="chevron-back-outline"
+        ></ion-icon>
       </ion-button>
     </ion-buttons>
 
@@ -23,21 +34,17 @@
       </div>
     </ion-title>
 
-    <!-- Notificaciones -->
-    <ion-buttons slot="end" class="header-side header-end">
-      <ion-button routerLink="/app/notificaciones" aria-label="Notificaciones" class="notification-button">
-        <ion-icon slot="icon-only" name="notifications-outline"></ion-icon>
-
-        <span *ngIf="hasNotifications" class="notification-dot"></span>
-      </ion-button>
-    </ion-buttons>
-
   </ion-toolbar>
 </ion-header>
 
-<ion-content #layoutContent class="layout-content">
+
+<ion-content
+  #layoutContent
+  class="layout-content"
+>
   <router-outlet></router-outlet>
 </ion-content>
+
 
 <ion-footer class="layout-footer">
   <ion-toolbar>
@@ -45,8 +52,12 @@
     <nav class="bottom-navigation">
 
       <!-- Inicio -->
-      <a routerLink="/app/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-        ariaCurrentWhenActive="page">
+      <a
+        routerLink="/app/home"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ariaCurrentWhenActive="page"
+      >
         <div class="navigation-icon">
           <ion-icon name="home-outline"></ion-icon>
         </div>
@@ -55,7 +66,11 @@
       </a>
 
       <!-- Historial -->
-      <a routerLink="/app/historial" routerLinkActive="active" ariaCurrentWhenActive="page">
+      <a
+        routerLink="/app/historial"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+      >
         <div class="navigation-icon">
           <ion-icon name="time-outline"></ion-icon>
         </div>
@@ -64,7 +79,12 @@
       </a>
 
       <!-- Escanear -->
-      <button type="button" class="scan-navigation" (click)="openScanOptions()" aria-label="Identificar un residuo">
+      <button
+        type="button"
+        class="scan-navigation"
+        (click)="openScanOptions()"
+        aria-label="Identificar un residuo"
+      >
         <div class="scan-button">
           <ion-icon name="scan-outline"></ion-icon>
         </div>
@@ -72,8 +92,12 @@
         <span>Escanear</span>
       </button>
 
-      <!-- Puntos de reciclaje -->
-      <a routerLink="/app/puntos-verdes" routerLinkActive="active" ariaCurrentWhenActive="page">
+      <!-- Puntos verdes -->
+      <a
+        routerLink="/app/puntos-verdes"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+      >
         <div class="navigation-icon">
           <ion-icon name="location-outline"></ion-icon>
         </div>
@@ -82,7 +106,11 @@
       </a>
 
       <!-- Perfil -->
-      <a routerLink="/app/perfil" routerLinkActive="active" ariaCurrentWhenActive="page">
+      <a
+        routerLink="/app/perfil"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+      >
         <div class="navigation-icon">
           <ion-icon name="person-outline"></ion-icon>
         </div>
@@ -94,50 +122,108 @@
 
   </ion-toolbar>
 </ion-footer>
-<ion-modal [isOpen]="isScanOptionsOpen" cssClass="scan-options-modal" [initialBreakpoint]="1" [breakpoints]="[0, 1]"
-  [handle]="true" (didDismiss)="closeScanOptions()">
+
+
+<!-- OPCIONES DE ESCANEO -->
+<ion-modal
+  [isOpen]="isScanOptionsOpen"
+  cssClass="scan-options-modal"
+  [initialBreakpoint]="1"
+  [breakpoints]="[0, 1]"
+  [handle]="true"
+  (didDismiss)="closeScanOptions()"
+>
   <ng-template>
+
     <div class="scan-options-content">
+
       <div class="scan-options-heading">
+
         <div class="options-logo">
           <ion-icon name="scan-outline"></ion-icon>
         </div>
 
         <div>
           <span>IDENTIFICAR RESIDUO</span>
-          <h2>¿Cómo querés agregar la foto?</h2>
+
+          <h2>
+            ¿Cómo querés agregar la foto?
+          </h2>
         </div>
+
       </div>
 
       <div class="scan-options-grid">
-        <button type="button" class="scan-option camera-option" (click)="selectCamera()">
+
+        <!-- Cámara -->
+        <button
+          type="button"
+          class="scan-option camera-option"
+          (click)="selectCamera()"
+        >
           <div>
-            <ion-icon name="camera-outline"></ion-icon>
+            <ion-icon
+              name="camera-outline"
+            ></ion-icon>
           </div>
 
-          <strong>Tomar una foto</strong>
-          <span>Usar la cámara</span>
+          <strong>
+            Tomar una foto
+          </strong>
+
+          <span>
+            Usar la cámara
+          </span>
         </button>
 
-        <button type="button" class="scan-option gallery-option" (click)="selectGallery()">
+        <!-- Galería -->
+        <button
+          type="button"
+          class="scan-option gallery-option"
+          (click)="selectGallery()"
+        >
           <div>
-            <ion-icon name="images-outline"></ion-icon>
+            <ion-icon
+              name="images-outline"
+            ></ion-icon>
           </div>
 
-          <strong>Elegir imagen</strong>
-          <span>Abrir la galería</span>
+          <strong>
+            Elegir imagen
+          </strong>
+
+          <span>
+            Abrir la galería
+          </span>
         </button>
+
       </div>
 
-      <button type="button" class="cancel-scan-options" (click)="closeScanOptions()">
+      <button
+        type="button"
+        class="cancel-scan-options"
+        (click)="closeScanOptions()"
+      >
         Cancelar
       </button>
+
     </div>
+
   </ng-template>
 </ion-modal>
-<div *ngIf="isScanning" class="scanning-overlay" role="status" aria-live="polite">
+
+
+<!-- PANTALLA DE ANÁLISIS -->
+<div
+  *ngIf="isScanning"
+  class="scanning-overlay"
+  role="status"
+  aria-live="polite"
+>
   <div class="scanning-container">
+
     <div class="scanning-brand">
+
       <div class="scanning-brand-icon">
         <ion-icon name="scan-outline"></ion-icon>
       </div>
@@ -145,35 +231,56 @@
       <span>
         Eco<strong>Scan</strong>
       </span>
+
     </div>
 
     <div class="scanner">
-      <img *ngIf="scanPreviewUrl" [src]="scanPreviewUrl" alt="Residuo seleccionado" />
+
+      <img
+        *ngIf="scanPreviewUrl"
+        [src]="scanPreviewUrl"
+        alt="Residuo seleccionado"
+      />
 
       <div class="scanner-shade"></div>
       <div class="scanner-line"></div>
 
-      <span class="scanner-corner top-left"></span>
-      <span class="scanner-corner top-right"></span>
-      <span class="scanner-corner bottom-left"></span>
-      <span class="scanner-corner bottom-right"></span>
+      <span
+        class="scanner-corner top-left"
+      ></span>
+
+      <span
+        class="scanner-corner top-right"
+      ></span>
+
+      <span
+        class="scanner-corner bottom-left"
+      ></span>
+
+      <span
+        class="scanner-corner bottom-right"
+      ></span>
 
       <div class="ai-badge">
         <ion-icon name="sparkles"></ion-icon>
         IA
       </div>
+
     </div>
 
     <div class="scanning-information">
+
       <span class="scanning-label">
         Analizando
       </span>
 
-      <h2>{{ currentScanStatus }}</h2>
+      <h2>
+        {{ currentScanStatus }}
+      </h2>
 
       <p>
-        Estamos examinando la imagen para identificar
-        correctamente el residuo.
+        Estamos examinando la imagen para
+        identificar correctamente el residuo.
       </p>
 
       <div class="scanning-dots">
@@ -181,128 +288,270 @@
         <span></span>
         <span></span>
       </div>
+
     </div>
 
     <div class="scanning-security">
-      <ion-icon name="shield-checkmark-outline"></ion-icon>
+
+      <ion-icon
+        name="shield-checkmark-outline"
+      ></ion-icon>
 
       <span>
         La imagen se procesa de manera segura
       </span>
+
     </div>
+
   </div>
 </div>
-<ion-modal [isOpen]="isScanResultOpen" cssClass="scan-result-modal" (didDismiss)="onScanResultDismissed()">
+
+
+<!-- RESULTADO -->
+<ion-modal
+  [isOpen]="isScanResultOpen"
+  cssClass="scan-result-modal"
+  (didDismiss)="onScanResultDismissed()"
+>
   <ng-template>
+
     <ion-content class="result-content">
-      <div *ngIf="scanResult as result" class="result-container">
+
+      <div
+        *ngIf="scanResult as result"
+        class="result-container"
+      >
+
         <!-- Encabezado -->
         <div class="result-header">
-          <button type="button" class="close-result-button" aria-label="Cerrar resultado" (click)="closeScanResult()">
-            <ion-icon name="close-outline"></ion-icon>
+
+          <button
+            type="button"
+            class="close-result-button"
+            aria-label="Cerrar resultado"
+            (click)="closeScanResult()"
+          >
+            <ion-icon
+              name="close-outline"
+            ></ion-icon>
           </button>
 
-          <div class="result-icon" [class.unknown]="
+          <div
+            class="result-icon"
+            [class.unknown]="
               result.categoria === 'desconocido'
-            ">
-            <ion-icon [name]="getResultIcon(result.categoria)"></ion-icon>
+            "
+          >
+            <ion-icon
+              [name]="
+                getResultIcon(
+                  result.categoria
+                )
+              "
+            ></ion-icon>
           </div>
 
           <span class="result-label">
             Análisis completado
           </span>
 
-          <h2>{{ result.objeto }}</h2>
+          <h2>
+            {{ result.objeto }}
+          </h2>
 
-          <p>{{ result.observacion }}</p>
+          <p>
+            {{ result.observacion }}
+          </p>
+
         </div>
+
 
         <!-- Confianza -->
         <section class="confidence-card">
+
           <div class="confidence-heading">
-            <span>Confianza visual</span>
+
+            <span>
+              Confianza visual
+            </span>
 
             <strong>
               {{ result.confianza }}%
             </strong>
+
           </div>
 
           <div class="confidence-track">
-            <div class="confidence-progress" [style.width.%]="result.confianza"></div>
+
+            <div
+              class="confidence-progress"
+              [style.width.%]="
+                result.confianza
+              "
+            ></div>
+
           </div>
+
         </section>
+
 
         <!-- Información -->
         <section class="result-details">
+
+          <!-- Categoría -->
           <div class="detail-item">
+
             <div class="detail-icon">
-              <ion-icon name="layers-outline"></ion-icon>
+              <ion-icon
+                name="layers-outline"
+              ></ion-icon>
             </div>
 
             <div>
-              <span>Categoría</span>
+              <span>
+                Categoría
+              </span>
 
               <strong>
-                {{ getCategoryName(result.categoria) }}
+                {{
+                  getCategoryName(
+                    result.categoria
+                  )
+                }}
               </strong>
             </div>
+
           </div>
 
+
+          <!-- Material -->
           <div class="detail-item">
+
             <div class="detail-icon">
-              <ion-icon name="cube-outline"></ion-icon>
+              <ion-icon
+                name="cube-outline"
+              ></ion-icon>
             </div>
 
             <div>
-              <span>Material</span>
-              <strong>{{ result.material }}</strong>
-            </div>
-          </div>
+              <span>
+                Material
+              </span>
 
-          <div class="detail-item">
-            <div class="detail-icon" [class.not-recyclable]="
-                !result.reciclable
-              ">
-              <ion-icon [name]="getStatusIcon(result.estado)"></ion-icon>
-            </div>
-
-            <div>
-              <span>Estado</span>
-
-              <strong class="status-text" [class.ready]="result.estado === 'listo'" [class.preparation]="
-    result.estado === 'requiere_preparacion'
-  " [class.not-suitable]="
-    result.estado === 'no_apto'
-  ">
-                {{ getStatusName(result.estado) }}
+              <strong>
+                {{ result.material }}
               </strong>
             </div>
+
           </div>
+
+
+          <!-- Estado -->
+          <div class="detail-item">
+
+            <div
+              class="detail-icon"
+              [class.not-recyclable]="
+                !result.reciclable
+              "
+            >
+              <ion-icon
+                [name]="
+                  getStatusIcon(
+                    result.estado
+                  )
+                "
+              ></ion-icon>
+            </div>
+
+            <div>
+
+              <span>
+                Estado
+              </span>
+
+              <strong
+                class="status-text"
+                [class.ready]="
+                  result.estado === 'apto'
+                "
+                [class.not-suitable]="
+                  result.estado === 'no_apto'
+                "
+              >
+                {{
+                  getStatusName(
+                    result.estado
+                  )
+                }}
+              </strong>
+
+            </div>
+
+          </div>
+
         </section>
 
+
         <!-- Preparación -->
-        <section *ngIf="result.preparacion.length > 0" class="preparation-card">
+        <section
+          *ngIf="
+            result.preparacion.length > 0
+          "
+          class="preparation-card"
+        >
+
           <div class="section-title">
-            <ion-icon name="sparkles-outline"></ion-icon>
-            <h3>Cómo prepararlo</h3>
+
+            <ion-icon
+              name="sparkles-outline"
+            ></ion-icon>
+
+            <h3>
+              Cómo prepararlo
+            </h3>
+
           </div>
 
           <ol>
-            <li *ngFor="
-                let instruction of result.preparacion;
+
+            <li
+              *ngFor="
+                let instruction
+                of result.preparacion;
                 let index = index
-              ">
-              <span>{{ index + 1 }}</span>
-              <p>{{ instruction }}</p>
+              "
+            >
+              <span>
+                {{ index + 1 }}
+              </span>
+
+              <p>
+                {{ instruction }}
+              </p>
             </li>
+
           </ol>
+
         </section>
 
-        <button type="button" class="finish-result-button" (click)="closeScanResult()">
-          <ion-icon name="checkmark-outline"></ion-icon>
+
+        <!-- Finalizar -->
+        <button
+          type="button"
+          class="finish-result-button"
+          (click)="closeScanResult()"
+        >
+          <ion-icon
+            name="checkmark-outline"
+          ></ion-icon>
+
           Finalizar
         </button>
+
       </div>
+
     </ion-content>
+
   </ng-template>
 </ion-modal>

@@ -4,13 +4,16 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 
 import {
   Geolocation,
 } from '@capacitor/geolocation';
-import { ToastController } from '@ionic/angular';
+
+import {
+  ToastController,
+} from '@ionic/angular';
 
 type MaterialType =
   | 'all'
@@ -36,66 +39,73 @@ interface RecyclingPoint {
   selector: 'app-puntos-verdes',
   templateUrl: './puntos-verdes.page.html',
   styleUrls: ['./puntos-verdes.page.scss'],
-  standalone: false
+  standalone: false,
 })
-export class PuntosVerdesPage implements AfterViewInit {
+export class PuntosVerdesPage
+  implements AfterViewInit {
 
   @ViewChild('map')
   mapElement!: ElementRef<HTMLDivElement>;
-  hasUserLocation = false;
-  private map!: google.maps.Map;
 
-  private markers:
-    google.maps.marker.AdvancedMarkerElement[] = [];
-  private userMarker:
-    google.maps.marker.AdvancedMarkerElement | null = null;
+  hasUserLocation = false;
+  loadingLocation = false;
 
   searchTerm = '';
   selectedMaterial: MaterialType = 'all';
   selectedPoint: RecyclingPoint | null = null;
-  loadingLocation = false;
+
+  private map!: google.maps.Map;
+  private infoWindow!: google.maps.InfoWindow;
+
+  private markers:
+    google.maps.marker.AdvancedMarkerElement[] = [];
+
+  private userMarker:
+    google.maps.marker.AdvancedMarkerElement | null =
+    null;
 
   userPosition = {
     latitude: -38.9339,
-    longitude: -67.9903
+    longitude: -67.9903,
   };
 
   materialFilters = [
     {
       label: 'Todos',
       value: 'all' as MaterialType,
-      icon: 'apps-outline'
+      icon: 'apps-outline',
     },
     {
       label: 'Plástico',
       value: 'plastic' as MaterialType,
-      icon: 'water-outline'
+      icon: 'water-outline',
     },
     {
       label: 'Vidrio',
       value: 'glass' as MaterialType,
-      icon: 'wine-outline'
+      icon: 'wine-outline',
     },
     {
       label: 'Latas',
       value: 'metal' as MaterialType,
-      icon: 'beaker-outline'
+      icon: 'beaker-outline',
     },
     {
       label: 'Papel',
       value: 'paper' as MaterialType,
-      icon: 'document-outline'
+      icon: 'document-outline',
     },
     {
       label: 'Cartón',
       value: 'cardboard' as MaterialType,
-      icon: 'cube-outline'
-    }
+      icon: 'cube-outline',
+    },
   ];
 
   /*
    * Datos de ejemplo para desarrollar la interfaz.
-   * Antes de entregar, reemplazarlos por puntos reales y verificados.
+   * Antes de entregar, reemplazarlos por
+   * puntos reales y verificados.
    */
   recyclingPoints: RecyclingPoint[] = [
     {
@@ -104,10 +114,14 @@ export class PuntosVerdesPage implements AfterViewInit {
       address: 'Cipolletti, Río Negro',
       latitude: -38.9339,
       longitude: -67.9903,
-      materials: ['plastic', 'glass', 'metal'],
+      materials: [
+        'plastic',
+        'glass',
+        'metal',
+      ],
       schedule: '08:00 a 18:00',
       open: true,
-      distance: null
+      distance: null,
     },
     {
       id: 2,
@@ -115,10 +129,14 @@ export class PuntosVerdesPage implements AfterViewInit {
       address: 'Cipolletti, Río Negro',
       latitude: -38.9232,
       longitude: -67.9957,
-      materials: ['paper', 'cardboard', 'plastic'],
+      materials: [
+        'paper',
+        'cardboard',
+        'plastic',
+      ],
       schedule: '09:00 a 17:00',
       open: true,
-      distance: null
+      distance: null,
     },
     {
       id: 3,
@@ -126,291 +144,459 @@ export class PuntosVerdesPage implements AfterViewInit {
       address: 'Cipolletti, Río Negro',
       latitude: -38.9376,
       longitude: -67.9708,
-      materials: ['glass', 'metal', 'cardboard'],
+      materials: [
+        'glass',
+        'metal',
+        'cardboard',
+      ],
       schedule: 'Lunes a viernes',
       open: false,
-      distance: null
-    }
+      distance: null,
+    },
   ];
 
   filteredPoints: RecyclingPoint[] = [];
 
   constructor(
-    private toastController: ToastController
+    private readonly toastController:
+      ToastController,
   ) {
-    this.filteredPoints = [...this.recyclingPoints];
+    this.filteredPoints = [
+      ...this.recyclingPoints,
+    ];
   }
-  private async showUserMarker(): Promise<void> {
-    if (!this.map) {
-      return;
-    }
 
-    const { AdvancedMarkerElement } =
-      await google.maps.importLibrary(
-        'marker'
-      ) as google.maps.MarkerLibrary;
-
-    // Elimina el marcador anterior
-    if (this.userMarker) {
-      this.userMarker.map = null;
-    }
-
-    const markerContent = document.createElement('div');
-
-    markerContent.style.width = '20px';
-    markerContent.style.height = '20px';
-    markerContent.style.background = '#4285f4';
-    markerContent.style.border = '4px solid #ffffff';
-    markerContent.style.borderRadius = '50%';
-    markerContent.style.boxShadow =
-      '0 2px 8px rgba(0, 0, 0, 0.35)';
-
-    this.userMarker = new AdvancedMarkerElement({
-      map: this.map,
-      position: {
-        lat: this.userPosition.latitude,
-        lng: this.userPosition.longitude
-      },
-      title: 'Tu ubicación',
-      content: markerContent,
-      zIndex: 1000
-    });
-  }
   async ngAfterViewInit(): Promise<void> {
-    await (window as any).googleMapsReady;
-    await this.initializeMap();
+    try {
+      await this.waitForGoogleMaps();
+
+      await this.initializeMap();
+    } catch (error) {
+      console.error(
+        'Error cargando Google Maps:',
+        error,
+      );
+
+      await this.showLocationError(
+        'No se pudo cargar el mapa. ' +
+        'Intentá nuevamente.',
+      );
+    }
   }
-  private async initializeMap(): Promise<void> {
+
+  private async waitForGoogleMaps():
+    Promise<void> {
+
+    const maxAttempts = 100;
+    const delay = 100;
+
+    for (
+      let attempt = 0;
+      attempt < maxAttempts;
+      attempt++
+    ) {
+      if (
+        typeof google !== 'undefined' &&
+        google.maps &&
+        typeof google.maps.importLibrary ===
+        'function'
+      ) {
+        return;
+      }
+
+      await new Promise<void>(
+        (resolve) => {
+          setTimeout(
+            resolve,
+            delay,
+          );
+        },
+      );
+    }
+
+    throw new Error(
+      'Google Maps no terminó de cargar.',
+    );
+  }
+
+  private async initializeMap():
+    Promise<void> {
+
     const { Map } =
       await google.maps.importLibrary(
-        'maps'
+        'maps',
       ) as google.maps.MapsLibrary;
-    this.infoWindow = new google.maps.InfoWindow();
+
+    this.infoWindow =
+      new google.maps.InfoWindow();
+
     this.map = new Map(
       this.mapElement.nativeElement,
       {
         center: {
           lat: this.userPosition.latitude,
-          lng: this.userPosition.longitude
+          lng: this.userPosition.longitude,
         },
         zoom: 13,
         mapId: 'DEMO_MAP_ID',
         disableDefaultUI: true,
-        zoomControl: true
-      }
+        zoomControl: true,
+      },
     );
 
     await this.renderMarkers();
   }
 
-  private async renderMarkers(): Promise<void> {
+  private async showUserMarker():
+    Promise<void> {
+
     if (!this.map) {
       return;
     }
 
-    this.markers.forEach(marker => {
-      marker.map = null;
-    });
+    const {
+      AdvancedMarkerElement,
+    } =
+      await google.maps.importLibrary(
+        'marker',
+      ) as google.maps.MarkerLibrary;
+
+    if (this.userMarker) {
+      this.userMarker.map = null;
+    }
+
+    const markerContent =
+      document.createElement('div');
+
+    markerContent.style.width =
+      '20px';
+
+    markerContent.style.height =
+      '20px';
+
+    markerContent.style.background =
+      '#4285f4';
+
+    markerContent.style.border =
+      '4px solid #ffffff';
+
+    markerContent.style.borderRadius =
+      '50%';
+
+    markerContent.style.boxShadow =
+      '0 2px 8px rgba(0, 0, 0, 0.35)';
+
+    this.userMarker =
+      new AdvancedMarkerElement({
+        map: this.map,
+        position: {
+          lat:
+            this.userPosition.latitude,
+          lng:
+            this.userPosition.longitude,
+        },
+        title: 'Tu ubicación',
+        content: markerContent,
+        zIndex: 1000,
+      });
+  }
+
+  private async renderMarkers():
+    Promise<void> {
+
+    if (!this.map) {
+      return;
+    }
+
+    this.markers.forEach(
+      (marker) => {
+        marker.map = null;
+      },
+    );
 
     this.markers = [];
 
     const {
       AdvancedMarkerElement,
-      PinElement
-    } = await google.maps.importLibrary(
-      'marker'
-    ) as google.maps.MarkerLibrary;
+      PinElement,
+    } =
+      await google.maps.importLibrary(
+        'marker',
+      ) as google.maps.MarkerLibrary;
 
-    this.filteredPoints.forEach(point => {
-      const isSelected =
-        this.selectedPoint?.id === point.id;
+    this.filteredPoints.forEach(
+      (point) => {
 
-      const pin = new PinElement({
-        background: isSelected
-          ? '#c6f45d'
-          : '#25a865',
+        const isSelected =
+          this.selectedPoint?.id ===
+          point.id;
 
-        borderColor: isSelected
-          ? '#147a48'
-          : '#ffffff',
+        const pin =
+          new PinElement({
+            background:
+              isSelected
+                ? '#c6f45d'
+                : '#25a865',
 
-        glyphColor: isSelected
-          ? '#147a48'
-          : '#ffffff',
+            borderColor:
+              isSelected
+                ? '#147a48'
+                : '#ffffff',
 
-        scale: isSelected ? 1.2 : 1.05
-      });
+            glyphColor:
+              isSelected
+                ? '#147a48'
+                : '#ffffff',
 
-      const marker = new AdvancedMarkerElement({
-        map: this.map,
-        position: {
-          lat: point.latitude,
-          lng: point.longitude
-        },
-        title: point.name,
-        content: pin.element,
-        gmpClickable: true,
-        zIndex: isSelected ? 100 : 1
-      });
+            scale:
+              isSelected
+                ? 1.2
+                : 1.05,
+          });
 
-      marker.addEventListener('gmp-click', () => {
-        this.selectPoint(point);
+        const marker =
+          new AdvancedMarkerElement({
+            map: this.map,
 
-        const materials = point.materials
-          .map(material => this.getMaterialLabel(material))
-          .join(', ');
+            position: {
+              lat: point.latitude,
+              lng: point.longitude,
+            },
 
-        this.infoWindow.setContent(`
-    <div style="max-width: 220px; padding: 4px;">
-      <strong style="font-size: 14px;">
-        ${point.name}
-      </strong>
+            title: point.name,
+            content: pin.element,
+            gmpClickable: true,
 
-      <p style="margin: 6px 0; font-size: 11px;">
-        ${point.address}
-      </p>
+            zIndex:
+              isSelected
+                ? 100
+                : 1,
+          });
 
-      <span style="font-size: 10px; color: #147a48;">
-        Recibe: ${materials}
-      </span>
-    </div>
-  `);
+        marker.addEventListener(
+          'gmp-click',
+          () => {
 
-        this.infoWindow.open({
-          map: this.map,
-          anchor: marker
-        });
-      });
+            this.selectPoint(
+              point,
+            );
 
-      this.markers.push(marker);
-    });
+            const materials =
+              point.materials
+                .map(
+                  (material) =>
+                    this.getMaterialLabel(
+                      material,
+                    ),
+                )
+                .join(', ');
+
+            this.infoWindow.setContent(`
+              <div
+                style="
+                  max-width: 220px;
+                  padding: 4px;
+                "
+              >
+                <strong
+                  style="font-size: 14px;"
+                >
+                  ${point.name}
+                </strong>
+
+                <p
+                  style="
+                    margin: 6px 0;
+                    font-size: 11px;
+                  "
+                >
+                  ${point.address}
+                </p>
+
+                <span
+                  style="
+                    font-size: 10px;
+                    color: #147a48;
+                  "
+                >
+                  Recibe: ${materials}
+                </span>
+              </div>
+            `);
+
+            this.infoWindow.open({
+              map: this.map,
+              anchor: marker,
+            });
+          },
+        );
+
+        this.markers.push(
+          marker,
+        );
+      },
+    );
   }
 
- async centerOnUser(): Promise<void> {
-  if (this.loadingLocation) {
-    return;
-  }
+  async centerOnUser():
+    Promise<void> {
 
-  this.loadingLocation = true;
-
-  try {
-    let permissions =
-      await Geolocation.checkPermissions();
-
-    if (
-      permissions.location !== 'granted'
-    ) {
-      permissions =
-        await Geolocation.requestPermissions();
-    }
-
-    if (
-      permissions.location !== 'granted'
-    ) {
-      await this.showLocationError(
-        'Necesitamos acceso a tu ubicación para mostrarte los puntos cercanos.',
-      );
-
+    if (this.loadingLocation) {
       return;
     }
 
-    const position =
-      await Geolocation.getCurrentPosition({
-        enableHighAccuracy: true,
-        timeout: 12000,
-        maximumAge: 30000,
-      });
+    this.loadingLocation = true;
 
-    this.userPosition = {
-      latitude:
-        position.coords.latitude,
-      longitude:
-        position.coords.longitude,
-    };
+    try {
+      let permissions =
+        await Geolocation
+          .checkPermissions();
 
-    this.hasUserLocation = true;
+      if (
+        permissions.location !==
+        'granted'
+      ) {
+        permissions =
+          await Geolocation
+            .requestPermissions();
+      }
 
-    const mapPosition = {
-      lat: this.userPosition.latitude,
-      lng: this.userPosition.longitude,
-    };
+      if (
+        permissions.location !==
+        'granted'
+      ) {
+        await this.showLocationError(
+          'Necesitamos acceso a tu ubicación ' +
+          'para mostrarte los puntos cercanos.',
+        );
 
-    this.map.setCenter(mapPosition);
-    this.map.setZoom(14);
+        return;
+      }
 
-    this.calculateDistances();
+      const position =
+        await Geolocation
+          .getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 12000,
+            maximumAge: 30000,
+          });
 
-    await this.showUserMarker();
-    await this.renderMarkers();
-  } catch (error: unknown) {
-    console.error(
-      'Error obteniendo ubicación:',
-      error,
-    );
+      this.userPosition = {
+        latitude:
+          position.coords.latitude,
 
-    this.hasUserLocation = false;
+        longitude:
+          position.coords.longitude,
+      };
 
-    await this.showLocationError(
-      'No pudimos obtener tu ubicación. Verificá que el GPS esté activado.',
-    );
-  } finally {
-    this.loadingLocation = false;
+      this.hasUserLocation = true;
+
+      const mapPosition = {
+        lat:
+          this.userPosition.latitude,
+
+        lng:
+          this.userPosition.longitude,
+      };
+
+      this.map.setCenter(
+        mapPosition,
+      );
+
+      this.map.setZoom(14);
+
+      this.calculateDistances();
+
+      await this.showUserMarker();
+
+      await this.renderMarkers();
+
+    } catch (error: unknown) {
+      console.error(
+        'Error obteniendo ubicación:',
+        error,
+      );
+
+      this.hasUserLocation = false;
+
+      await this.showLocationError(
+        'No pudimos obtener tu ubicación. ' +
+        'Verificá que el GPS esté activado.',
+      );
+    } finally {
+      this.loadingLocation = false;
+    }
   }
-}
 
   private async showLocationError(
-    message: string
+    message: string,
   ): Promise<void> {
-    const toast = await this.toastController.create({
-      message,
-      duration: 2500,
-      color: 'danger',
-      position: 'bottom'
-    });
+
+    const toast =
+      await this.toastController.create({
+        message,
+        duration: 2500,
+        color: 'danger',
+        position: 'bottom',
+      });
 
     await toast.present();
   }
 
-  selectMaterial(material: MaterialType): void {
-    this.selectedMaterial = material;
+  selectMaterial(
+    material: MaterialType,
+  ): void {
+
+    this.selectedMaterial =
+      material;
+
     this.filterPoints();
   }
 
   filterPoints(): void {
+
     const search =
-      this.searchTerm.trim().toLowerCase();
+      this.searchTerm
+        .trim()
+        .toLowerCase();
 
     this.filteredPoints =
-      this.recyclingPoints.filter((point) => {
-        const matchesText =
-          !search ||
-          point.name
-            .toLowerCase()
-            .includes(search) ||
-          point.address
-            .toLowerCase()
-            .includes(search);
+      this.recyclingPoints.filter(
+        (point) => {
 
-        const matchesMaterial =
-          this.selectedMaterial === 'all' ||
-          point.materials.includes(
-            this.selectedMaterial,
+          const matchesText =
+            !search ||
+            point.name
+              .toLowerCase()
+              .includes(search) ||
+            point.address
+              .toLowerCase()
+              .includes(search);
+
+          const matchesMaterial =
+            this.selectedMaterial ===
+            'all' ||
+            point.materials.includes(
+              this.selectedMaterial,
+            );
+
+          return (
+            matchesText &&
+            matchesMaterial
           );
-
-        return (
-          matchesText &&
-          matchesMaterial
-        );
-      });
+        },
+      );
 
     const selectedStillVisible =
       this.filteredPoints.some(
         (point) =>
-          point.id === this.selectedPoint?.id,
+          point.id ===
+          this.selectedPoint?.id,
       );
 
     if (!selectedStillVisible) {
       this.selectedPoint = null;
+
       this.infoWindow?.close();
     }
 
@@ -419,15 +605,20 @@ export class PuntosVerdesPage implements AfterViewInit {
 
   clearSearch(): void {
     this.searchTerm = '';
+
     this.filterPoints();
   }
 
-  selectPoint(point: RecyclingPoint): void {
-    this.selectedPoint = point;
+  selectPoint(
+    point: RecyclingPoint,
+  ): void {
+
+    this.selectedPoint =
+      point;
 
     this.map.panTo({
       lat: point.latitude,
-      lng: point.longitude
+      lng: point.longitude,
     });
 
     this.map.setZoom(15);
@@ -435,45 +626,68 @@ export class PuntosVerdesPage implements AfterViewInit {
     void this.renderMarkers();
   }
 
-orderByDistance(): void {
-  if (!this.hasUserLocation) {
-    return;
+  orderByDistance(): void {
+
+    if (!this.hasUserLocation) {
+      return;
+    }
+
+    this.filteredPoints = [
+      ...this.filteredPoints,
+    ].sort(
+      (
+        firstPoint,
+        secondPoint,
+      ) =>
+        (
+          firstPoint.distance ??
+          Infinity
+        ) -
+        (
+          secondPoint.distance ??
+          Infinity
+        ),
+    );
   }
 
-  this.filteredPoints = [
-    ...this.filteredPoints,
-  ].sort(
-    (firstPoint, secondPoint) =>
-      (firstPoint.distance ?? Infinity) -
-      (secondPoint.distance ?? Infinity),
-  );
-}
-  private infoWindow!: google.maps.InfoWindow;
-  getMaterialLabel(material: MaterialType): string {
-    const labels: Record<MaterialType, string> = {
+  getMaterialLabel(
+    material: MaterialType,
+  ): string {
+
+    const labels: Record<
+      MaterialType,
+      string
+    > = {
       all: 'Todos',
       plastic: 'Plástico',
       glass: 'Vidrio',
       metal: 'Latas',
       paper: 'Papel',
-      cardboard: 'Cartón'
+      cardboard: 'Cartón',
     };
 
-    return labels[material];
+    return labels[
+      material
+    ];
   }
 
   viewDetails(
     point: RecyclingPoint,
-    event: Event
+    event: Event,
   ): void {
+
     event.stopPropagation();
-    this.selectPoint(point);
+
+    this.selectPoint(
+      point,
+    );
   }
 
   openDirections(
     point: RecyclingPoint,
-    event: Event
+    event: Event,
   ): void {
+
     event.stopPropagation();
 
     const destination =
@@ -481,7 +695,10 @@ orderByDistance(): void {
 
     const url =
       'https://www.google.com/maps/dir/?api=1' +
-      `&destination=${encodeURIComponent(destination)}`;
+      `&destination=${encodeURIComponent(
+        destination,
+      )
+      }`;
 
     window.open(
       url,
@@ -490,45 +707,83 @@ orderByDistance(): void {
     );
   }
 
-  private calculateDistances(): void {
-    this.recyclingPoints.forEach(point => {
-      point.distance = this.getDistanceInKm(
-        this.userPosition.latitude,
-        this.userPosition.longitude,
-        point.latitude,
-        point.longitude
-      );
-    });
+  private calculateDistances():
+    void {
+
+    this.recyclingPoints.forEach(
+      (point) => {
+
+        point.distance =
+          this.getDistanceInKm(
+            this.userPosition.latitude,
+            this.userPosition.longitude,
+            point.latitude,
+            point.longitude,
+          );
+      },
+    );
   }
 
   private getDistanceInKm(
     latitudeOne: number,
     longitudeOne: number,
     latitudeTwo: number,
-    longitudeTwo: number
+    longitudeTwo: number,
   ): number {
+
     const earthRadius = 6371;
 
     const latitudeDifference =
-      this.toRadians(latitudeTwo - latitudeOne);
+      this.toRadians(
+        latitudeTwo -
+        latitudeOne,
+      );
 
     const longitudeDifference =
-      this.toRadians(longitudeTwo - longitudeOne);
+      this.toRadians(
+        longitudeTwo -
+        longitudeOne,
+      );
 
     const calculation =
-      Math.sin(latitudeDifference / 2) ** 2 +
-      Math.cos(this.toRadians(latitudeOne)) *
-      Math.cos(this.toRadians(latitudeTwo)) *
-      Math.sin(longitudeDifference / 2) ** 2;
+      Math.sin(
+        latitudeDifference / 2,
+      ) ** 2 +
+      Math.cos(
+        this.toRadians(
+          latitudeOne,
+        ),
+      ) *
+      Math.cos(
+        this.toRadians(
+          latitudeTwo,
+        ),
+      ) *
+      Math.sin(
+        longitudeDifference / 2,
+      ) ** 2;
 
-    return earthRadius * 2 *
+    return (
+      earthRadius *
+      2 *
       Math.atan2(
-        Math.sqrt(calculation),
-        Math.sqrt(1 - calculation)
-      );
+        Math.sqrt(
+          calculation,
+        ),
+        Math.sqrt(
+          1 - calculation,
+        ),
+      )
+    );
   }
 
-  private toRadians(value: number): number {
-    return value * Math.PI / 180;
+  private toRadians(
+    value: number,
+  ): number {
+    return (
+      value *
+      Math.PI /
+      180
+    );
   }
 }
