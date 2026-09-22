@@ -1,20 +1,22 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  OnInit,
+} from '@angular/core';
 
 import {
   ScanUiService,
 } from '../scan/services/scan-ui.service';
 
-interface WasteCategory {
-  name: string;
-  icon: string;
-  color: string;
-  background: string;
-}
+import {
+  RecyclingStatus,
+  WasteCategory,
+} from '../scan/services/scan.service';
 
-type RecyclingStatus =
-  | 'apto'
-  | 'desconocido'
-  | 'no_apto';
+import {
+  HistorialItem,
+  HistorialService,
+} from '../historial/historial.service';
+import { AuthService } from '../auth/auth.service';
 
 interface ScanResult {
   name: string;
@@ -31,60 +33,120 @@ interface ScanResult {
   styleUrls: ['./home.page.scss'],
   standalone: false,
 })
-export class HomePage {
+export class HomePage implements OnInit {
 
-  totalScans = 12;
-  recyclableWaste = 9;
+  totalScans = 0;
 
-  lastScan: ScanResult | null = {
-    name: 'Botella de plástico',
-    category: 'Plástico PET',
-    confidence: 94,
-    recyclable: true,
-    estado: 'apto',
-    icon: 'water-outline',
-  };
+  recyclableWaste = 0;
 
-  categories: WasteCategory[] = [
-    {
-      name: 'Plástico',
-      icon: 'water-outline',
-      color: '#2778c4',
-      background: '#e8f2fb',
-    },
-    {
-      name: 'Vidrio',
-      icon: 'wine-outline',
-      color: '#25a865',
-      background: '#e8f7ee',
-    },
-    {
-      name: 'Latas',
-      icon: 'beaker-outline',
-      color: '#767f85',
-      background: '#edf0f2',
-    },
-    {
-      name: 'Papel',
-      icon: 'document-outline',
-      color: '#d19a29',
-      background: '#fff5db',
-    },
-    {
-      name: 'Cartón',
-      icon: 'cube-outline',
-      color: '#a96d35',
-      background: '#f7eadf',
-    },
-  ];
+  lastScan: ScanResult | null = null;
 
   constructor(
     private readonly scanUiService:
       ScanUiService,
-  ) {}
+
+    private readonly historialService:
+      HistorialService,
+    private readonly authService:
+      AuthService,
+  ) { }
+
+  ngOnInit(): void {
+    this.loadActivity();
+    const user =
+      this.authService.getUser();
+
+    if (user) {
+      this.userName =
+        user.nombre;
+
+      this.userInitials =
+        `${user.nombre.charAt(0)}${user.apellido.charAt(0)}`
+          .toUpperCase();
+    }
+  }
+
+  private loadActivity(): void {
+    this.historialService
+      .findAll()
+      .subscribe({
+        next: (
+          history: HistorialItem[],
+        ) => {
+          console.log(
+            'Historial recibido en Home:',
+            history,
+          );
+
+          this.totalScans =
+            history.length;
+
+          this.recyclableWaste =
+            history.filter(
+              (scan) =>
+                scan.reciclable,
+            ).length;
+
+          if (
+            history.length === 0
+          ) {
+            this.lastScan = null;
+
+            return;
+          }
+
+          const lastScan =
+            history[0];
+
+          this.lastScan = {
+            name:
+              lastScan.objeto,
+
+            category:
+              lastScan.material,
+
+            confidence:
+              lastScan.confianza,
+
+            recyclable:
+              lastScan.reciclable,
+
+            estado:
+              lastScan.estado,
+
+            icon:
+              this.getCategoryIcon(
+                lastScan.categoria,
+              ),
+          };
+
+          console.log(
+            'Último escaneo:',
+            this.lastScan,
+          );
+        },
+
+        error: (
+          error: unknown,
+        ) => {
+          console.error(
+            'Error cargando actividad:',
+            error,
+          );
+
+          this.totalScans = 0;
+
+          this.recyclableWaste = 0;
+
+          this.lastScan = null;
+        },
+      });
+  }
 
   get recyclablePercentage(): number {
-    if (!this.totalScans) {
+    if (
+      this.totalScans === 0
+    ) {
       return 0;
     }
 
@@ -103,14 +165,53 @@ export class HomePage {
       RecyclingStatus,
       string
     > = {
-      apto: 'Apto',
-      desconocido: 'Desconocido',
-      no_apto: 'No apto',
+      apto:
+        'Apto',
+
+      no_apto:
+        'No apto',
+
+      desconocido:
+        'Desconocido',
     };
 
-    return names[status];
+    return names[
+      status
+    ];
   }
 
+  private getCategoryIcon(
+    category: WasteCategory,
+  ): string {
+    const icons: Record<
+      WasteCategory,
+      string
+    > = {
+      plastico:
+        'water-outline',
+
+      lata:
+        'beaker-outline',
+
+      vidrio:
+        'wine-outline',
+
+      papel:
+        'document-outline',
+
+      carton:
+        'cube-outline',
+
+      desconocido:
+        'help-circle-outline',
+    };
+
+    return icons[
+      category
+    ];
+  }
+  userName = '';
+  userInitials = '';
   openScanOptions(): void {
     this.scanUiService.open();
   }

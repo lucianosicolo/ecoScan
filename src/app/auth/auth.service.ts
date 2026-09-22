@@ -1,4 +1,6 @@
-import { Injectable } from '@angular/core';
+import {
+  Injectable,
+} from '@angular/core';
 
 import {
   HttpClient,
@@ -9,16 +11,20 @@ import {
 } from 'rxjs';
 
 export interface RegisterRequest {
-  name: string;
+  nombre: string;
+  apellido: string;
   email: string;
   password: string;
+  ciudad?: string;
 }
 
 export interface AuthUser {
   id: number;
-  name: string;
+  nombre: string;
+  apellido: string;
   email: string;
-  city?: string | null;
+  ciudad: string | null;
+  createdAt: string;
 }
 
 export interface AuthResponse {
@@ -30,16 +36,19 @@ export interface AuthResponse {
   providedIn: 'root',
 })
 export class AuthService {
+
   private readonly apiUrl =
     'http://localhost:3000/auth';
 
   constructor(
-    private readonly http: HttpClient,
+    private readonly http:
+      HttpClient,
   ) {}
 
   register(
     request: RegisterRequest,
   ): Observable<AuthResponse> {
+
     return this.http.post<AuthResponse>(
       `${this.apiUrl}/register`,
       request,
@@ -50,6 +59,7 @@ export class AuthService {
     email: string,
     password: string,
   ): Observable<AuthResponse> {
+
     return this.http.post<AuthResponse>(
       `${this.apiUrl}/login`,
       {
@@ -62,6 +72,7 @@ export class AuthService {
   saveSession(
     response: AuthResponse,
   ): void {
+
     localStorage.setItem(
       'ecoScan-token',
       response.accessToken,
@@ -69,19 +80,27 @@ export class AuthService {
 
     localStorage.setItem(
       'ecoScan-user',
-      JSON.stringify(response.user),
+      JSON.stringify(
+        response.user,
+      ),
     );
   }
 
-  getToken(): string | null {
+  getToken():
+    string | null {
+
     return localStorage.getItem(
       'ecoScan-token',
     );
   }
 
-  getUser(): AuthUser | null {
+  getUser():
+    AuthUser | null {
+
     const storedUser =
-      localStorage.getItem('ecoScan-user');
+      localStorage.getItem(
+        'ecoScan-user',
+      );
 
     if (!storedUser) {
       return null;
@@ -97,6 +116,7 @@ export class AuthService {
   }
 
   logout(): void {
+
     localStorage.removeItem(
       'ecoScan-token',
     );
@@ -104,9 +124,16 @@ export class AuthService {
     localStorage.removeItem(
       'ecoScan-user',
     );
+
+    localStorage.removeItem(
+      'ecoScan-session',
+    );
   }
 
   isAuthenticated(): boolean {
-    return Boolean(this.getToken());
+
+    return Boolean(
+      this.getToken(),
+    );
   }
 }

@@ -4,6 +4,7 @@ import {
   RouterModule,
   Routes
 } from '@angular/router';
+import { AuthGuard } from './auth/guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -23,9 +24,19 @@ const routes: Routes = [
   },
   {
     path: 'app',
+
+    canActivate: [
+      AuthGuard,
+    ],
+
     loadChildren: () =>
-      import('./layout/layout.module')
-        .then(m => m.LayoutPageModule)
+      import(
+        './layout/layout.module'
+      )
+        .then(
+          m =>
+            m.LayoutPageModule,
+        ),
   },
   {
     path: '',
@@ -36,7 +47,7 @@ const routes: Routes = [
     path: '**',
     redirectTo: 'login'
   },
- 
+
 
 
 

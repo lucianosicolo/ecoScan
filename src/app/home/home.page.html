@@ -3,221 +3,285 @@
   <!-- Bienvenida -->
   <section class="welcome-section">
     <div>
-      <p class="welcome-label">TU ESPACIO ECOLÓGICO</p>
-      <h1>¡Hola, Luciano! 👋</h1>
-      <p>¿Qué residuo querés identificar hoy?</p>
+      <p class="welcome-label">
+        TU ESPACIO ECOLÓGICO
+      </p>
+
+      <h1>
+        ¡Hola, {{ userName }}! 👋
+      </h1>
+
+      <p>
+        ¿Qué residuo querés identificar hoy?
+      </p>
     </div>
 
-    <button
-      type="button"
-      class="profile-avatar"
-      routerLink="/app/perfil"
-      aria-label="Abrir perfil"
-    >
-      LS
+    <button type="button" class="profile-avatar" routerLink="/app/perfil" aria-label="Abrir perfil">
+      {{ userInitials }}
     </button>
   </section>
 
+
   <!-- Acción principal -->
   <section class="scanner-card">
-    <div class="scanner-decoration scanner-decoration-one"></div>
-    <div class="scanner-decoration scanner-decoration-two"></div>
+
+    <div class="
+        scanner-decoration
+        scanner-decoration-one
+      "></div>
+
+    <div class="
+        scanner-decoration
+        scanner-decoration-two
+      "></div>
 
     <div class="scanner-content">
+
       <div class="scanner-badge">
         <ion-icon name="sparkles-outline"></ion-icon>
-        <span>Reconocimiento con IA</span>
+
+        <span>
+          Reconocimiento con IA
+        </span>
       </div>
 
-      <h2>Identificá tus residuos</h2>
+      <h2>
+        Identificá tus residuos
+      </h2>
 
       <p>
-        Sacá una foto y descubrí su material, si es reciclable
-        y cómo tenés que prepararlo.
+        Sacá una foto y descubrí su material,
+        si es reciclable y cómo tenés que
+        prepararlo.
       </p>
 
-      <button
-        type="button"
-        class="scan-main-button"
-        (click)="openScanOptions()"
-      >
+      <button type="button" class="scan-main-button" (click)="openScanOptions()">
         <div class="scan-icon">
           <ion-icon name="scan-outline"></ion-icon>
         </div>
 
-        <span>Escanear residuo</span>
+        <span>
+          Escanear residuo
+        </span>
 
-        <ion-icon
-          class="arrow-icon"
-          name="arrow-forward-outline"
-        ></ion-icon>
+        <ion-icon class="arrow-icon" name="arrow-forward-outline"></ion-icon>
       </button>
+
     </div>
 
     <div class="scanner-illustration">
       <ion-icon name="leaf-outline"></ion-icon>
     </div>
+
   </section>
+
 
   <!-- Resumen -->
   <section class="impact-section">
+
     <div class="section-heading">
+
       <div>
-        <span class="section-label">TU ACTIVIDAD</span>
-        <h2>Resumen de actividad</h2>
+        <span class="section-label">
+          TU ACTIVIDAD
+        </span>
+
+        <h2>
+          Resumen de actividad
+        </h2>
       </div>
 
-      <button
-        type="button"
-        class="text-button"
-        routerLink="/app/historial"
-      >
+      <button type="button" class="text-button" routerLink="/app/historial">
         Ver historial
       </button>
+
     </div>
+
 
     <div class="stats-grid">
 
+      <!-- Total -->
       <article class="stat-card">
+
         <div class="stat-icon green-icon">
           <ion-icon name="scan-outline"></ion-icon>
         </div>
 
         <div>
-          <strong>{{ totalScans }}</strong>
-          <span>Escaneados</span>
+          <strong>
+            {{ totalScans }}
+          </strong>
+
+          <span>
+            Escaneados
+          </span>
         </div>
+
       </article>
 
+
+      <!-- Reciclables -->
       <article class="stat-card">
+
         <div class="stat-icon lime-icon">
           <ion-icon name="checkmark-circle-outline"></ion-icon>
         </div>
 
         <div>
-          <strong>{{ recyclableWaste }}</strong>
-          <span>Reciclables</span>
+          <strong>
+            {{ recyclableWaste }}
+          </strong>
+
+          <span>
+            Reciclables
+          </span>
         </div>
+
       </article>
 
+
+      <!-- Porcentaje -->
       <article class="stat-card">
+
         <div class="stat-icon blue-icon">
           <ion-icon name="leaf-outline"></ion-icon>
         </div>
 
         <div>
-          <strong>{{ recyclablePercentage }}%</strong>
-          <span>Aptos</span>
+          <strong>
+            {{ recyclablePercentage }}%
+          </strong>
+
+          <span>
+            Aptos
+          </span>
         </div>
+
       </article>
 
     </div>
+
   </section>
+
 
   <!-- Último análisis -->
   <section class="recent-section">
+
     <div class="section-heading">
+
       <div>
-        <span class="section-label">ACTIVIDAD RECIENTE</span>
-        <h2>Última clasificación</h2>
+        <span class="section-label">
+          ACTIVIDAD RECIENTE
+        </span>
+
+        <h2>
+          Última clasificación
+        </h2>
       </div>
+
     </div>
 
-    <button
-      *ngIf="lastScan"
-      type="button"
-      class="recent-card"
-      routerLink="/app/resultado"
-    >
+
+    <!-- Último escaneo real -->
+    <div *ngIf="lastScan" class="recent-card">
+
       <div class="waste-thumbnail">
         <ion-icon [name]="lastScan.icon"></ion-icon>
       </div>
 
-      <div class="recent-information">
-        <div class="recent-title">
-          <strong>{{ lastScan.name }}</strong>
 
-          <span
-            class="status-badge"
-            [class.not-recyclable]="!lastScan.recyclable"
-          >
-           {{ getStatusName(lastScan.estado) }}
+      <div class="recent-information">
+
+        <div class="recent-title">
+
+          <strong>
+            {{ lastScan.name }}
+          </strong>
+
+          <span class="status-badge" [class.not-recyclable]="
+              !lastScan.recyclable
+            ">
+            {{
+            getStatusName(
+            lastScan.estado
+            )
+            }}
           </span>
+
         </div>
 
-        <p>{{ lastScan.category }}</p>
+
+        <p>
+          {{ lastScan.category }}
+        </p>
+
 
         <div class="confidence">
+
           <div class="confidence-header">
-            <span>Confianza del análisis</span>
-            <strong>{{ lastScan.confidence }}%</strong>
+
+            <span>
+              Confianza del análisis
+            </span>
+
+            <strong>
+              {{ lastScan.confidence }}%
+            </strong>
+
           </div>
 
           <div class="progress-track">
-            <div
-              class="progress-value"
-              [style.width.%]="lastScan.confidence"
-            ></div>
+
+            <div class="progress-value" [style.width.%]="
+                lastScan.confidence
+              "></div>
+
           </div>
+
         </div>
+
       </div>
 
-      <ion-icon
-        class="recent-arrow"
-        name="chevron-forward-outline"
-      ></ion-icon>
-    </button>
+    </div>
 
+
+    <!-- Sin escaneos -->
     <div *ngIf="!lastScan" class="empty-state">
       <ion-icon name="scan-outline"></ion-icon>
-      <strong>Todavía no realizaste escaneos</strong>
-      <p>Tu última clasificación aparecerá acá.</p>
+
+      <strong>
+        Todavía no realizaste escaneos
+      </strong>
+
+      <p>
+        Tu última clasificación
+        aparecerá acá.
+      </p>
     </div>
+
   </section>
 
-  <!-- Categorías -->
-  <section class="categories-section">
-    <div class="section-heading">
-      <div>
-        <span class="section-label">GUÍA RÁPIDA</span>
-        <h2>¿Qué podés identificar?</h2>
-      </div>
-    </div>
-
-    <div class="categories-list">
-
-      <article
-        *ngFor="let category of categories"
-        class="category-item"
-      >
-        <div
-          class="category-icon"
-          [style.background]="category.background"
-          [style.color]="category.color"
-        >
-          <ion-icon [name]="category.icon"></ion-icon>
-        </div>
-
-        <span>{{ category.name }}</span>
-      </article>
-
-    </div>
-  </section>
 
   <!-- Consejo -->
   <section class="eco-tip">
+
     <div class="tip-icon">
       <ion-icon name="bulb-outline"></ion-icon>
     </div>
 
     <div>
-      <span>CONSEJO DEL DÍA</span>
+      <span>
+        CONSEJO DEL DÍA
+      </span>
 
       <p>
-        Enjuagá los envases antes de separarlos. No es necesario
-        que queden perfectos, pero sí vacíos y sin restos.
+        Enjuagá los envases antes de
+        separarlos. No es necesario que
+        queden perfectos, pero sí vacíos
+        y sin restos.
       </p>
     </div>
+
   </section>
 
 </main>
