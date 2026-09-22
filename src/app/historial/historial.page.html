@@ -1,153 +1,156 @@
-  <main class="history-container">
-    <section class="history-heading">
-      <div>
-        <span class="eyebrow">
-          Tu actividad
-        </span>
+<main class="history-container">
+  <section class="history-heading">
+    <div>
+      <span class="eyebrow">
+        Tu actividad
+      </span>
 
-        <h1>Historial de escaneos</h1>
+      <h1>Historial de escaneos</h1>
 
-        <p>
-          Revisá los residuos identificados anteriormente.
-        </p>
+      <p>
+        Revisá los residuos identificados anteriormente.
+      </p>
+    </div>
+
+    <button *ngIf="history.length > 0" type="button" class="clear-button" aria-label="Vaciar historial"
+      (click)="confirmClearHistory()">
+      <ion-icon name="trash-outline"></ion-icon>
+    </button>
+  </section>
+
+  <!-- Resumen -->
+
+  <section *ngIf="history.length > 0" class="summary-grid">
+    <article class="summary-card">
+      <div class="summary-icon">
+        <ion-icon name="scan-outline"></ion-icon>
       </div>
 
-      <button *ngIf="history.length > 0" type="button" class="clear-button" aria-label="Vaciar historial"
-        (click)="confirmClearHistory()">
-        <ion-icon name="trash-outline"></ion-icon>
-      </button>
-    </section>
+      <strong>{{ history.length }}</strong>
+      <span>Escaneos</span>
+    </article>
 
-    <!-- Resumen -->
+    <article class="summary-card">
+      <div class="summary-icon">
+        <ion-icon name="leaf-outline"></ion-icon>
+      </div>
 
-    <section *ngIf="history.length > 0" class="summary-grid">
-      <article class="summary-card">
-        <div class="summary-icon">
-          <ion-icon name="scan-outline"></ion-icon>
-        </div>
+      <strong>{{ recyclableCount }}</strong>
+      <span>Reciclables</span>
+    </article>
 
-        <strong>{{ history.length }}</strong>
-        <span>Escaneos</span>
-      </article>
+    <article class="summary-card">
+      <div class="summary-icon">
+        <ion-icon name="analytics-outline"></ion-icon>
+      </div>
 
-      <article class="summary-card">
-        <div class="summary-icon">
-          <ion-icon name="leaf-outline"></ion-icon>
-        </div>
+      <strong>{{ averageConfidence }}%</strong>
+      <span>Confianza</span>
+    </article>
+  </section>
 
-        <strong>{{ recyclableCount }}</strong>
-        <span>Reciclables</span>
-      </article>
+  <!-- Filtros -->
 
-      <article class="summary-card">
-        <div class="summary-icon">
-          <ion-icon name="analytics-outline"></ion-icon>
-        </div>
-
-        <strong>{{ averageConfidence }}%</strong>
-        <span>Confianza</span>
-      </article>
-    </section>
-
-    <!-- Filtros -->
-
-    <nav *ngIf="history.length > 0" class="filter-scroll" aria-label="Filtrar por categoría">
-      <button *ngFor="let filter of filters" type="button" class="filter-chip" [class.active]="
+  <nav *ngIf="history.length > 0" class="filter-scroll" aria-label="Filtrar por categoría">
+    <button *ngFor="let filter of filters" type="button" class="filter-chip" [class.active]="
           selectedFilter === filter.value
         " (click)="selectFilter(filter.value)">
-        {{ filter.label }}
-      </button>
-    </nav>
+      {{ filter.label }}
+    </button>
+  </nav>
 
-    <!-- Historial -->
+  <!-- Historial -->
 
-    <section *ngIf="filteredHistory.length > 0" class="history-list">
-      <article *ngFor="
+  <section *ngIf="filteredHistory.length > 0" class="history-list">
+    <article *ngFor="
           let scan of filteredHistory;
           trackBy: trackById
         " class="history-card" tabindex="0" (click)="openDetail(scan)" (keyup.enter)="openDetail(scan)">
-        <div class="category-visual">
-          <ion-icon [name]="getCategoryIcon(scan.categoria)"></ion-icon>
+      <div class="category-visual">
+
+        <img *ngIf="scan.imagenUrl" [src]="getImageUrl(scan.imagenUrl)" [alt]="scan.objeto" />
+
+        <ion-icon *ngIf="!scan.imagenUrl" [name]="getCategoryIcon(scan.categoria)"></ion-icon>
+
+      </div>
+      <div class="history-information">
+        <div class="history-card-heading">
+          <h2>{{ scan.objeto }}</h2>
+
+          <span class="confidence-badge">
+            {{ scan.confianza }}%
+          </span>
         </div>
 
-        <div class="history-information">
-          <div class="history-card-heading">
-            <h2>{{ scan.objeto }}</h2>
+        <p>
+          {{ getCategoryName(scan.categoria) }}
+          <span>·</span>
+          {{ scan.material }}
+        </p>
 
-            <span class="confidence-badge">
-              {{ scan.confianza }}%
-            </span>
-          </div>
+        <div class="history-meta">
+          <span>
+            <ion-icon name="time-outline"></ion-icon>
 
-          <p>
-            {{ getCategoryName(scan.categoria) }}
-            <span>·</span>
-            {{ scan.material }}
-          </p>
+            {{ formatDate(scan.createdAt) }}
+          </span>
 
-          <div class="history-meta">
-            <span>
-              <ion-icon name="time-outline"></ion-icon>
+          <span class="status-badge" [ngClass]="getStatusClass(scan.estado)">
+            <ion-icon [name]="getStatusIcon(scan.estado)"></ion-icon>
 
-              {{ formatDate(scan.createdAt) }}
-            </span>
-
-            <span class="status-badge" [ngClass]="getStatusClass(scan.estado)">
-              <ion-icon [name]="getStatusIcon(scan.estado)"></ion-icon>
-
-              {{ getStatusName(scan.estado) }}
-            </span>
-          </div>
+            {{ getStatusName(scan.estado) }}
+          </span>
         </div>
+      </div>
 
-        <button type="button" class="delete-button" aria-label="Eliminar escaneo" (click)="confirmDelete(scan, $event)">
-          <ion-icon name="trash-outline"></ion-icon>
-        </button>
-      </article>
-    </section>
+      <button type="button" class="delete-button" aria-label="Eliminar escaneo" (click)="confirmDelete(scan, $event)">
+        <ion-icon name="trash-outline"></ion-icon>
+      </button>
+    </article>
+  </section>
 
-    <!-- Filtro sin resultados -->
+  <!-- Filtro sin resultados -->
 
-    <section *ngIf="
+  <section *ngIf="
         history.length > 0 &&
         filteredHistory.length === 0
       " class="empty-state compact">
-      <div class="empty-icon small">
-        <ion-icon name="filter-outline"></ion-icon>
+    <div class="empty-icon small">
+      <ion-icon name="filter-outline"></ion-icon>
+    </div>
+
+    <h2>No hay resultados</h2>
+
+    <p>
+      Todavía no hay escaneos de esta categoría.
+    </p>
+  </section>
+
+  <!-- Historial vacío -->
+
+  <section *ngIf="history.length === 0" class="empty-state">
+    <div class="empty-illustration">
+      <div class="empty-icon">
+        <ion-icon name="scan-outline"></ion-icon>
       </div>
 
-      <h2>No hay resultados</h2>
-
-      <p>
-        Todavía no hay escaneos de esta categoría.
-      </p>
-    </section>
-
-    <!-- Historial vacío -->
-
-    <section *ngIf="history.length === 0" class="empty-state">
-      <div class="empty-illustration">
-        <div class="empty-icon">
-          <ion-icon name="scan-outline"></ion-icon>
-        </div>
-
-        <span class="empty-leaf">
-          <ion-icon name="leaf"></ion-icon>
-        </span>
-      </div>
-
-      <span class="empty-eyebrow">
-        Empezá a escanear
+      <span class="empty-leaf">
+        <ion-icon name="leaf"></ion-icon>
       </span>
+    </div>
 
-      <h2>Tu historial está vacío</h2>
+    <span class="empty-eyebrow">
+      Empezá a escanear
+    </span>
 
-      <p>
-        Los residuos identificados por EcoScan
-        aparecerán automáticamente acá.
-      </p>
-    </section>
-  </main>
+    <h2>Tu historial está vacío</h2>
+
+    <p>
+      Los residuos identificados por EcoScan
+      aparecerán automáticamente acá.
+    </p>
+  </section>
+</main>
 
 <!-- Modal de detalle -->
 
@@ -159,9 +162,25 @@
           <ion-icon name="close-outline"></ion-icon>
         </button>
 
-        <div class="detail-main-icon">
-          <ion-icon [name]="getCategoryIcon(scan.categoria)"></ion-icon>
-        </div>
+        <div
+  class="detail-main-visual"
+  [class.has-image]="scan.imagenUrl"
+  [class.clickable]="scan.imagenUrl"
+  (click)="openImageViewer(scan)"
+>
+
+  <img
+    *ngIf="scan.imagenUrl"
+    [src]="getImageUrl(scan.imagenUrl)"
+    [alt]="scan.objeto"
+  />
+
+  <ion-icon
+    *ngIf="!scan.imagenUrl"
+    [name]="getCategoryIcon(scan.categoria)"
+  ></ion-icon>
+
+</div>
 
         <span class="detail-eyebrow">
           Escaneo guardado
@@ -221,34 +240,61 @@
             <p>{{ instruction }}</p>
           </div>
         </section>
-<section
-  *ngIf="scan.estado === 'no_apto'"
-  class="not-suitable-card"
->
-  <div class="not-suitable-heading">
-    <ion-icon name="alert-circle-outline"></ion-icon>
+        <section *ngIf="scan.estado === 'no_apto'" class="not-suitable-card">
+          <div class="not-suitable-heading">
+            <ion-icon name="alert-circle-outline"></ion-icon>
 
-    <h3>¿Por qué no es apto?</h3>
-  </div>
+            <h3>¿Por qué no es apto?</h3>
+          </div>
 
-  <p>
-    {{ scan.observacion }}
-  </p>
+          <p>
+            {{ scan.observacion }}
+          </p>
 
-  <div class="not-suitable-notice">
-    <ion-icon name="information-circle-outline"></ion-icon>
+          <div class="not-suitable-notice">
+            <ion-icon name="information-circle-outline"></ion-icon>
 
-    <span>
-      No lo lleves al punto verde junto con los
-      materiales reciclables.
-    </span>
-  </div>
-</section>
+            <span>
+              No lo lleves al punto verde junto con los
+              materiales reciclables.
+            </span>
+          </div>
+        </section>
         <button type="button" class="detail-finish" (click)="closeDetail()">
           <ion-icon name="checkmark-outline"></ion-icon>
           Listo
         </button>
       </div>
     </ion-content>
+  </ng-template>
+</ion-modal>
+<ion-modal
+  [isOpen]="imageViewerOpen"
+  cssClass="image-viewer-modal"
+  (didDismiss)="closeImageViewer()"
+>
+  <ng-template>
+
+    <div class="image-viewer">
+
+      <button
+        type="button"
+        class="image-viewer-close"
+        aria-label="Cerrar imagen"
+        (click)="closeImageViewer()"
+      >
+        <ion-icon
+          name="close-outline"
+        ></ion-icon>
+      </button>
+
+      <img
+        *ngIf="imageViewerUrl"
+        [src]="imageViewerUrl"
+        alt="Imagen del residuo escaneado"
+      />
+
+    </div>
+
   </ng-template>
 </ion-modal>

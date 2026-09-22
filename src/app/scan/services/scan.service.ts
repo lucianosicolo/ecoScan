@@ -19,6 +19,7 @@ export interface ScanResult {
   confianza: number;
   preparacion: string[];
   observacion: string;
+  imagenUrl?: string;
 }
 export type RecyclingStatus =
   | 'apto'

@@ -336,20 +336,26 @@
             ></ion-icon>
           </button>
 
-          <div
-            class="result-icon"
-            [class.unknown]="
-              result.categoria === 'desconocido'
-            "
-          >
-            <ion-icon
-              [name]="
-                getResultIcon(
-                  result.categoria
-                )
-              "
-            ></ion-icon>
-          </div>
+        <div
+  class="result-visual"
+  [class.has-image]="result.imagenUrl"
+  [class.unknown]="
+    result.categoria === 'desconocido'
+  "
+>
+
+  <img
+    *ngIf="result.imagenUrl"
+    [src]="getScanImageUrl(result.imagenUrl)"
+    [alt]="result.objeto"
+  />
+
+  <ion-icon
+    *ngIf="!result.imagenUrl"
+    [name]="getResultIcon(result.categoria)"
+  ></ion-icon>
+
+</div>
 
           <span class="result-label">
             Análisis completado
@@ -367,32 +373,74 @@
 
 
         <!-- Confianza -->
-        <section class="confidence-card">
+      <section
+  class="confidence-card"
+  [ngClass]="
+    getConfidenceClass(
+      result.confianza
+    )
+  "
+>
 
-          <div class="confidence-heading">
+  <div class="confidence-heading">
 
-            <span>
-              Confianza visual
-            </span>
+    <div>
+      <span>
+        Confianza visual
+      </span>
 
-            <strong>
-              {{ result.confianza }}%
-            </strong>
+      <small>
+        {{
+          getConfidenceLabel(
+            result.confianza
+          )
+        }}
+      </small>
+    </div>
 
-          </div>
+    <strong>
+      {{ result.confianza }}%
+    </strong>
 
-          <div class="confidence-track">
+  </div>
 
-            <div
-              class="confidence-progress"
-              [style.width.%]="
-                result.confianza
-              "
-            ></div>
+  <div class="confidence-track">
 
-          </div>
+    <div
+      class="confidence-progress"
+      [style.width.%]="
+        result.confianza
+      "
+    ></div>
 
-        </section>
+  </div>
+
+  <div
+    *ngIf="
+      result.confianza < 60
+    "
+    class="confidence-warning"
+  >
+
+    <ion-icon
+      name="camera-outline"
+    ></ion-icon>
+
+    <p>
+      La identificación tiene baja
+      confianza. Probá sacar otra foto
+      con mejor iluminación y el residuo
+      más centrado.
+    </p>
+
+  </div>
+
+  <p class="confidence-note">
+    El porcentaje es una referencia
+    orientativa del análisis visual.
+  </p>
+
+</section>
 
 
         <!-- Información -->

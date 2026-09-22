@@ -39,8 +39,7 @@ interface FilterOption {
   ],
   standalone: false,
 })
-export class HistorialPage
-  implements OnInit {
+export class HistorialPage {
 
   selectedFilter:
     HistoryFilter = 'todos';
@@ -95,11 +94,14 @@ export class HistorialPage
 
     private readonly historialService:
       HistorialService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadHistory();
   }
+ionViewWillEnter(): void {
+  this.loadHistory();
+}
 
   loadHistory(): void {
     this.loading = true;
@@ -417,15 +419,15 @@ export class HistorialPage
         RecyclingStatus,
         string
       > = {
-        apto:
-          'Apto',
+      apto:
+        'Apto',
 
-        no_apto:
-          'No apto',
+      no_apto:
+        'No apto',
 
-        desconocido:
-          'Desconocido',
-      };
+      desconocido:
+        'Desconocido',
+    };
 
     return names[
       status
@@ -441,21 +443,50 @@ export class HistorialPage
         RecyclingStatus,
         string
       > = {
-        apto:
-          'checkmark-circle',
+      apto:
+        'checkmark-circle',
 
-        no_apto:
-          'close-circle',
+      no_apto:
+        'close-circle',
 
-        desconocido:
-          'help-circle',
-      };
+      desconocido:
+        'help-circle',
+    };
 
     return icons[
       status
     ];
   }
+imageViewerOpen = false;
 
+imageViewerUrl: string | null = null;
+openImageViewer(
+  scan: HistorialItem,
+): void {
+
+  if (!scan.imagenUrl) {
+    return;
+  }
+
+  this.imageViewerUrl =
+    this.getImageUrl(
+      scan.imagenUrl,
+    );
+
+  this.imageViewerOpen = true;
+}
+
+closeImageViewer(): void {
+
+  this.imageViewerOpen = false;
+
+  setTimeout(
+    () => {
+      this.imageViewerUrl = null;
+    },
+    200,
+  );
+}
   getStatusClass(
     status: RecyclingStatus,
   ): string {
@@ -474,30 +505,41 @@ export class HistorialPage
         WasteCategory,
         string
       > = {
-        plastico:
-          'Plástico',
+      plastico:
+        'Plástico',
 
-        lata:
-          'Lata',
+      lata:
+        'Lata',
 
-        vidrio:
-          'Vidrio',
+      vidrio:
+        'Vidrio',
 
-        papel:
-          'Papel',
+      papel:
+        'Papel',
 
-        carton:
-          'Cartón',
+      carton:
+        'Cartón',
 
-        desconocido:
-          'Desconocido',
-      };
+      desconocido:
+        'Desconocido',
+    };
 
     return names[
       category
     ];
   }
+  getImageUrl(
+    imagenUrl: string | null,
+  ): string | null {
 
+    if (!imagenUrl) {
+      return null;
+    }
+
+    return (
+      `http://localhost:3000${imagenUrl}`
+    );
+  }
   getCategoryIcon(
     category: WasteCategory,
   ): string {
@@ -507,24 +549,24 @@ export class HistorialPage
         WasteCategory,
         string
       > = {
-        plastico:
-          'water-outline',
+      plastico:
+        'water-outline',
 
-        lata:
-          'beaker-outline',
+      lata:
+        'beaker-outline',
 
-        vidrio:
-          'wine-outline',
+      vidrio:
+        'wine-outline',
 
-        papel:
-          'document-text-outline',
+      papel:
+        'document-text-outline',
 
-        carton:
-          'cube-outline',
+      carton:
+        'cube-outline',
 
-        desconocido:
-          'help-circle-outline',
-      };
+      desconocido:
+        'help-circle-outline',
+    };
 
     return icons[
       category

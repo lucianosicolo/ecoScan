@@ -4,6 +4,7 @@ import {
   AfterViewInit,
   Component,
   DestroyRef,
+  OnInit,
   ViewChild,
 } from '@angular/core';
 
@@ -15,7 +16,9 @@ import {
 import {
   takeUntilDestroyed,
 } from '@angular/core/rxjs-interop';
-
+import {
+  App,
+} from '@capacitor/app';
 import {
   filter,
   firstValueFrom,
@@ -48,7 +51,7 @@ import {
   styleUrls: ['./layout.page.scss'],
   standalone: false,
 })
-export class LayoutPage implements AfterViewInit {
+export class LayoutPage implements AfterViewInit, OnInit {
 
   hasNotifications = false;
 
@@ -95,7 +98,74 @@ export class LayoutPage implements AfterViewInit {
         this.openScanOptions();
       });
   }
+  ngOnInit(): void {
 
+    App.addListener(
+      'appRestoredResult',
+      async (data) => {
+
+        if (
+          data.pluginId !== 'Camera' ||
+          data.methodName !== 'getPhoto'
+        ) {
+          return;
+        }
+
+        if (
+          !data.success ||
+          !data.data
+        ) {
+          return;
+        }
+
+        const photo =
+          data.data as Photo;
+
+        await this.processPhoto(
+          photo,
+        );
+      },
+    );
+  }
+  getScanImageUrl(
+    imagenUrl?: string,
+  ): string | null {
+
+    if (!imagenUrl) {
+      return null;
+    }
+
+    return `http://localhost:3000${imagenUrl}`;
+  }
+  getConfidenceLabel(
+  confidence: number,
+): string {
+
+  if (confidence >= 80) {
+    return 'Confianza alta';
+  }
+
+  if (confidence >= 60) {
+    return 'Confianza media';
+  }
+
+  return 'Confianza baja';
+}
+
+getConfidenceClass(
+  confidence: number,
+): string {
+
+  if (confidence >= 80) {
+    return 'confidence-high';
+  }
+
+  if (confidence >= 60) {
+    return 'confidence-medium';
+  }
+
+  return 'confidence-low';
+}
   ngAfterViewInit(): void {
     this.router.events
       .pipe(
@@ -450,7 +520,7 @@ export class LayoutPage implements AfterViewInit {
         error as {
           error?: {
             message?:
-              string | string[];
+            string | string[];
           };
         };
 
