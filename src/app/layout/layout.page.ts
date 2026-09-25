@@ -137,35 +137,72 @@ export class LayoutPage implements AfterViewInit, OnInit {
 
     return `http://localhost:3000${imagenUrl}`;
   }
+  isOutOfScope(
+  result: ScanResult,
+): boolean {
+
+  if (
+    result.categoria !== 'desconocido'
+  ) {
+    return false;
+  }
+
+  const object =
+    result.objeto
+      ?.trim()
+      .toLowerCase();
+
+  const material =
+    result.material
+      ?.trim()
+      .toLowerCase();
+
+  return (
+    !!object &&
+    object !== 'objeto no identificado' &&
+    !!material &&
+    material !== 'material desconocido' &&
+    material !== 'desconocido'
+  );
+}
   getConfidenceLabel(
-  confidence: number,
-): string {
+    confidence: number,
+  ): string {
 
-  if (confidence >= 80) {
-    return 'Confianza alta';
+    if (confidence >= 80) {
+      return 'Confianza alta';
+    }
+
+    if (confidence >= 60) {
+      return 'Confianza media';
+    }
+
+    return 'Confianza baja';
   }
 
-  if (confidence >= 60) {
-    return 'Confianza media';
+  getConfidenceClass(
+    confidence: number,
+  ): string {
+
+    if (confidence >= 80) {
+      return 'confidence-high';
+    }
+
+    if (confidence >= 60) {
+      return 'confidence-medium';
+    }
+
+    return 'confidence-low';
   }
+  retryScan(): void {
 
-  return 'Confianza baja';
-}
+    this.isScanResultOpen = false;
 
-getConfidenceClass(
-  confidence: number,
-): string {
-
-  if (confidence >= 80) {
-    return 'confidence-high';
+    setTimeout(() => {
+      this.scanResult = null;
+      this.openScanOptions();
+    }, 250);
   }
-
-  if (confidence >= 60) {
-    return 'confidence-medium';
-  }
-
-  return 'confidence-low';
-}
   ngAfterViewInit(): void {
     this.router.events
       .pipe(
@@ -443,7 +480,7 @@ getConfidenceClass(
       no_apto:
         'No apto para reciclar',
       desconocido:
-        'Fuera del alcance',
+        'No clasificable',
     };
 
     return names[

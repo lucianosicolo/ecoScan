@@ -1,7 +1,4 @@
-import {
-  Component,
-  OnInit,
-} from '@angular/core';
+
 
 import {
   AlertController,
@@ -13,10 +10,12 @@ import {
 } from 'rxjs';
 
 import {
+  Component,
+} from '@angular/core';
+import {
   RecyclingStatus,
   WasteCategory,
 } from '../scan/services/scan.service';
-
 import {
   HistorialItem,
   HistorialService,
@@ -81,7 +80,7 @@ export class HistorialPage {
       },
       {
         value: 'desconocido',
-        label: 'Desconocidos',
+        label: 'No clasificables',
       },
     ];
 
@@ -96,12 +95,10 @@ export class HistorialPage {
       HistorialService,
   ) { }
 
-  ngOnInit(): void {
+
+  ionViewWillEnter(): void {
     this.loadHistory();
   }
-ionViewWillEnter(): void {
-  this.loadHistory();
-}
 
   loadHistory(): void {
     this.loading = true;
@@ -409,29 +406,73 @@ ionViewWillEnter(): void {
       },
     });
   }
+  isOutOfScope(
+    scan: HistorialItem,
+  ): boolean {
 
-  getStatusName(
-    status: RecyclingStatus,
+    if (
+      scan.categoria !== 'desconocido'
+    ) {
+      return false;
+    }
+
+    const object =
+      scan.objeto
+        ?.trim()
+        .toLowerCase();
+
+    const material =
+      scan.material
+        ?.trim()
+        .toLowerCase();
+
+    return (
+      !!object &&
+      object !== 'objeto no identificado' &&
+      !!material &&
+      material !== 'material desconocido' &&
+      material !== 'desconocido'
+    );
+  }
+
+
+  getHistoryCategoryName(
+    scan: HistorialItem,
   ): string {
 
-    const names:
-      Record<
-        RecyclingStatus,
-        string
-      > = {
-      apto:
-        'Apto',
+    if (
+      scan.categoria !== 'desconocido'
+    ) {
+      return this.getCategoryName(
+        scan.categoria,
+      );
+    }
 
-      no_apto:
-        'No apto',
+    return this.isOutOfScope(scan)
+      ? 'Fuera del alcance'
+      : 'No identificado';
+  }
 
-      desconocido:
-        'Desconocido',
-    };
 
-    return names[
-      status
-    ];
+  getHistoryStatusName(
+    scan: HistorialItem,
+  ): string {
+
+    if (
+      scan.estado === 'apto'
+    ) {
+      return 'Apto';
+    }
+
+    if (
+      scan.estado === 'no_apto'
+    ) {
+      return 'No apto';
+    }
+
+    return this.isOutOfScope(scan)
+      ? 'Fuera del alcance'
+      : 'No identificado';
   }
 
   getStatusIcon(
@@ -457,36 +498,36 @@ ionViewWillEnter(): void {
       status
     ];
   }
-imageViewerOpen = false;
+  imageViewerOpen = false;
 
-imageViewerUrl: string | null = null;
-openImageViewer(
-  scan: HistorialItem,
-): void {
+  imageViewerUrl: string | null = null;
+  openImageViewer(
+    scan: HistorialItem,
+  ): void {
 
-  if (!scan.imagenUrl) {
-    return;
+    if (!scan.imagenUrl) {
+      return;
+    }
+
+    this.imageViewerUrl =
+      this.getImageUrl(
+        scan.imagenUrl,
+      );
+
+    this.imageViewerOpen = true;
   }
 
-  this.imageViewerUrl =
-    this.getImageUrl(
-      scan.imagenUrl,
+  closeImageViewer(): void {
+
+    this.imageViewerOpen = false;
+
+    setTimeout(
+      () => {
+        this.imageViewerUrl = null;
+      },
+      200,
     );
-
-  this.imageViewerOpen = true;
-}
-
-closeImageViewer(): void {
-
-  this.imageViewerOpen = false;
-
-  setTimeout(
-    () => {
-      this.imageViewerUrl = null;
-    },
-    200,
-  );
-}
+  }
   getStatusClass(
     status: RecyclingStatus,
   ): string {

@@ -31,7 +31,7 @@ export interface HistorialItem {
     preparacion: string[];
 
     observacion: string;
-  imagenUrl: string | null;
+    imagenUrl: string | null;
     createdAt: string;
 }
 
@@ -76,5 +76,5 @@ export class HistorialService {
             `${this.apiUrl}/${id}`,
         );
     }
-    
+
 }

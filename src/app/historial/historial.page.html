@@ -83,7 +83,7 @@
         </div>
 
         <p>
-          {{ getCategoryName(scan.categoria) }}
+        {{ getHistoryCategoryName(scan) }}
           <span>·</span>
           {{ scan.material }}
         </p>
@@ -98,7 +98,7 @@
           <span class="status-badge" [ngClass]="getStatusClass(scan.estado)">
             <ion-icon [name]="getStatusIcon(scan.estado)"></ion-icon>
 
-            {{ getStatusName(scan.estado) }}
+            {{ getHistoryStatusName(scan) }}
           </span>
         </div>
       </div>
@@ -183,21 +183,39 @@
 </div>
 
         <span class="detail-eyebrow">
-          Escaneo guardado
-        </span>
+  {{
+    scan.categoria !== 'desconocido'
+      ? 'Escaneo guardado'
+      : isOutOfScope(scan)
+        ? 'Fuera del alcance'
+        : 'No identificado'
+  }}
+</span>
 
-        <h2>{{ scan.objeto }}</h2>
+<h2>
+  {{
+    scan.categoria === 'desconocido' &&
+    !isOutOfScope(scan)
+      ? 'No pudimos identificar el residuo'
+      : scan.objeto
+  }}
+</h2>
 
-        <p *ngIf="scan.estado === 'apto'" class="detail-description">
-          {{ scan.observacion }}
-        </p>
+       <p
+  *ngIf="
+    scan.estado !== 'no_apto'
+  "
+  class="detail-description"
+>
+  {{ scan.observacion }}
+</p>
 
         <section class="detail-data">
           <div>
             <span>Categoría</span>
 
             <strong>
-              {{ getCategoryName(scan.categoria) }}
+               {{ getHistoryCategoryName(scan) }}
             </strong>
           </div>
 
@@ -218,7 +236,7 @@
             <span>Estado del residuo</span>
 
             <strong>
-              {{ getStatusName(scan.estado) }}
+           {{ getHistoryStatusName(scan) }}
             </strong>
           </div>
         </div>
