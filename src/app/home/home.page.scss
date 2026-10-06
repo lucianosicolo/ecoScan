@@ -746,3 +746,1211 @@ button {
     padding: 16px;
   }
 }
+/* EcoMundo */
+
+.eco-world-section {
+  margin-bottom: 25px;
+}
+
+.eco-level-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 27px;
+  padding: 6px 10px;
+
+  color: var(--ecoscan-primary-dark);
+  background: var(--ecoscan-primary-soft);
+  border: 1px solid rgba(37, 168, 101, 0.14);
+  border-radius: 20px;
+
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.eco-world-card {
+  overflow: hidden;
+
+  background: #ffffff;
+  border: 1px solid var(--ecoscan-border);
+  border-radius: 22px;
+
+  box-shadow:
+    0 8px 22px rgba(22, 58, 35, 0.07);
+}
+
+
+/* Escena */
+
+.eco-world-scene {
+  position: relative;
+
+  height: 205px;
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      180deg,
+      #bfe8ff 0%,
+      #dff4ff 58%,
+      #eaf7e6 100%
+    );
+}
+
+.eco-world-card.level-2
+.eco-world-scene {
+  background:
+    linear-gradient(
+      180deg,
+      #b8e6ff 0%,
+      #ddf5ff 55%,
+      #e5f7df 100%
+    );
+}
+
+.eco-world-card.level-3
+.eco-world-scene,
+.eco-world-card.level-4
+.eco-world-scene,
+.eco-world-card.level-5
+.eco-world-scene {
+  background:
+    linear-gradient(
+      180deg,
+      #aee0fb 0%,
+      #d7f2ff 52%,
+      #dff3d8 100%
+    );
+}
+
+
+/* Sol */
+
+.eco-sun {
+  position: absolute;
+  top: 22px;
+  right: 28px;
+
+  width: 43px;
+  height: 43px;
+
+  background:
+    radial-gradient(
+      circle,
+      #fff9ba 0%,
+      #f8d85c 68%,
+      #efc643 100%
+    );
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 0 10px rgba(255, 229, 116, 0.18),
+    0 0 28px rgba(255, 210, 80, 0.34);
+}
+
+
+/* Nubes */
+
+.eco-cloud {
+  position: absolute;
+
+  width: 55px;
+  height: 17px;
+
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 30px;
+
+  opacity: 0.9;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+
+    background: inherit;
+    border-radius: 50%;
+  }
+
+  &::before {
+    width: 25px;
+    height: 25px;
+    left: 9px;
+    bottom: 4px;
+  }
+
+  &::after {
+    width: 19px;
+    height: 19px;
+    right: 8px;
+    bottom: 3px;
+  }
+}
+
+.cloud-one {
+  top: 37px;
+  left: 30px;
+}
+
+.cloud-two {
+  top: 76px;
+  right: 83px;
+
+  transform: scale(0.7);
+  opacity: 0.65;
+}
+
+
+/* Colinas */
+
+.eco-hill {
+  position: absolute;
+  bottom: -55px;
+
+  border-radius: 50% 50% 0 0;
+}
+
+.hill-back {
+  left: -50px;
+
+  width: 340px;
+  height: 150px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #91cf83,
+      #65b96f
+    );
+
+  transform: rotate(2deg);
+}
+
+.hill-front {
+  right: -70px;
+
+  width: 340px;
+  height: 135px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #66bd6f,
+      #3d9a5d
+    );
+
+  transform: rotate(-3deg);
+}
+
+
+/* Semilla */
+
+.eco-seed {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  bottom: 47px;
+
+  width: 38px;
+  height: 30px;
+
+  transform: translateX(-50%);
+}
+
+.seed {
+  position: absolute;
+  left: 15px;
+  top: 4px;
+
+  width: 12px;
+  height: 17px;
+
+  background: #85603a;
+
+  border-radius:
+    70% 30% 70% 30%;
+
+  transform: rotate(28deg);
+}
+
+.seed-ground {
+  position: absolute;
+  left: 1px;
+  bottom: 0;
+
+  width: 36px;
+  height: 9px;
+
+  background: rgba(92, 70, 39, 0.28);
+
+  border-radius: 50%;
+}
+
+
+/* Brote */
+
+.eco-sprout {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  bottom: 45px;
+
+  width: 48px;
+  height: 62px;
+
+  transform: translateX(-50%);
+}
+
+.sprout-stem {
+  position: absolute;
+  left: 23px;
+  bottom: 0;
+
+  width: 4px;
+  height: 43px;
+
+  background: #328e50;
+  border-radius: 10px;
+}
+
+.sprout-leaf {
+  position: absolute;
+
+  width: 23px;
+  height: 13px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #72d487,
+      #329c59
+    );
+
+  border-radius:
+    100% 0 100% 0;
+}
+
+.sprout-leaf.left {
+  left: 4px;
+  top: 19px;
+
+  transform: rotate(17deg);
+}
+
+.sprout-leaf.right {
+  right: 2px;
+  top: 8px;
+
+  transform: scaleX(-1)
+    rotate(17deg);
+}
+
+
+/* Árboles */
+
+.eco-tree {
+  position: absolute;
+  z-index: 7;
+
+  width: 66px;
+  height: 100px;
+}
+
+.tree-trunk {
+  position: absolute;
+  z-index: 1;
+  left: 27px;
+  bottom: 0;
+
+  width: 13px;
+  height: 45px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #7a4d2e,
+      #a96f42
+    );
+
+  border-radius: 5px;
+}
+
+.tree-crown {
+  position: absolute;
+  z-index: 2;
+  top: 3px;
+  left: 4px;
+
+  width: 58px;
+  height: 65px;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #76d88d,
+      #36a85d 70%
+    );
+
+  border-radius:
+    48% 52% 44% 56% /
+    56% 46% 54% 44%;
+
+  box-shadow:
+    -13px 12px 0 -5px #46b969,
+    13px 13px 0 -5px #299c53;
+}
+
+.tree-one {
+  left: 20%;
+  bottom: 40px;
+
+  transform: scale(0.82);
+}
+
+.tree-two {
+  right: 18%;
+  bottom: 39px;
+
+  transform: scale(0.9);
+}
+
+.tree-three {
+  left: 44%;
+  bottom: 43px;
+
+  transform: translateX(-50%)
+    scale(1.08);
+}
+
+.tree-four {
+  right: 4%;
+  bottom: 34px;
+
+  transform: scale(0.72);
+}
+
+
+/* Etapa */
+
+.eco-world-stage {
+  position: absolute;
+  z-index: 10;
+  left: 14px;
+  top: 14px;
+
+  padding: 6px 10px;
+
+  color: #1a603b;
+  background: rgba(255, 255, 255, 0.86);
+
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 20px;
+
+  box-shadow:
+    0 4px 12px rgba(27, 87, 50, 0.09);
+
+  font-size: 10px;
+  font-weight: 850;
+
+  backdrop-filter: blur(7px);
+}
+
+
+/* Info inferior */
+
+.eco-world-info {
+  padding: 15px 16px 16px;
+}
+
+.eco-world-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  > div:first-child {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  span {
+    color: var(--ecoscan-muted);
+    font-size: 10px;
+    font-weight: 650;
+  }
+
+  strong {
+    color: var(--ecoscan-text);
+    font-size: 16px;
+    font-weight: 850;
+  }
+}
+
+.eco-world-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: 40px;
+  height: 40px;
+
+  color: var(--ecoscan-primary-dark);
+  background: var(--ecoscan-primary-soft);
+
+  border-radius: 13px;
+
+  ion-icon {
+    font-size: 23px;
+  }
+}
+
+
+/* Progreso */
+
+.eco-world-progress {
+  margin-top: 15px;
+}
+
+.eco-progress-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 10px;
+  margin-bottom: 7px;
+
+  span {
+    color: var(--ecoscan-muted);
+    font-size: 10px;
+  }
+
+  strong {
+    color: var(--ecoscan-primary-dark);
+    font-size: 10px;
+    font-weight: 800;
+  }
+}
+
+.eco-progress-track {
+  width: 100%;
+  height: 7px;
+
+  overflow: hidden;
+
+  background: #e8eee9;
+  border-radius: 20px;
+}
+
+.eco-progress-value {
+  height: 100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--ecoscan-primary),
+      var(--ecoscan-accent)
+    );
+
+  border-radius: 20px;
+
+  transition:
+    width 500ms ease;
+}
+
+
+/* Mensaje */
+
+.eco-world-message {
+  margin: 10px 0 0;
+
+  color: var(--ecoscan-muted);
+  font-size: 10px;
+  line-height: 1.45;
+
+  &.completed {
+    color: var(--ecoscan-primary-dark);
+    font-weight: 700;
+  }
+}
+/* ==================================================
+   ECOSCAN - ECOMUNDO
+   ================================================== */
+
+.eco-world-section {
+  margin-bottom: 27px;
+}
+
+.eco-world-heading {
+  align-items: center;
+}
+
+.eco-level-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 7px 11px;
+
+  color: #147a48;
+  background: #e9f7ee;
+
+  border: 1px solid #d2eadc;
+  border-radius: 22px;
+
+  font-size: 10px;
+  font-weight: 850;
+
+  ion-icon {
+    font-size: 14px;
+  }
+}
+
+
+.eco-world-card {
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid
+    rgba(38, 117, 73, 0.12);
+
+  border-radius: 24px;
+
+  box-shadow:
+    0 16px 42px
+    rgba(31, 82, 51, 0.09);
+}
+
+
+/* Cabecera */
+
+.eco-world-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 15px;
+
+  padding: 17px 18px 15px;
+
+  > div:first-child {
+    min-width: 0;
+  }
+
+  h3 {
+    margin: 3px 0 0;
+
+    color: var(--ecoscan-text);
+
+    font-size: 18px;
+    font-weight: 850;
+    letter-spacing: -0.45px;
+  }
+}
+
+.eco-world-eyebrow {
+  display: block;
+
+  color:
+    var(--ecoscan-primary);
+
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.9px;
+
+  text-transform: uppercase;
+}
+
+
+.eco-points-card {
+  display: flex;
+  align-items: center;
+
+  flex-shrink: 0;
+
+  gap: 8px;
+
+  padding: 9px 12px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      #28b36b,
+      #12804d
+    );
+
+  border-radius: 16px;
+
+  box-shadow:
+    0 8px 20px
+    rgba(22, 145, 82, 0.22);
+
+  ion-icon {
+    font-size: 22px;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  strong {
+    font-size: 17px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  span {
+    margin-top: 2px;
+
+    color:
+      rgba(
+        255,
+        255,
+        255,
+        0.82
+      );
+
+    font-size: 8px;
+    font-weight: 750;
+  }
+}
+
+
+/* Mundo */
+
+.eco-world-visual {
+  position: relative;
+
+  overflow: hidden;
+
+  background: #dff4fc;
+}
+
+.eco-world-svg {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  min-height: 260px;
+}
+
+.unlock-object {
+  transform-origin: center bottom;
+
+  animation:
+    eco-object-enter
+    450ms
+    cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    );
+}
+
+@keyframes eco-object-enter {
+
+  from {
+    opacity: 0;
+    transform:
+      translateY(14px)
+      scale(0.82);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+
+.world-decoration {
+  opacity: 0.9;
+}
+
+
+.eco-world-stage-badge {
+  position: absolute;
+
+  top: 13px;
+  left: 14px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+
+  padding: 6px 10px;
+
+  color: #176d45;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.87
+    );
+
+  border:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.82
+    );
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 5px 14px
+    rgba(
+      31,
+      78,
+      50,
+      0.10
+    );
+
+  font-size: 9px;
+  font-weight: 850;
+
+  backdrop-filter:
+    blur(10px);
+
+  ion-icon {
+    font-size: 13px;
+  }
+}
+
+
+/* Progreso */
+
+.eco-world-progress {
+  padding: 17px 18px;
+}
+
+.eco-next-unlock {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 10px;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+  }
+
+  span {
+    color:
+      var(--ecoscan-muted);
+
+    font-size: 8px;
+    font-weight: 850;
+    letter-spacing: 0.75px;
+  }
+
+  strong {
+    color:
+      var(--ecoscan-text);
+
+    font-size: 15px;
+    font-weight: 850;
+  }
+}
+
+.eco-points-left {
+  flex-shrink: 0;
+
+  color:
+    var(--ecoscan-primary) !important;
+
+  font-size: 11px !important;
+}
+
+
+.eco-progress-track {
+  width: 100%;
+  height: 8px;
+
+  overflow: hidden;
+
+  background: #e8eeea;
+
+  border-radius: 50px;
+}
+
+.eco-progress-bar {
+  height: 100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      #23ad66,
+      #8fda46
+    );
+
+  border-radius: inherit;
+
+  box-shadow:
+    0 0 10px
+    rgba(
+      68,
+      186,
+      75,
+      0.18
+    );
+
+  transition:
+    width
+    500ms ease;
+}
+
+
+.eco-world-progress p {
+  margin: 9px 0 0;
+
+  color:
+    var(--ecoscan-muted);
+
+  font-size: 10px;
+  line-height: 1.45;
+
+  strong {
+    color:
+      var(--ecoscan-primary-dark);
+  }
+}
+
+
+/* Colección */
+
+.eco-collection {
+  padding:
+    0 18px 19px;
+}
+
+.eco-collection-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 10px;
+
+  span {
+    color:
+      var(--ecoscan-muted);
+
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+  }
+
+  strong {
+    color:
+      var(--ecoscan-primary);
+
+    font-size: 10px;
+    font-weight: 850;
+  }
+}
+
+
+.eco-collection-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+
+  gap: 8px;
+}
+
+
+.eco-collection-item {
+  position: relative;
+
+  min-width: 0;
+
+  padding:
+    10px 5px 9px;
+
+  text-align: center;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f6f8f6,
+      #f0f3f1
+    );
+
+  border:
+    1px solid #e2e8e4;
+
+  border-radius: 14px;
+
+  opacity: 0.68;
+
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease,
+    background 180ms ease,
+    border-color 180ms ease;
+
+  &.unlocked {
+    opacity: 1;
+
+    background:
+      linear-gradient(
+        145deg,
+        #eefaf2,
+        #e3f6ea
+      );
+
+    border-color:
+      #cce8d7;
+  }
+
+  strong {
+    display: block;
+
+    margin-top: 6px;
+
+    overflow: hidden;
+
+    color:
+      var(--ecoscan-text);
+
+    font-size: 9px;
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  > span {
+    display: block;
+
+    margin-top: 3px;
+
+    color:
+      #8a9790;
+
+    font-size: 7px;
+    font-weight: 700;
+  }
+}
+
+
+.eco-collection-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 37px;
+  height: 37px;
+
+  margin: 0 auto;
+
+  color:
+    var(--ecoscan-primary-dark);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.83
+    );
+
+  border-radius: 11px;
+
+  box-shadow:
+    0 4px 10px
+    rgba(
+      34,
+      82,
+      51,
+      0.05
+    );
+
+  ion-icon {
+    font-size: 19px;
+  }
+}
+
+
+.eco-unlocked-check {
+  position: absolute;
+
+  top: 5px;
+  right: 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 17px;
+  height: 17px;
+
+  color: #ffffff;
+
+  background:
+    var(--ecoscan-primary);
+
+  border:
+    2px solid #ffffff;
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 2px 5px
+    rgba(
+      28,
+      126,
+      72,
+      0.18
+    );
+
+  ion-icon {
+    font-size: 10px;
+  }
+}
+
+
+/* Mundo terminado */
+
+.eco-world-complete {
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #edf9f1,
+      #f3f9df
+    );
+
+  border:
+    1px solid #d9ecca;
+
+  border-radius: 14px;
+
+  ion-icon {
+    flex-shrink: 0;
+
+    color: #76a72b;
+
+    font-size: 27px;
+  }
+
+  div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  strong {
+    color:
+      var(--ecoscan-text);
+
+    font-size: 12px;
+  }
+
+  span {
+    margin-top: 2px;
+
+    color:
+      var(--ecoscan-muted);
+
+    font-size: 9px;
+  }
+}
+
+
+/* Responsive */
+
+@media (max-width: 370px) {
+
+  .eco-world-header {
+    padding-right: 14px;
+    padding-left: 14px;
+
+    h3 {
+      font-size: 16px;
+    }
+  }
+
+  .eco-points-card {
+    padding:
+      8px 10px;
+
+    strong {
+      font-size: 15px;
+    }
+  }
+
+  .eco-world-svg {
+    min-height: 235px;
+  }
+
+  .eco-collection {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .eco-collection-grid {
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(0, 1fr)
+      );
+  }
+}
+
+
+@media (min-width: 768px) {
+
+  .eco-world-svg {
+    max-height: 390px;
+  }
+
+  .eco-world-header {
+    padding:
+      18px 20px;
+
+    h3 {
+      font-size: 19px;
+    }
+  }
+
+  .eco-world-progress {
+    padding:
+      18px 20px;
+  }
+
+  .eco-collection {
+    padding:
+      0 20px 20px;
+  }
+}

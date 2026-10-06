@@ -96,7 +96,7 @@ export class HistorialPage {
   ) { }
 
 
-  ionViewWillEnter(): void {
+  ngOnInit(): void {
     this.loadHistory();
   }
 

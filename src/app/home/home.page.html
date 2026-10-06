@@ -162,7 +162,219 @@
     </div>
 
   </section>
+  <!-- EcoMundo -->
+  <section class="eco-world-section">
 
+    <div class="section-heading eco-world-heading">
+
+      <div>
+        <span class="section-label">
+          TU MUNDO
+        </span>
+
+        <h2>EcoMundo</h2>
+      </div>
+
+      <div class="eco-level-pill">
+        <ion-icon name="leaf-outline"></ion-icon>
+        Nivel {{ ecoLevel }}
+      </div>
+
+    </div>
+
+
+    <article class="eco-world-card">
+
+      <!-- Cabecera -->
+
+      <div class="eco-world-header">
+
+        <div>
+          <span class="eco-world-eyebrow">
+            {{ ecoLevelName }}
+          </span>
+
+          <h3>
+            Tu mundo está creciendo
+          </h3>
+        </div>
+
+
+        <div class="eco-points-card">
+
+          <ion-icon name="leaf"></ion-icon>
+
+          <div>
+            <strong>
+              {{ ecoPoints }}
+            </strong>
+
+            <span>
+              EcoPuntos
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Mundo dinámico -->
+
+      <div class="eco-world-visual">
+
+        <img class="eco-world-image" [src]="ecoWorldImage" [alt]="'EcoMundo - ' + ecoLevelName" />
+
+        <div class="eco-world-stage-badge">
+
+          <ion-icon name="sparkles-outline"></ion-icon>
+
+          {{ ecoLevelName }}
+
+        </div>
+
+      </div>
+
+      <!-- Progreso -->
+
+      <div class="eco-world-progress">
+
+        <ng-container *ngIf="
+          nextEcoUnlock as nextUnlock;
+          else worldComplete
+        ">
+
+          <div class="eco-next-unlock">
+
+            <div>
+              <span>
+                PRÓXIMO DESBLOQUEO
+              </span>
+
+              <strong>
+                {{ nextUnlock.name }}
+              </strong>
+            </div>
+
+            <strong class="eco-points-left">
+              {{ pointsToNextUnlock }}
+              puntos
+            </strong>
+
+          </div>
+
+
+          <div class="eco-progress-track">
+
+            <div class="eco-progress-bar" [style.width.%]="ecoProgress"></div>
+
+          </div>
+
+
+          <p>
+            Cada residuo apto suma
+            <strong>10 EcoPuntos</strong>
+            para seguir construyendo tu mundo.
+          </p>
+
+        </ng-container>
+
+
+        <ng-template #worldComplete>
+
+          <div class="eco-world-complete">
+
+            <ion-icon name="trophy-outline"></ion-icon>
+
+            <div>
+
+              <strong>
+                ¡EcoMundo completo!
+              </strong>
+
+              <span>
+                Desbloqueaste todos los elementos.
+              </span>
+
+            </div>
+
+          </div>
+
+        </ng-template>
+
+      </div>
+
+
+      <!-- Colección -->
+
+      <div class="eco-collection">
+
+        <div class="eco-collection-heading">
+
+          <span>
+            TU COLECCIÓN
+          </span>
+
+          <strong>
+            {{ unlockedEcoCount }}/{{ ecoUnlocks.length }}
+          </strong>
+
+        </div>
+
+
+        <div class="eco-collection-grid">
+
+          <article *ngFor="
+            let item of ecoUnlocks
+          " class="eco-collection-item" [class.unlocked]="
+            isEcoUnlocked(
+              item.points
+            )
+          ">
+
+            <div class="eco-collection-icon">
+
+              <ion-icon *ngIf="
+                isEcoUnlocked(
+                  item.points
+                )
+              " [name]="item.icon"></ion-icon>
+
+              <ion-icon *ngIf="
+                !isEcoUnlocked(
+                  item.points
+                )
+              " name="lock-closed-outline"></ion-icon>
+
+            </div>
+
+
+            <strong>
+              {{ item.name }}
+            </strong>
+
+            <span>
+              {{ item.points }} EP
+            </span>
+
+
+            <div *ngIf="
+              isEcoUnlocked(
+                item.points
+              )
+            " class="eco-unlocked-check">
+              <ion-icon name="checkmark"></ion-icon>
+            </div>
+
+          </article>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  </section>
 
   <!-- Último análisis -->
   <section class="recent-section">
@@ -201,7 +413,7 @@
           <span class="status-badge" [class.not-recyclable]="
               !lastScan.recyclable
             ">
-           {{ getStatusName(lastScan) }}
+            {{ getStatusName(lastScan) }}
           </span>
 
         </div>
