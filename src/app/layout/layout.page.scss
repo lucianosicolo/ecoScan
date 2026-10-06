@@ -1662,3 +1662,197 @@ background:
     line-height: 1.4;
   }
 }
+/* ================================= */
+/* RESULTADO COMPACTO EN PC / TABLET */
+/* ================================= */
+
+@media (min-width: 500px) and (max-height: 800px) {
+
+  ion-modal.scan-result-modal {
+    --height: 98vh;
+    --max-height: 98vh;
+    --border-radius: 22px;
+  }
+
+  .result-content {
+    --overflow: hidden;
+  }
+
+  .result-container {
+    padding:
+      8px 16px
+      calc(8px + env(safe-area-inset-bottom));
+  }
+
+  /* Imagen */
+  .result-header .result-visual {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 5px;
+    border-radius: 16px;
+  }
+
+  .result-header .result-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Cerrar */
+  .result-header .close-result-button {
+    top: 0;
+    right: 0;
+
+    width: 31px;
+    height: 31px;
+
+    border-radius: 10px;
+  }
+
+  .result-header .close-result-button ion-icon {
+    font-size: 19px;
+  }
+
+  /* Títulos */
+  .result-header .result-label {
+    font-size: 10px;
+  }
+
+  .result-header h2 {
+    margin: 2px 0;
+    font-size: 20px;
+    line-height: 1.05;
+  }
+
+  .result-header p {
+    max-width: 330px;
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  /* Confianza */
+  .confidence-card {
+    margin-top: 8px;
+    padding: 8px 12px;
+    border-radius: 14px;
+  }
+
+  .confidence-card .confidence-heading {
+    margin-bottom: 4px;
+  }
+
+  .confidence-card .confidence-heading span {
+    font-size: 11px;
+  }
+
+  .confidence-card .confidence-heading strong {
+    font-size: 12px;
+  }
+
+  .confidence-heading small {
+    margin-top: 1px;
+    font-size: 9px;
+  }
+
+  .confidence-card .confidence-track {
+    height: 6px;
+  }
+
+  .confidence-card .confidence-note {
+    margin: 4px 0 0;
+    font-size: 8px;
+    line-height: 1.2;
+  }
+
+  /* Categoría / material / estado */
+  .result-details {
+    gap: 6px;
+    margin-top: 7px;
+  }
+
+  .detail-item {
+    padding: 7px 5px;
+    border-radius: 14px;
+  }
+
+  .detail-item .detail-icon {
+    width: 27px;
+    height: 27px;
+    margin-bottom: 3px;
+    border-radius: 9px;
+  }
+
+  .detail-item .detail-icon ion-icon {
+    font-size: 15px;
+  }
+
+  .detail-item span {
+    margin-bottom: 1px;
+    font-size: 8px;
+  }
+
+  .detail-item strong {
+    font-size: 10px;
+    line-height: 1.1;
+  }
+
+  /* Cómo prepararlo */
+  .preparation-card {
+    margin-top: 7px;
+    padding: 9px 12px;
+    border-radius: 15px;
+  }
+
+  .preparation-card .section-title {
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .preparation-card .section-title ion-icon {
+    font-size: 16px;
+  }
+
+  .preparation-card .section-title h3 {
+    font-size: 14px;
+  }
+
+  .preparation-card ol {
+    gap: 4px;
+    margin: 6px 0 0;
+  }
+
+  .preparation-card li {
+    gap: 7px;
+    min-height: 22px;
+  }
+
+  .preparation-card li > span {
+    flex: 0 0 21px;
+    width: 21px;
+    height: 21px;
+
+    font-size: 9px;
+    border-radius: 7px;
+  }
+
+  .preparation-card li p {
+    margin: 0;
+    font-size: 10px;
+    line-height: 1.15;
+  }
+
+  /* Botón finalizar */
+  .finish-result-button {
+    height: 38px;
+    min-height: 38px;
+    margin-top: 7px;
+
+    border-radius: 13px;
+
+    font-size: 12px;
+  }
+
+  .finish-result-button ion-icon {
+    font-size: 16px;
+  }
+}

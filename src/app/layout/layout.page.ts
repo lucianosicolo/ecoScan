@@ -137,32 +137,19 @@ export class LayoutPage implements AfterViewInit, OnInit {
 
     return `http://localhost:3000${imagenUrl}`;
   }
-  isOutOfScope(
+isOutOfScope(
   result: ScanResult,
 ): boolean {
-
-  if (
-    result.categoria !== 'desconocido'
-  ) {
-    return false;
-  }
 
   const object =
     result.objeto
       ?.trim()
       .toLowerCase();
 
-  const material =
-    result.material
-      ?.trim()
-      .toLowerCase();
-
   return (
+    result.categoria === 'desconocido' &&
     !!object &&
-    object !== 'objeto no identificado' &&
-    !!material &&
-    material !== 'material desconocido' &&
-    material !== 'desconocido'
+    object !== 'objeto no identificado'
   );
 }
   getConfidenceLabel(
@@ -358,6 +345,7 @@ export class LayoutPage implements AfterViewInit, OnInit {
     result: ScanResult,
   ): void {
     this.scanResult = result;
+    this.scanUiService.notifyCompleted();
 
     setTimeout(() => {
       this.isScanResultOpen = true;

@@ -201,11 +201,7 @@
           <span class="status-badge" [class.not-recyclable]="
               !lastScan.recyclable
             ">
-            {{
-            getStatusName(
-            lastScan.estado
-            )
-            }}
+           {{ getStatusName(lastScan) }}
           </span>
 
         </div>

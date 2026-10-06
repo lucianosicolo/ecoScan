@@ -64,19 +64,14 @@
         <h2>Puntos disponibles</h2>
       </div>
 
-     <button
-  type="button"
-  class="order-button"
-  [disabled]="!hasUserLocation"
-  (click)="orderByDistance()"
->
-  <ion-icon name="swap-vertical-outline"></ion-icon>
+      <button type="button" class="order-button" [disabled]="!hasUserLocation" (click)="orderByDistance()">
+        <ion-icon name="swap-vertical-outline"></ion-icon>
 
-  {{ hasUserLocation
-    ? 'Distancia'
-    : 'Activá ubicación'
-  }}
-</button>
+        {{ hasUserLocation
+        ? 'Distancia'
+        : 'Activá ubicación'
+        }}
+      </button>
     </div>
 
     <div class="points-list">
@@ -100,15 +95,25 @@
             <p>{{ point.address }}</p>
 
             <div class="availability">
-              <span class="availability-dot" [class.closed]="!point.open"></span>
+
+              <span *ngIf="point.open !== null" class="availability-dot" [class.closed]="point.open === false"></span>
+
+              <ion-icon *ngIf="point.open === null" name="time-outline"></ion-icon>
 
               <strong>
-                Horario informado
+                {{
+                point.open === null
+                ? 'Horario no informado'
+                : point.open
+                ? 'Abierto'
+                : 'Cerrado'
+                }}
               </strong>
 
               <span *ngIf="point.schedule">
                 · {{ point.schedule }}
               </span>
+
             </div>
           </div>
         </div>

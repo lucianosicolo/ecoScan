@@ -12,15 +12,16 @@ import {
   WasteCategory,
 } from '../scan/services/scan.service';
 
+import { AuthService } from '../auth/auth.service';
 import {
   HistorialItem,
   HistorialService,
 } from '../historial/historial.service';
-import { AuthService } from '../auth/auth.service';
 
 interface ScanResult {
   name: string;
   category: string;
+  categoria: WasteCategory;
   confidence: number;
   recyclable: boolean;
   estado: RecyclingStatus;
@@ -41,15 +42,22 @@ export class HomePage implements OnInit {
 
   lastScan: ScanResult | null = null;
 
-  constructor(
-    private readonly scanUiService:
-      ScanUiService,
+constructor(
+  private readonly scanUiService:
+    ScanUiService,
 
-    private readonly historialService:
-      HistorialService,
-    private readonly authService:
-      AuthService,
-  ) { }
+  private readonly historialService:
+    HistorialService,
+
+  private readonly authService:
+    AuthService,
+) {
+
+  this.scanUiService.completed$
+    .subscribe(() => {
+      this.loadActivity();
+    });
+}
 
   ngOnInit(): void {
     this.loadActivity();
@@ -105,6 +113,9 @@ export class HomePage implements OnInit {
             category:
               lastScan.material,
 
+            categoria:
+              lastScan.categoria,
+
             confidence:
               lastScan.confianza,
 
@@ -159,25 +170,28 @@ export class HomePage implements OnInit {
   }
 
   getStatusName(
-    status: RecyclingStatus,
+    scan: ScanResult,
   ): string {
-    const names: Record<
-      RecyclingStatus,
-      string
-    > = {
-      apto:
-        'Apto',
 
-      no_apto:
-        'No apto',
+    if (scan.estado === 'apto') {
+      return 'Apto';
+    }
 
-      desconocido:
-        'Desconocido',
-    };
+    if (scan.estado === 'no_apto') {
+      return 'No apto';
+    }
 
-    return names[
-      status
-    ];
+    const object =
+      scan.name
+        ?.trim()
+        .toLowerCase();
+
+    return (
+      scan.categoria === 'desconocido' &&
+      object !== 'objeto no identificado'
+    )
+      ? 'Fuera del alcance'
+      : 'No identificado';
   }
 
   private getCategoryIcon(

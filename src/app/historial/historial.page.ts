@@ -410,31 +410,17 @@ export class HistorialPage {
     scan: HistorialItem,
   ): boolean {
 
-    if (
-      scan.categoria !== 'desconocido'
-    ) {
-      return false;
-    }
-
     const object =
       scan.objeto
         ?.trim()
         .toLowerCase();
 
-    const material =
-      scan.material
-        ?.trim()
-        .toLowerCase();
-
     return (
+      scan.categoria === 'desconocido' &&
       !!object &&
-      object !== 'objeto no identificado' &&
-      !!material &&
-      material !== 'material desconocido' &&
-      material !== 'desconocido'
+      object !== 'objeto no identificado'
     );
   }
-
 
   getHistoryCategoryName(
     scan: HistorialItem,
