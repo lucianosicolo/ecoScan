@@ -137,23 +137,38 @@
   background: #ffffff;
 
   box-shadow:
-    0 -5px 20px rgba(23, 54, 36, 0.08);
+    0 -5px 20px
+    rgba(
+      23,
+      54,
+      36,
+      0.08
+    );
+
 
   ion-toolbar {
     --background: #ffffff;
-    --min-height: 74px;
+
+    --min-height:
+      calc(
+        74px +
+        env(safe-area-inset-bottom)
+      );
+
     --padding-top: 0;
-    --padding-bottom: 0;
+
+    --padding-bottom:
+      env(safe-area-inset-bottom);
 
     overflow: visible;
     contain: none;
   }
 
+
   ion-toolbar::part(container) {
     overflow: visible;
   }
 }
-
 .bottom-navigation {
   position: relative;
 
@@ -1773,4 +1788,24 @@ background:
   .finish-result-button ion-icon {
     font-size: 16px;
   }
+}
+.bottom-navigation a,
+.scan-navigation {
+  -webkit-tap-highlight-color:
+    transparent;
+}
+
+
+.bottom-navigation a:focus-visible,
+.scan-navigation:focus-visible {
+  outline:
+    3px solid
+    rgba(
+      37,
+      168,
+      101,
+      0.18
+    );
+
+  outline-offset: -3px;
 }

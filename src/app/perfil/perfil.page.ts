@@ -68,9 +68,9 @@ export class PerfilPage
 
   editing = false;
   saving = false;
-helpOpen = false;
-aboutOpen = false;
-ecoPoints = 0;
+  helpOpen = false;
+  aboutOpen = false;
+  ecoPoints = 0;
   constructor(
     private readonly alertController:
       AlertController,
@@ -89,7 +89,7 @@ ecoPoints = 0;
 
     private readonly usersService:
       UsersService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadUser();
@@ -150,11 +150,11 @@ ecoPoints = 0;
             history.length;
 
           this.user.suitableWaste =
-            history.filter(
-              item =>
-                item.reciclable &&
-                item.estado === 'apto',
-            ).length;
+  history.filter(
+    (item) =>
+      item.estado === 'apto',
+  ).length;
+
 this.ecoPoints =
   this.user.suitableWaste * 10;
           this.editableUser = {
@@ -191,139 +191,139 @@ this.ecoPoints =
     );
   }
 
-get ecoLevel(): number {
+  get ecoLevel(): number {
 
-  if (this.ecoPoints >= 200) {
-    return 5;
+    if (this.ecoPoints >= 200) {
+      return 5;
+    }
+
+    if (this.ecoPoints >= 120) {
+      return 4;
+    }
+
+    if (this.ecoPoints >= 80) {
+      return 3;
+    }
+
+    if (this.ecoPoints >= 30) {
+      return 2;
+    }
+
+    return 1;
   }
 
-  if (this.ecoPoints >= 120) {
-    return 4;
+
+  get ecoLevelName(): string {
+
+    const levels:
+      Record<number, string> = {
+
+      1: 'Semilla',
+      2: 'EcoAprendiz',
+      3: 'EcoExplorador',
+      4: 'Guardián Verde',
+      5: 'EcoMaster',
+    };
+
+    return levels[
+      this.ecoLevel
+    ];
   }
 
-  if (this.ecoPoints >= 80) {
-    return 3;
+
+  get nextEcoLevelName():
+    string | null {
+
+    const levels = [
+      {
+        points: 30,
+        name: 'EcoAprendiz',
+      },
+      {
+        points: 80,
+        name: 'EcoExplorador',
+      },
+      {
+        points: 120,
+        name: 'Guardián Verde',
+      },
+      {
+        points: 200,
+        name: 'EcoMaster',
+      },
+    ];
+
+    return (
+      levels.find(
+        level =>
+          level.points >
+          this.ecoPoints,
+      )?.name ?? null
+    );
   }
 
-  if (this.ecoPoints >= 30) {
-    return 2;
+
+  get pointsToNextLevel():
+    number {
+
+    if (this.ecoPoints >= 200) {
+      return 0;
+    }
+
+    if (this.ecoPoints >= 120) {
+      return 200 - this.ecoPoints;
+    }
+
+    if (this.ecoPoints >= 80) {
+      return 120 - this.ecoPoints;
+    }
+
+    if (this.ecoPoints >= 30) {
+      return 80 - this.ecoPoints;
+    }
+
+    return 30 - this.ecoPoints;
   }
 
-  return 1;
-}
 
+  get levelProgress():
+    number {
 
-get ecoLevelName(): string {
+    if (this.ecoPoints >= 200) {
+      return 100;
+    }
 
-  const levels:
-    Record<number, string> = {
+    let previous = 0;
+    let next = 30;
 
-    1: 'Semilla',
-    2: 'EcoAprendiz',
-    3: 'EcoExplorador',
-    4: 'Guardián Verde',
-    5: 'EcoMaster',
-  };
+    if (this.ecoPoints >= 120) {
+      previous = 120;
+      next = 200;
+    } else if (
+      this.ecoPoints >= 80
+    ) {
+      previous = 80;
+      next = 120;
+    } else if (
+      this.ecoPoints >= 30
+    ) {
+      previous = 30;
+      next = 80;
+    }
 
-  return levels[
-    this.ecoLevel
-  ];
-}
-
-
-get nextEcoLevelName():
-  string | null {
-
-  const levels = [
-    {
-      points: 30,
-      name: 'EcoAprendiz',
-    },
-    {
-      points: 80,
-      name: 'EcoExplorador',
-    },
-    {
-      points: 120,
-      name: 'Guardián Verde',
-    },
-    {
-      points: 200,
-      name: 'EcoMaster',
-    },
-  ];
-
-  return (
-    levels.find(
-      level =>
-        level.points >
-        this.ecoPoints,
-    )?.name ?? null
-  );
-}
-
-
-get pointsToNextLevel():
-  number {
-
-  if (this.ecoPoints >= 200) {
-    return 0;
-  }
-
-  if (this.ecoPoints >= 120) {
-    return 200 - this.ecoPoints;
-  }
-
-  if (this.ecoPoints >= 80) {
-    return 120 - this.ecoPoints;
-  }
-
-  if (this.ecoPoints >= 30) {
-    return 80 - this.ecoPoints;
-  }
-
-  return 30 - this.ecoPoints;
-}
-
-
-get levelProgress():
-  number {
-
-  if (this.ecoPoints >= 200) {
-    return 100;
-  }
-
-  let previous = 0;
-  let next = 30;
-
-  if (this.ecoPoints >= 120) {
-    previous = 120;
-    next = 200;
-  } else if (
-    this.ecoPoints >= 80
-  ) {
-    previous = 80;
-    next = 120;
-  } else if (
-    this.ecoPoints >= 30
-  ) {
-    previous = 30;
-    next = 80;
-  }
-
-  return Math.round(
-    (
+    return Math.round(
       (
-        this.ecoPoints -
-        previous
-      ) /
-      (
-        next -
-        previous
-      )
-    ) * 100,
-  );
-}
+        (
+          this.ecoPoints -
+          previous
+        ) /
+        (
+          next -
+          previous
+        )
+      ) * 100,
+    );
+  }
   getInitials(): string {
 
     return this.user.name
@@ -538,21 +538,21 @@ get levelProgress():
   }
 
 
- openHelp(): void {
-  this.helpOpen = true;
-}
+  openHelp(): void {
+    this.helpOpen = true;
+  }
 
-closeHelp(): void {
-  this.helpOpen = false;
-}
+  closeHelp(): void {
+    this.helpOpen = false;
+  }
 
-openAbout(): void {
-  this.aboutOpen = true;
-}
+  openAbout(): void {
+    this.aboutOpen = true;
+  }
 
-closeAbout(): void {
-  this.aboutOpen = false;
-}
+  closeAbout(): void {
+    this.aboutOpen = false;
+  }
 
   async logout():
     Promise<void> {

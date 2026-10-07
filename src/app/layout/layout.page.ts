@@ -127,31 +127,47 @@ export class LayoutPage implements AfterViewInit, OnInit {
       },
     );
   }
-  getScanImageUrl(
-    imagenUrl?: string,
-  ): string | null {
+ getScanImageUrl(
+  imagenUrl?: string,
+): string | null {
 
-    if (!imagenUrl) {
-      return null;
-    }
-
-    return `http://localhost:3000${imagenUrl}`;
+  if (!imagenUrl) {
+    return null;
   }
-isOutOfScope(
-  result: ScanResult,
-): boolean {
 
-  const object =
-    result.objeto
-      ?.trim()
-      .toLowerCase();
+
+  if (
+    imagenUrl.startsWith(
+      'http://',
+    ) ||
+    imagenUrl.startsWith(
+      'https://',
+    )
+  ) {
+
+    return imagenUrl;
+  }
+
 
   return (
-    result.categoria === 'desconocido' &&
-    !!object &&
-    object !== 'objeto no identificado'
+    `http://localhost:3000${imagenUrl}`
   );
 }
+  isOutOfScope(
+    result: ScanResult,
+  ): boolean {
+
+    const object =
+      result.objeto
+        ?.trim()
+        .toLowerCase();
+
+    return (
+      result.categoria === 'desconocido' &&
+      !!object &&
+      object !== 'objeto no identificado'
+    );
+  }
   getConfidenceLabel(
     confidence: number,
   ): string {

@@ -440,9 +440,12 @@
           <!-- Estado -->
           <div class="detail-item">
 
-            <div class="detail-icon" [class.not-recyclable]="
-                !result.reciclable
-              ">
+          <div
+  class="detail-icon"
+  [class.not-recyclable]="
+    result.estado === 'no_apto'
+  "
+>
               <ion-icon [name]="
                   getStatusIcon(
                     result.estado
@@ -497,9 +500,13 @@
         </section>
 
         <!-- Preparación -->
-        <section *ngIf="
-            result.preparacion.length > 0
-          " class="preparation-card">
+        <section
+  *ngIf="
+    result.estado === 'apto' &&
+    result.preparacion.length > 0
+  "
+  class="preparation-card"
+>
 
           <div class="section-title">
 

@@ -23,15 +23,40 @@
       </button>
     </div>
 
-    <button type="button" class="location-button" (click)="centerOnUser()" aria-label="Usar mi ubicación">
-      <ion-icon name="locate-outline"></ion-icon>
+    <button type="button" class="location-button" [disabled]="
+    mapLoading ||
+    mapError ||
+    loadingLocation
+  " (click)="centerOnUser()" aria-label="Usar mi ubicación">
+
+      <ion-spinner *ngIf="loadingLocation" name="crescent"></ion-spinner>
+
+      <ion-icon *ngIf="!loadingLocation" name="locate-outline"></ion-icon>
+
     </button>
   </section>
 
   <!-- Filtros -->
   <section class="material-filters">
-    <button *ngFor="let filter of materialFilters" type="button" [class.active]="selectedMaterial === filter.value"
-      (click)="selectMaterial(filter.value)">
+    <button
+  *ngFor="
+    let filter of materialFilters
+  "
+  type="button"
+  [class.active]="
+    selectedMaterial ===
+    filter.value
+  "
+  [attr.aria-pressed]="
+    selectedMaterial ===
+    filter.value
+  "
+  (click)="
+    selectMaterial(
+      filter.value
+    )
+  "
+>
       <ion-icon [name]="filter.icon"></ion-icon>
       <span>{{ filter.label }}</span>
     </button>
@@ -39,21 +64,106 @@
 
   <!-- Mapa -->
   <section class="map-card">
-    <div #map class="google-map"></div>
 
-    <div *ngIf="loadingLocation" class="map-loading">
+    <!-- Google Maps -->
+
+    <div #map class="google-map" [class.map-unavailable]="
+      mapError
+    "></div>
+
+
+    <!-- Cargando mapa -->
+
+    <div *ngIf="
+      mapLoading &&
+      !mapError
+    " class="map-loading">
+
       <ion-spinner name="crescent"></ion-spinner>
-      <span>Buscando tu ubicación...</span>
+
+      <strong>
+        Cargando mapa
+      </strong>
+
+      <span>
+        Preparando los puntos verdes...
+      </span>
+
     </div>
 
-    <div class="map-counter">
+
+    <!-- Error del mapa -->
+
+    <div *ngIf="mapError" class="map-error">
+
+      <div class="map-error-icon">
+
+        <ion-icon name="map-outline"></ion-icon>
+
+      </div>
+
+
+      <strong>
+        No pudimos cargar el mapa
+      </strong>
+
+      <p>
+        Podés seguir consultando los puntos
+        verdes desde la lista.
+      </p>
+
+
+      <button type="button" (click)="retryMap()">
+
+        <ion-icon name="refresh-outline"></ion-icon>
+
+        Reintentar
+
+      </button>
+
+    </div>
+
+
+    <!-- Buscando ubicación -->
+
+    <div *ngIf="
+      loadingLocation &&
+      !mapLoading &&
+      !mapError
+    " class="map-location-loading">
+
+      <ion-spinner name="crescent"></ion-spinner>
+
+      <span>
+        Buscando tu ubicación...
+      </span>
+
+    </div>
+
+
+    <!-- Contador -->
+
+    <div *ngIf="
+      !mapLoading &&
+      !mapError
+    " class="map-counter">
+
       <ion-icon name="location"></ion-icon>
 
       <span>
+
         {{ filteredPoints.length }}
-        {{ filteredPoints.length === 1 ? 'punto' : 'puntos' }}
+
+        {{
+        filteredPoints.length === 1
+        ? 'punto'
+        : 'puntos'
+        }}
+
       </span>
+
     </div>
+
   </section>
 
   <!-- Lista -->

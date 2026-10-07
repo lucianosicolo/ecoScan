@@ -70,7 +70,9 @@ export class PuntosVerdesPage
 
   loadingLocation = false;
 
+  mapLoading = true;
 
+  mapError = false;
   searchTerm = '';
 
   selectedMaterial:
@@ -340,9 +342,16 @@ export class PuntosVerdesPage
     ];
   }
 
-
   async ngAfterViewInit():
     Promise<void> {
+
+    await this.loadMap();
+  }
+  private async loadMap():
+    Promise<void> {
+
+    this.mapLoading = true;
+    this.mapError = false;
 
     try {
 
@@ -350,21 +359,29 @@ export class PuntosVerdesPage
 
       await this.initializeMap();
 
-    } catch (error: unknown) {
+    } catch (
+    error: unknown
+    ) {
 
       console.error(
         'Error cargando Google Maps:',
         error,
       );
 
-      await this.showLocationError(
-        'No se pudo cargar el mapa. ' +
-        'Intentá nuevamente.',
-      );
+      this.mapError = true;
+
+    } finally {
+
+      this.mapLoading = false;
     }
   }
 
 
+  async retryMap():
+    Promise<void> {
+
+    await this.loadMap();
+  }
   private async waitForGoogleMaps():
     Promise<void> {
 
@@ -463,7 +480,7 @@ export class PuntosVerdesPage
           zoom: 13,
 
           mapId:
-            'DEMO_MAP_ID',
+            '8f3b2a1c4d5e6f78',
 
           disableDefaultUI:
             true,
@@ -817,11 +834,13 @@ export class PuntosVerdesPage
     Promise<void> {
 
     if (
-      this.loadingLocation
+      this.loadingLocation ||
+      this.mapLoading ||
+      this.mapError ||
+      !this.map
     ) {
       return;
     }
-
 
     this.loadingLocation =
       true;
@@ -1078,41 +1097,44 @@ export class PuntosVerdesPage
   }
 
 
-  selectPoint(
-    point: RecyclingPoint,
-  ): void {
+selectPoint(
+  point: RecyclingPoint,
+): void {
 
-    if (
-      point.latitude === null ||
-      point.longitude === null
-    ) {
+  if (
+    point.latitude === null ||
+    point.longitude === null
+  ) {
 
-      return;
-    }
-
-
-    this.selectedPoint =
-      point;
-
-
-    this.map.panTo({
-      lat:
-        point.latitude,
-
-      lng:
-        point.longitude,
-    });
-
-
-    this.map.setZoom(
-      15,
-    );
-
-
-    void this
-      .renderMarkers();
+    return;
   }
 
+
+  this.selectedPoint =
+    point;
+
+
+  if (!this.map) {
+    return;
+  }
+
+
+  this.map.panTo({
+    lat:
+      point.latitude,
+
+    lng:
+      point.longitude,
+  });
+
+
+  this.map.setZoom(
+    15,
+  );
+
+
+  void this.renderMarkers();
+}
 
   orderByDistance():
     void {
