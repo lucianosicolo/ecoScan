@@ -10,6 +10,11 @@ export type WasteCategory =
   | 'carton'
   | 'desconocido';
 
+export type RecyclingStatus =
+  | 'apto'
+  | 'no_apto'
+  | 'desconocido';
+
 export interface ScanResult {
   categoria: WasteCategory;
   objeto: string;
@@ -21,15 +26,12 @@ export interface ScanResult {
   observacion: string;
   imagenUrl?: string;
 }
-export type RecyclingStatus =
-  | 'apto'
-  | 'no_apto'
-  | 'desconocido';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ScanService {
+
   private readonly apiUrl =
     'http://localhost:3000/scan';
 
@@ -41,7 +43,9 @@ export class ScanService {
     image: Blob,
     filename: string,
   ): Observable<ScanResult> {
-    const formData = new FormData();
+
+    const formData =
+      new FormData();
 
     formData.append(
       'image',

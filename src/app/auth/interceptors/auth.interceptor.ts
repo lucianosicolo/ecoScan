@@ -3,6 +3,7 @@ import {
 } from '@angular/core';
 
 import {
+  HttpErrorResponse,
   HttpEvent,
   HttpHandler,
   HttpInterceptor,
@@ -10,7 +11,13 @@ import {
 } from '@angular/common/http';
 
 import {
+  Router,
+} from '@angular/router';
+
+import {
+  catchError,
   Observable,
+  throwError,
 } from 'rxjs';
 
 import {
@@ -24,6 +31,9 @@ export class AuthInterceptor
   constructor(
     private readonly authService:
       AuthService,
+
+    private readonly router:
+      Router,
   ) {}
 
   intercept(
@@ -56,8 +66,37 @@ export class AuthInterceptor
         },
       });
 
-    return next.handle(
-      authenticatedRequest,
-    );
+    return next
+      .handle(
+        authenticatedRequest,
+      )
+      .pipe(
+        catchError(
+          (
+            error:
+              HttpErrorResponse,
+          ) => {
+
+            if (
+              error.status === 401
+            ) {
+              this.authService
+                .logout();
+
+              void this.router
+                .navigateByUrl(
+                  '/login',
+                  {
+                    replaceUrl: true,
+                  },
+                );
+            }
+
+            return throwError(
+              () => error,
+            );
+          },
+        ),
+      );
   }
 }
