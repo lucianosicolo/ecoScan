@@ -70,7 +70,7 @@ export class PerfilPage
   saving = false;
 
   notificationsEnabled = true;
-
+ecoPoints = 0;
   constructor(
     private readonly alertController:
       AlertController,
@@ -156,7 +156,8 @@ export class PerfilPage
                 item.reciclable &&
                 item.estado === 'apto',
             ).length;
-
+this.ecoPoints =
+  this.user.suitableWaste * 10;
           this.editableUser = {
             ...this.user,
           };
@@ -191,80 +192,139 @@ export class PerfilPage
     );
   }
 
-  get ecoLevel(): string {
+get ecoLevel(): number {
 
-    if (
-      this.user.totalScans >= 50
-    ) {
-      return 'Guardián del planeta';
-    }
-
-    if (
-      this.user.totalScans >= 20
-    ) {
-      return 'Reciclador consciente';
-    }
-
-    return 'Explorador ecológico';
+  if (this.ecoPoints >= 200) {
+    return 5;
   }
 
-  get levelProgress():
-    number {
+  if (this.ecoPoints >= 120) {
+    return 4;
+  }
 
-    if (
-      this.user.totalScans >= 50
-    ) {
-      return 100;
-    }
+  if (this.ecoPoints >= 80) {
+    return 3;
+  }
 
-    if (
-      this.user.totalScans >= 20
-    ) {
-      return Math.round(
-        (
-          (
-            this.user.totalScans -
-            20
-          ) /
-          30
-        ) *
-          100,
-      );
-    }
+  if (this.ecoPoints >= 30) {
+    return 2;
+  }
 
-    return Math.round(
+  return 1;
+}
+
+
+get ecoLevelName(): string {
+
+  const levels:
+    Record<number, string> = {
+
+    1: 'Semilla',
+    2: 'EcoAprendiz',
+    3: 'EcoExplorador',
+    4: 'Guardián Verde',
+    5: 'EcoMaster',
+  };
+
+  return levels[
+    this.ecoLevel
+  ];
+}
+
+
+get nextEcoLevelName():
+  string | null {
+
+  const levels = [
+    {
+      points: 30,
+      name: 'EcoAprendiz',
+    },
+    {
+      points: 80,
+      name: 'EcoExplorador',
+    },
+    {
+      points: 120,
+      name: 'Guardián Verde',
+    },
+    {
+      points: 200,
+      name: 'EcoMaster',
+    },
+  ];
+
+  return (
+    levels.find(
+      level =>
+        level.points >
+        this.ecoPoints,
+    )?.name ?? null
+  );
+}
+
+
+get pointsToNextLevel():
+  number {
+
+  if (this.ecoPoints >= 200) {
+    return 0;
+  }
+
+  if (this.ecoPoints >= 120) {
+    return 200 - this.ecoPoints;
+  }
+
+  if (this.ecoPoints >= 80) {
+    return 120 - this.ecoPoints;
+  }
+
+  if (this.ecoPoints >= 30) {
+    return 80 - this.ecoPoints;
+  }
+
+  return 30 - this.ecoPoints;
+}
+
+
+get levelProgress():
+  number {
+
+  if (this.ecoPoints >= 200) {
+    return 100;
+  }
+
+  let previous = 0;
+  let next = 30;
+
+  if (this.ecoPoints >= 120) {
+    previous = 120;
+    next = 200;
+  } else if (
+    this.ecoPoints >= 80
+  ) {
+    previous = 80;
+    next = 120;
+  } else if (
+    this.ecoPoints >= 30
+  ) {
+    previous = 30;
+    next = 80;
+  }
+
+  return Math.round(
+    (
       (
-        this.user.totalScans /
-        20
-      ) *
-        100,
-    );
-  }
-
-  get scansToNextLevel():
-    number {
-
-    if (
-      this.user.totalScans >= 50
-    ) {
-      return 0;
-    }
-
-    if (
-      this.user.totalScans >= 20
-    ) {
-      return (
-        50 -
-        this.user.totalScans
-      );
-    }
-
-    return (
-      20 -
-      this.user.totalScans
-    );
-  }
-
+        this.ecoPoints -
+        previous
+      ) /
+      (
+        next -
+        previous
+      )
+    ) * 100,
+  );
+}
   getInitials(): string {
 
     return this.user.name

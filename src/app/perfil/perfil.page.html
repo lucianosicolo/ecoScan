@@ -29,10 +29,18 @@
       <h1>{{ user.name }}</h1>
       <p>{{ user.email }}</p>
 
-      <div class="eco-level">
-        <ion-icon name="leaf"></ion-icon>
-        <span>{{ ecoLevel }}</span>
-      </div>
+     <div class="eco-level">
+
+  <ion-icon
+    name="leaf"
+  ></ion-icon>
+
+  <span>
+    Nivel {{ ecoLevel }}
+    · {{ ecoLevelName }}
+  </span>
+
+</div>
     </div>
 
     <button
@@ -94,32 +102,68 @@
   </section>
 
   <!-- Progreso -->
-  <section class="progress-card">
-    <div class="progress-header">
-      <div class="progress-icon">
-        <ion-icon name="leaf-outline"></ion-icon>
-      </div>
+ <section class="progress-card">
 
-      <div>
-        <span>NIVEL DE ACTIVIDAD</span>
-        <h3>{{ ecoLevel }}</h3>
-      </div>
+  <div class="progress-header">
 
-      <strong>{{ levelProgress }}%</strong>
+    <div class="progress-icon">
+
+      <ion-icon
+        name="leaf-outline"
+      ></ion-icon>
+
     </div>
 
-    <div class="progress-track">
-      <div
-        class="progress-value"
-        [style.width.%]="levelProgress"
-      ></div>
+    <div>
+
+      <span>
+        PROGRESO ECOLÓGICO
+      </span>
+
+      <h3>
+        {{ ecoLevelName }}
+      </h3>
+
     </div>
 
-    <p>
-      Te faltan {{ scansToNextLevel }} identificaciones para alcanzar
-      el próximo nivel.
-    </p>
-  </section>
+    <strong>
+      {{ ecoPoints }} EP
+    </strong>
+
+  </div>
+
+
+  <div class="progress-track">
+
+    <div
+      class="progress-value"
+      [style.width.%]="levelProgress"
+    ></div>
+
+  </div>
+
+
+  <p *ngIf="nextEcoLevelName">
+
+    Te faltan
+    <strong>
+      {{ pointsToNextLevel }}
+      EcoPuntos
+    </strong>
+    para alcanzar
+    {{ nextEcoLevelName }}.
+
+  </p>
+
+
+  <p *ngIf="!nextEcoLevelName">
+
+    Alcanzaste el nivel máximo
+    de EcoMundo.
+
+  </p>
+
+</section>
 
   <!-- Información personal -->
   <section class="profile-section">
