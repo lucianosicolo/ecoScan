@@ -130,10 +130,83 @@ export class AuthService {
     );
   }
 
-  isAuthenticated(): boolean {
+isAuthenticated(): boolean {
 
-    return Boolean(
-      this.getToken(),
-    );
+  const token =
+    this.getToken();
+
+  if (!token) {
+    return false;
   }
+
+
+  try {
+
+    const parts =
+      token.split('.');
+
+    if (
+      parts.length !== 3
+    ) {
+
+      this.logout();
+
+      return false;
+    }
+
+
+    const payloadBase64 =
+      parts[1]
+        .replace(
+          /-/g,
+          '+',
+        )
+        .replace(
+          /_/g,
+          '/',
+        );
+
+
+    const payload =
+      JSON.parse(
+        atob(
+          payloadBase64,
+        ),
+      ) as {
+        exp?: number;
+      };
+
+
+    if (!payload.exp) {
+
+      this.logout();
+
+      return false;
+    }
+
+
+    const expirationTime =
+      payload.exp * 1000;
+
+
+    if (
+      Date.now() >=
+      expirationTime
+    ) {
+
+      this.logout();
+
+      return false;
+    }
+
+
+    return true;
+
+  } catch {
+
+    this.logout();
+
+    return false;
+  }
+}
 }
