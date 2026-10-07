@@ -1184,3 +1184,272 @@ ion-modal.image-viewer-modal {
     font-size: 25px;
   }
 }
+/* ==================================================
+   HISTORIAL - LOADING Y CTA
+   ================================================== */
+
+
+/* Loading general */
+
+.history-loading {
+  width: 100%;
+}
+
+
+/* Skeleton resumen */
+
+.summary-card-skeleton {
+  min-height: 108px;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  cursor: default;
+}
+
+
+.history-skeleton-icon {
+  width: 34px;
+  height: 34px;
+
+  margin: 0 auto 8px;
+
+  border-radius: 11px;
+}
+
+
+.history-skeleton-number {
+  width: 38px;
+  height: 19px;
+
+  margin: 0 auto 5px;
+
+  border-radius: 6px;
+}
+
+
+.history-skeleton-label {
+  width: 65%;
+  height: 9px;
+
+  margin: 0 auto;
+
+  border-radius: 5px;
+}
+
+
+/* Skeleton listado */
+
+.history-skeleton-list {
+  display: grid;
+
+  gap: 11px;
+
+  margin-top: 21px;
+}
+
+
+.history-card-skeleton {
+  cursor: default;
+
+  pointer-events: none;
+
+  &:hover {
+    border-color:
+      var(--history-border);
+
+    box-shadow:
+      0 5px 18px
+      rgba(
+        23,
+        54,
+        36,
+        0.045
+      );
+  }
+
+  &:active {
+    transform: none;
+  }
+}
+
+
+.history-skeleton-image {
+  flex-shrink: 0;
+
+  width: 56px;
+  height: 56px;
+
+  margin: 0;
+
+  border-radius: 17px;
+}
+
+
+.history-skeleton-information {
+  flex: 1;
+
+  min-width: 0;
+}
+
+
+.history-skeleton-title {
+  width: 53%;
+  height: 14px;
+
+  margin: 0 0 8px;
+
+  border-radius: 6px;
+}
+
+
+.history-skeleton-subtitle {
+  width: 37%;
+  height: 10px;
+
+  margin: 0 0 9px;
+
+  border-radius: 5px;
+}
+
+
+.history-skeleton-meta {
+  width: 65%;
+  height: 9px;
+
+  margin: 0;
+
+  border-radius: 5px;
+}
+
+
+/* Botón historial vacío */
+
+.empty-scan-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  min-height: 47px;
+
+  margin-top: 20px;
+  padding: 0 18px;
+
+  color: #ffffff;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--history-primary),
+      var(--history-primary-dark)
+    );
+
+  border: 0;
+  border-radius: 14px;
+
+  box-shadow:
+    0 9px 20px
+    rgba(
+      20,
+      122,
+      72,
+      0.2
+    );
+
+  font-size: 12px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
+
+
+  ion-icon {
+    font-size: 18px;
+  }
+
+
+  &:hover {
+    box-shadow:
+      0 11px 24px
+      rgba(
+        20,
+        122,
+        72,
+        0.25
+      );
+  }
+
+
+  &:active {
+    transform:
+      scale(0.98);
+  }
+
+
+  &:focus-visible {
+    outline:
+      3px solid
+      rgba(
+        37,
+        168,
+        101,
+        0.2
+      );
+
+    outline-offset: 3px;
+  }
+}
+
+
+/* Estado desconocido */
+
+.status-badge.status-desconocido {
+  color: #6e756f;
+
+  background: #edf1ee;
+}
+
+
+.detail-status.status-desconocido {
+  color: #626d66;
+
+  background: #f1f4f2;
+
+  border:
+    1px solid #dfe6e1;
+}
+
+
+/* Mejor experiencia táctil */
+
+.filter-chip,
+.clear-button,
+.delete-button,
+.empty-scan-button {
+  -webkit-tap-highlight-color:
+    transparent;
+}
+
+
+/* Celulares chicos */
+
+@media (max-width: 370px) {
+
+  .history-skeleton-image {
+    width: 50px;
+    height: 50px;
+  }
+
+
+  .empty-scan-button {
+    width: 100%;
+
+    max-width: 260px;
+  }
+}

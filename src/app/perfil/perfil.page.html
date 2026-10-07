@@ -4,53 +4,34 @@
   <section class="profile-hero">
     <div class="hero-decoration"></div>
 
-    <button
-      type="button"
-      class="avatar-wrapper"
-      (click)="changeProfilePhoto()"
-      aria-label="Cambiar foto de perfil"
-    >
-      <img
-        *ngIf="user.photo"
-        [src]="user.photo"
-        [alt]="user.name"
-      />
+    <div class="avatar-wrapper" aria-label="Foto de perfil">
+      <img *ngIf="user.photo" [src]="user.photo" [alt]="user.name" />
 
       <span *ngIf="!user.photo">
         {{ getInitials() }}
       </span>
 
-      <div class="camera-badge">
-        <ion-icon name="camera-outline"></ion-icon>
-      </div>
-    </button>
+
+    </div>
 
     <div class="profile-main-information">
       <h1>{{ user.name }}</h1>
       <p>{{ user.email }}</p>
 
-     <div class="eco-level">
+      <div class="eco-level">
 
-  <ion-icon
-    name="leaf"
-  ></ion-icon>
+        <ion-icon name="leaf"></ion-icon>
 
-  <span>
-    Nivel {{ ecoLevel }}
-    · {{ ecoLevelName }}
-  </span>
+        <span>
+          Nivel {{ ecoLevel }}
+          · {{ ecoLevelName }}
+        </span>
 
-</div>
+      </div>
     </div>
 
-    <button
-      type="button"
-      class="edit-profile-button"
-      (click)="toggleEdit()"
-    >
-      <ion-icon
-        [name]="editing ? 'close-outline' : 'create-outline'"
-      ></ion-icon>
+    <button type="button" class="edit-profile-button" (click)="toggleEdit()">
+      <ion-icon [name]="editing ? 'close-outline' : 'create-outline'"></ion-icon>
 
       <span>{{ editing ? 'Cancelar' : 'Editar' }}</span>
     </button>
@@ -102,68 +83,63 @@
   </section>
 
   <!-- Progreso -->
- <section class="progress-card">
+  <section class="progress-card">
 
-  <div class="progress-header">
+    <div class="progress-header">
 
-    <div class="progress-icon">
+      <div class="progress-icon">
 
-      <ion-icon
-        name="leaf-outline"
-      ></ion-icon>
+        <ion-icon name="leaf-outline"></ion-icon>
+
+      </div>
+
+      <div>
+
+        <span>
+          PROGRESO ECOLÓGICO
+        </span>
+
+        <h3>
+          {{ ecoLevelName }}
+        </h3>
+
+      </div>
+
+      <strong>
+        {{ ecoPoints }} EP
+      </strong>
 
     </div>
 
-    <div>
 
-      <span>
-        PROGRESO ECOLÓGICO
-      </span>
+    <div class="progress-track">
 
-      <h3>
-        {{ ecoLevelName }}
-      </h3>
+      <div class="progress-value" [style.width.%]="levelProgress"></div>
 
     </div>
 
-    <strong>
-      {{ ecoPoints }} EP
-    </strong>
 
-  </div>
+    <p *ngIf="nextEcoLevelName">
 
+      Te faltan
+      <strong>
+        {{ pointsToNextLevel }}
+        EcoPuntos
+      </strong>
+      para alcanzar
+      {{ nextEcoLevelName }}.
 
-  <div class="progress-track">
-
-    <div
-      class="progress-value"
-      [style.width.%]="levelProgress"
-    ></div>
-
-  </div>
+    </p>
 
 
-  <p *ngIf="nextEcoLevelName">
+    <p *ngIf="!nextEcoLevelName">
 
-    Te faltan
-    <strong>
-      {{ pointsToNextLevel }}
-      EcoPuntos
-    </strong>
-    para alcanzar
-    {{ nextEcoLevelName }}.
+      Alcanzaste el nivel máximo
+      de EcoMundo.
 
-  </p>
+    </p>
 
-
-  <p *ngIf="!nextEcoLevelName">
-
-    Alcanzaste el nivel máximo
-    de EcoMundo.
-
-  </p>
-
-</section>
+  </section>
 
   <!-- Información personal -->
   <section class="profile-section">
@@ -189,12 +165,8 @@
             {{ user.name }}
           </strong>
 
-          <ion-input
-            *ngIf="editing"
-            name="name"
-            [(ngModel)]="editableUser.name"
-            placeholder="Nombre completo"
-          ></ion-input>
+          <ion-input *ngIf="editing" name="name" [(ngModel)]="editableUser.name"
+            placeholder="Nombre completo"></ion-input>
         </div>
       </div>
 
@@ -211,13 +183,8 @@
             {{ user.email }}
           </strong>
 
-          <ion-input
-            *ngIf="editing"
-            name="email"
-            type="email"
-            [(ngModel)]="editableUser.email"
-            placeholder="Correo electrónico"
-          ></ion-input>
+          <ion-input *ngIf="editing" name="email" type="email" [(ngModel)]="editableUser.email"
+            placeholder="Correo electrónico"></ion-input>
         </div>
       </div>
 
@@ -234,12 +201,7 @@
             {{ user.city }}
           </strong>
 
-          <ion-input
-            *ngIf="editing"
-            name="city"
-            [(ngModel)]="editableUser.city"
-            placeholder="Ciudad"
-          ></ion-input>
+          <ion-input *ngIf="editing" name="city" [(ngModel)]="editableUser.city" placeholder="Ciudad"></ion-input>
         </div>
       </div>
 
@@ -257,24 +219,12 @@
 
     </div>
 
-    <ion-button
-      *ngIf="editing"
-      expand="block"
-      class="save-button"
-      [disabled]="saving"
-      (click)="saveProfile()"
-    >
-      <ion-spinner
-        *ngIf="saving"
-        name="crescent"
-      ></ion-spinner>
+    <ion-button *ngIf="editing" expand="block" class="save-button" [disabled]="saving" (click)="saveProfile()">
+      <ion-spinner *ngIf="saving" name="crescent"></ion-spinner>
 
       <ng-container *ngIf="!saving">
         <span>Guardar cambios</span>
-        <ion-icon
-          slot="end"
-          name="checkmark-outline"
-        ></ion-icon>
+        <ion-icon slot="end" name="checkmark-outline"></ion-icon>
       </ng-container>
     </ion-button>
   </section>
@@ -290,28 +240,7 @@
 
     <div class="settings-card">
 
-      <div class="setting-row">
-        <div class="setting-icon">
-          <ion-icon name="notifications-outline"></ion-icon>
-        </div>
-
-        <div class="setting-information">
-          <strong>Notificaciones</strong>
-          <span>Recibir consejos y recordatorios</span>
-        </div>
-
-     <ion-toggle
-  [(ngModel)]="notificationsEnabled"
-  (ionChange)="saveNotificationPreference()"
-  aria-label="Activar notificaciones"
-></ion-toggle>
-      </div>
-
-      <button
-        type="button"
-        class="setting-row setting-button"
-        (click)="openHelp()"
-      >
+      <button type="button" class="setting-row setting-button" (click)="openHelp()">
         <div class="setting-icon">
           <ion-icon name="help-circle-outline"></ion-icon>
         </div>
@@ -321,17 +250,10 @@
           <span>Conocé cómo funciona EcoScan</span>
         </div>
 
-        <ion-icon
-          class="row-arrow"
-          name="chevron-forward-outline"
-        ></ion-icon>
+        <ion-icon class="row-arrow" name="chevron-forward-outline"></ion-icon>
       </button>
 
-      <button
-        type="button"
-        class="setting-row setting-button"
-        (click)="openAbout()"
-      >
+      <button type="button" class="setting-row setting-button" (click)="openAbout()">
         <div class="setting-icon">
           <ion-icon name="information-circle-outline"></ion-icon>
         </div>
@@ -341,21 +263,317 @@
           <span>Información y versión de la aplicación</span>
         </div>
 
-        <ion-icon
-          class="row-arrow"
-          name="chevron-forward-outline"
-        ></ion-icon>
+        <ion-icon class="row-arrow" name="chevron-forward-outline"></ion-icon>
       </button>
 
     </div>
   </section>
+<!-- Ayuda -->
 
+<ion-modal
+  [isOpen]="helpOpen"
+  cssClass="profile-info-modal"
+  (didDismiss)="closeHelp()"
+>
+
+  <ng-template>
+
+    <div class="info-modal-container">
+
+      <button
+        type="button"
+        class="modal-close-button"
+        (click)="closeHelp()"
+        aria-label="Cerrar ayuda"
+      >
+        <ion-icon
+          name="close-outline"
+        ></ion-icon>
+      </button>
+
+
+      <div class="info-modal-icon">
+        <ion-icon
+          name="help-circle-outline"
+        ></ion-icon>
+      </div>
+
+
+      <span class="info-modal-label">
+        CENTRO DE AYUDA
+      </span>
+
+      <h2>
+        ¿Cómo funciona EcoScan?
+      </h2>
+
+      <p class="info-modal-intro">
+        EcoScan utiliza inteligencia artificial
+        para analizar imágenes de residuos y
+        ayudarte a identificar cómo prepararlos.
+      </p>
+
+
+      <div class="help-list">
+
+        <article class="help-item">
+
+          <div>
+            <ion-icon
+              name="camera-outline"
+            ></ion-icon>
+          </div>
+
+          <section>
+            <strong>
+              1. Sacá una foto
+            </strong>
+
+            <p>
+              Fotografá un residuo de forma clara,
+              con buena iluminación y procurando
+              que sea el objeto principal de la imagen.
+            </p>
+          </section>
+
+        </article>
+
+
+        <article class="help-item">
+
+          <div>
+            <ion-icon
+              name="sparkles-outline"
+            ></ion-icon>
+          </div>
+
+          <section>
+            <strong>
+              2. Análisis con IA
+            </strong>
+
+            <p>
+              EcoScan analiza el objeto, su material
+              y determina si pertenece a las categorías
+              contempladas por la aplicación.
+            </p>
+          </section>
+
+        </article>
+
+
+        <article class="help-item">
+
+          <div>
+            <ion-icon
+              name="checkmark-circle-outline"
+            ></ion-icon>
+          </div>
+
+          <section>
+            <strong>
+              3. Revisá el resultado
+            </strong>
+
+            <p>
+              Vas a ver la categoría, el estado,
+              la confianza del análisis y recomendaciones
+              para preparar correctamente el residuo.
+            </p>
+          </section>
+
+        </article>
+
+
+        <article class="help-item">
+
+          <div>
+            <ion-icon
+              name="location-outline"
+            ></ion-icon>
+          </div>
+
+          <section>
+            <strong>
+              4. Buscá dónde llevarlo
+            </strong>
+
+            <p>
+              Desde Puntos Verdes podés consultar
+              lugares cercanos donde llevar materiales
+              reciclables.
+            </p>
+          </section>
+
+        </article>
+
+      </div>
+
+
+      <div class="scope-notice">
+
+        <ion-icon
+          name="information-circle-outline"
+        ></ion-icon>
+
+        <p>
+          EcoScan contempla botellas plásticas,
+          latas, botellas y frascos de vidrio,
+          papel y cartón.
+        </p>
+
+      </div>
+
+    </div>
+
+  </ng-template>
+
+</ion-modal>
+
+
+<!-- Acerca de EcoScan -->
+
+<ion-modal
+  [isOpen]="aboutOpen"
+  cssClass="profile-info-modal"
+  (didDismiss)="closeAbout()"
+>
+
+  <ng-template>
+
+    <div class="info-modal-container about-modal">
+
+      <button
+        type="button"
+        class="modal-close-button"
+        (click)="closeAbout()"
+        aria-label="Cerrar información"
+      >
+        <ion-icon
+          name="close-outline"
+        ></ion-icon>
+      </button>
+
+
+      <div class="about-logo">
+
+        <ion-icon
+          name="leaf-outline"
+        ></ion-icon>
+
+      </div>
+
+
+      <h2>
+        Eco<span>Scan</span>
+      </h2>
+
+      <p class="about-version">
+        Versión 1.0.0
+      </p>
+
+
+      <p class="about-description">
+        Aplicación orientada a facilitar la
+        identificación y clasificación de residuos
+        domésticos mediante inteligencia artificial.
+      </p>
+
+
+      <div class="about-features">
+
+        <div>
+
+          <ion-icon
+            name="scan-outline"
+          ></ion-icon>
+
+          <span>
+            Clasificación mediante IA
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <ion-icon
+            name="leaf-outline"
+          ></ion-icon>
+
+          <span>
+            Recomendaciones de preparación
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <ion-icon
+            name="time-outline"
+          ></ion-icon>
+
+          <span>
+            Historial de análisis
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <ion-icon
+            name="location-outline"
+          ></ion-icon>
+
+          <span>
+            Puntos Verdes
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <ion-icon
+            name="trophy-outline"
+          ></ion-icon>
+
+          <span>
+            EcoMundo y EcoPuntos
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="thesis-badge">
+
+        <ion-icon
+          name="school-outline"
+        ></ion-icon>
+
+        <div>
+          <span>
+            PROYECTO ACADÉMICO
+          </span>
+
+          <strong>
+            Trabajo Final · Licenciatura en Sistemas
+          </strong>
+        </div>
+
+      </div>
+
+    </div>
+
+  </ng-template>
+
+</ion-modal>
   <!-- Cerrar sesión -->
-  <button
-    type="button"
-    class="logout-button"
-    (click)="logout()"
-  >
+  <button type="button" class="logout-button" (click)="logout()">
     <ion-icon name="log-out-outline"></ion-icon>
     <span>Cerrar sesión</span>
   </button>

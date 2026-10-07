@@ -1,8 +1,11 @@
 <main class="home-container">
 
   <!-- Bienvenida -->
+
   <section class="welcome-section">
+
     <div>
+
       <p class="welcome-label">
         TU ESPACIO ECOLÓGICO
       </p>
@@ -14,15 +17,19 @@
       <p>
         ¿Qué residuo querés identificar hoy?
       </p>
+
     </div>
+
 
     <button type="button" class="profile-avatar" routerLink="/app/perfil" aria-label="Abrir perfil">
       {{ userInitials }}
     </button>
+
   </section>
 
 
   <!-- Acción principal -->
+
   <section class="scanner-card">
 
     <div class="
@@ -35,19 +42,24 @@
         scanner-decoration-two
       "></div>
 
+
     <div class="scanner-content">
 
       <div class="scanner-badge">
+
         <ion-icon name="sparkles-outline"></ion-icon>
 
         <span>
           Reconocimiento con IA
         </span>
+
       </div>
+
 
       <h2>
         Identificá tus residuos
       </h2>
+
 
       <p>
         Sacá una foto y descubrí su material,
@@ -55,9 +67,13 @@
         prepararlo.
       </p>
 
+
       <button type="button" class="scan-main-button" (click)="openScanOptions()">
+
         <div class="scan-icon">
+
           <ion-icon name="scan-outline"></ion-icon>
+
         </div>
 
         <span>
@@ -65,23 +81,29 @@
         </span>
 
         <ion-icon class="arrow-icon" name="arrow-forward-outline"></ion-icon>
+
       </button>
 
     </div>
 
+
     <div class="scanner-illustration">
+
       <ion-icon name="leaf-outline"></ion-icon>
+
     </div>
 
   </section>
 
 
   <!-- Resumen -->
+
   <section class="impact-section">
 
     <div class="section-heading">
 
       <div>
+
         <span class="section-label">
           TU ACTIVIDAD
         </span>
@@ -89,7 +111,9 @@
         <h2>
           Resumen de actividad
         </h2>
+
       </div>
+
 
       <button type="button" class="text-button" routerLink="/app/historial">
         Ver historial
@@ -98,16 +122,30 @@
     </div>
 
 
-    <div class="stats-grid">
+    <!-- Datos cargados -->
+
+    <div *ngIf="
+        !loadingActivity &&
+        !activityError;
+        else activityLoading
+      " class="stats-grid">
 
       <!-- Total -->
+
       <article class="stat-card">
 
-        <div class="stat-icon green-icon">
+        <div class="
+            stat-icon
+            green-icon
+          ">
+
           <ion-icon name="scan-outline"></ion-icon>
+
         </div>
 
+
         <div>
+
           <strong>
             {{ totalScans }}
           </strong>
@@ -115,19 +153,28 @@
           <span>
             Escaneados
           </span>
+
         </div>
 
       </article>
 
 
       <!-- Reciclables -->
+
       <article class="stat-card">
 
-        <div class="stat-icon lime-icon">
+        <div class="
+            stat-icon
+            lime-icon
+          ">
+
           <ion-icon name="checkmark-circle-outline"></ion-icon>
+
         </div>
 
+
         <div>
+
           <strong>
             {{ recyclableWaste }}
           </strong>
@@ -135,49 +182,136 @@
           <span>
             Reciclables
           </span>
+
         </div>
 
       </article>
 
 
-      <!-- Porcentaje -->
+      <!-- Aptos -->
+
       <article class="stat-card">
 
-        <div class="stat-icon blue-icon">
+        <div class="
+            stat-icon
+            blue-icon
+          ">
+
           <ion-icon name="leaf-outline"></ion-icon>
+
         </div>
 
+
         <div>
+
           <strong>
-            {{ recyclablePercentage }}%
+            {{ suitablePercentage }}%
           </strong>
 
           <span>
             Aptos
           </span>
+
         </div>
 
       </article>
 
     </div>
 
-  </section>
-  <!-- EcoMundo -->
-  <section class="eco-world-section">
 
-    <div class="section-heading eco-world-heading">
+    <!-- Loading / error -->
+
+    <ng-template #activityLoading>
+
+      <div *ngIf="
+          loadingActivity;
+          else activityErrorState
+        " class="stats-grid">
+
+        <article *ngFor="
+            let item of [1, 2, 3]
+          " class="
+            stat-card
+            stat-card-skeleton
+          ">
+
+          <ion-skeleton-text [animated]="true" class="skeleton-icon"></ion-skeleton-text>
+
+
+          <ion-skeleton-text [animated]="true" class="skeleton-number"></ion-skeleton-text>
+
+
+          <ion-skeleton-text [animated]="true" class="skeleton-label"></ion-skeleton-text>
+
+        </article>
+
+      </div>
+
+    </ng-template>
+
+
+    <ng-template #activityErrorState>
+
+      <div class="activity-error">
+
+        <ion-icon name="cloud-offline-outline"></ion-icon>
+
+
+        <div>
+
+          <strong>
+            No pudimos cargar tu actividad
+          </strong>
+
+          <span>
+            Verificá la conexión e intentá nuevamente.
+          </span>
+
+        </div>
+
+
+        <button type="button" (click)="retryActivity()">
+          Reintentar
+        </button>
+
+      </div>
+
+    </ng-template>
+
+  </section>
+
+
+  <!-- EcoMundo -->
+
+  <section *ngIf="
+      !loadingActivity &&
+      !activityError
+    " class="eco-world-section">
+
+    <div class="
+        section-heading
+        eco-world-heading
+      ">
 
       <div>
+
         <span class="section-label">
           TU MUNDO
         </span>
 
-        <h2>EcoMundo</h2>
+        <h2>
+          EcoMundo
+        </h2>
+
       </div>
 
+
       <div class="eco-level-pill">
+
         <ion-icon name="leaf-outline"></ion-icon>
+
         Nivel {{ ecoLevel }}
+
       </div>
 
     </div>
@@ -190,6 +324,7 @@
       <div class="eco-world-header">
 
         <div>
+
           <span class="eco-world-eyebrow">
             {{ ecoLevelName }}
           </span>
@@ -197,6 +332,7 @@
           <h3>
             Tu mundo está creciendo
           </h3>
+
         </div>
 
 
@@ -205,6 +341,7 @@
           <ion-icon name="leaf"></ion-icon>
 
           <div>
+
             <strong>
               {{ ecoPoints }}
             </strong>
@@ -212,6 +349,7 @@
             <span>
               EcoPuntos
             </span>
+
           </div>
 
         </div>
@@ -223,7 +361,11 @@
 
       <div class="eco-world-visual">
 
-        <img class="eco-world-image" [src]="ecoWorldImage" [alt]="'EcoMundo - ' + ecoLevelName" />
+        <img class="eco-world-image" [src]="ecoWorldImage" [alt]="
+            'EcoMundo - ' +
+            ecoLevelName
+          " />
+
 
         <div class="eco-world-stage-badge">
 
@@ -235,18 +377,21 @@
 
       </div>
 
+
       <!-- Progreso -->
 
       <div class="eco-world-progress">
 
         <ng-container *ngIf="
-          nextEcoUnlock as nextUnlock;
-          else worldComplete
-        ">
+            nextEcoUnlock
+              as nextUnlock;
+            else worldComplete
+          ">
 
           <div class="eco-next-unlock">
 
             <div>
+
               <span>
                 PRÓXIMO DESBLOQUEO
               </span>
@@ -254,7 +399,9 @@
               <strong>
                 {{ nextUnlock.name }}
               </strong>
+
             </div>
+
 
             <strong class="eco-points-left">
               {{ pointsToNextUnlock }}
@@ -266,15 +413,24 @@
 
           <div class="eco-progress-track">
 
-            <div class="eco-progress-bar" [style.width.%]="ecoProgress"></div>
+            <div class="eco-progress-bar" [style.width.%]="
+                ecoProgress
+              "></div>
 
           </div>
 
 
           <p>
+
             Cada residuo apto suma
-            <strong>10 EcoPuntos</strong>
-            para seguir construyendo tu mundo.
+
+            <strong>
+              10 EcoPuntos
+            </strong>
+
+            para seguir construyendo
+            tu mundo.
+
           </p>
 
         </ng-container>
@@ -293,7 +449,8 @@
               </strong>
 
               <span>
-                Desbloqueaste todos los elementos.
+                Desbloqueaste todos
+                los elementos.
               </span>
 
             </div>
@@ -325,26 +482,27 @@
         <div class="eco-collection-grid">
 
           <article *ngFor="
-            let item of ecoUnlocks
-          " class="eco-collection-item" [class.unlocked]="
-            isEcoUnlocked(
-              item.points
-            )
-          ">
+              let item of ecoUnlocks
+            " class="eco-collection-item" [class.unlocked]="
+              isEcoUnlocked(
+                item.points
+              )
+            ">
 
             <div class="eco-collection-icon">
 
               <ion-icon *ngIf="
-                isEcoUnlocked(
-                  item.points
-                )
-              " [name]="item.icon"></ion-icon>
+                  isEcoUnlocked(
+                    item.points
+                  )
+                " [name]="item.icon"></ion-icon>
+
 
               <ion-icon *ngIf="
-                !isEcoUnlocked(
-                  item.points
-                )
-              " name="lock-closed-outline"></ion-icon>
+                  !isEcoUnlocked(
+                    item.points
+                  )
+                " name="lock-closed-outline"></ion-icon>
 
             </div>
 
@@ -353,17 +511,20 @@
               {{ item.name }}
             </strong>
 
+
             <span>
               {{ item.points }} EP
             </span>
 
 
             <div *ngIf="
-              isEcoUnlocked(
-                item.points
-              )
-            " class="eco-unlocked-check">
+                isEcoUnlocked(
+                  item.points
+                )
+              " class="eco-unlocked-check">
+
               <ion-icon name="checkmark"></ion-icon>
+
             </div>
 
           </article>
@@ -376,12 +537,15 @@
 
   </section>
 
+
   <!-- Último análisis -->
+
   <section class="recent-section">
 
     <div class="section-heading">
 
       <div>
+
         <span class="section-label">
           ACTIVIDAD RECIENTE
         </span>
@@ -389,16 +553,63 @@
         <h2>
           Última clasificación
         </h2>
+
       </div>
 
     </div>
 
 
-    <!-- Último escaneo real -->
-    <div *ngIf="lastScan" class="recent-card">
+    <!-- Loading -->
 
-      <div class="waste-thumbnail">
-        <ion-icon [name]="lastScan.icon"></ion-icon>
+    <div *ngIf="loadingActivity" class="
+        recent-card
+        recent-card-skeleton
+      ">
+
+      <ion-skeleton-text [animated]="true" class="recent-skeleton-image"></ion-skeleton-text>
+
+
+      <div class="recent-skeleton-info">
+
+        <ion-skeleton-text [animated]="true" class="recent-skeleton-title"></ion-skeleton-text>
+
+        <ion-skeleton-text [animated]="true" class="recent-skeleton-text"></ion-skeleton-text>
+
+        <ion-skeleton-text [animated]="true" class="recent-skeleton-bar"></ion-skeleton-text>
+
+      </div>
+
+    </div>
+
+
+    <!-- Último escaneo -->
+
+    <button *ngIf="
+    !loadingActivity &&
+    !activityError &&
+    lastScan
+  " type="button" class="recent-card" routerLink="/app/historial" aria-label="Ver último escaneo en el historial">
+
+      <div class="waste-thumbnail" [class.has-image]="
+          !!lastScan.imagenUrl
+        ">
+
+        <img *ngIf="
+            lastScan.imagenUrl;
+            else recentScanIcon
+          " [src]="
+            getImageUrl(
+              lastScan.imagenUrl
+            )
+          " [alt]="lastScan.name" />
+
+
+        <ng-template #recentScanIcon>
+
+          <ion-icon [name]="lastScan.icon"></ion-icon>
+
+        </ng-template>
+
       </div>
 
 
@@ -410,8 +621,10 @@
             {{ lastScan.name }}
           </strong>
 
+
           <span class="status-badge" [class.not-recyclable]="
-              !lastScan.recyclable
+              lastScan.estado !==
+              'apto'
             ">
             {{ getStatusName(lastScan) }}
           </span>
@@ -438,6 +651,7 @@
 
           </div>
 
+
           <div class="progress-track">
 
             <div class="progress-value" [style.width.%]="
@@ -449,12 +663,20 @@
         </div>
 
       </div>
-
-    </div>
-
+<ion-icon
+  class="recent-arrow"
+  name="chevron-forward-outline"
+></ion-icon>
+    </button>
 
     <!-- Sin escaneos -->
-    <div *ngIf="!lastScan" class="empty-state">
+
+    <div *ngIf="
+        !loadingActivity &&
+        !activityError &&
+        !lastScan
+      " class="empty-state">
+
       <ion-icon name="scan-outline"></ion-icon>
 
       <strong>
@@ -465,19 +687,25 @@
         Tu última clasificación
         aparecerá acá.
       </p>
+
     </div>
 
   </section>
 
 
   <!-- Consejo -->
+
   <section class="eco-tip">
 
     <div class="tip-icon">
+
       <ion-icon name="bulb-outline"></ion-icon>
+
     </div>
 
+
     <div>
+
       <span>
         CONSEJO DEL DÍA
       </span>
@@ -488,6 +716,7 @@
         queden perfectos, pero sí vacíos
         y sin restos.
       </p>
+
     </div>
 
   </section>

@@ -37,67 +37,79 @@ interface ScanResult {
   recyclable: boolean;
   estado: RecyclingStatus;
   icon: string;
+  imagenUrl: string | null;
 }
 
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
-  styleUrls: ['./home.page.scss'],
+  styleUrls: [
+    './home.page.scss',
+  ],
   standalone: false,
 })
-export class HomePage implements OnInit {
+export class HomePage
+  implements OnInit {
 
   totalScans = 0;
 
   recyclableWaste = 0;
 
+  suitableWaste = 0;
+
   ecoPoints = 0;
 
-  lastScan: ScanResult | null = null;
+  loadingActivity = true;
+
+  activityError = false;
+
+  lastScan:
+    ScanResult | null = null;
 
   userName = '';
 
   userInitials = '';
 
 
-  readonly ecoUnlocks: EcoUnlock[] = [
-    {
-      name: 'Brote',
-      points: 10,
-      icon: 'leaf-outline',
-    },
-    {
-      name: 'Árbol',
-      points: 30,
-      icon: 'leaf',
-    },
-    {
-      name: 'Banco',
-      points: 50,
-      icon: 'remove-outline',
-    },
-    {
-      name: 'Laguna',
-      points: 80,
-      icon: 'water-outline',
-    },
-    {
-      name: 'Casita de aves',
-      points: 120,
-      icon: 'home-outline',
-    },
-    {
-      name: 'Estación',
-      points: 160,
-      icon: 'trash-bin-outline',
-    },
-    {
-      name: 'EcoCasa',
-      points: 200,
-      icon: 'home',
-    },
-  ];
+  readonly ecoUnlocks:
+    EcoUnlock[] = [
+      {
+        name: 'Brote',
+        points: 10,
+        icon: 'leaf-outline',
+      },
+      {
+        name: 'Árbol',
+        points: 30,
+        icon: 'leaf',
+      },
+      {
+        name: 'Banco',
+        points: 50,
+        icon: 'remove-outline',
+      },
+      {
+        name: 'Laguna',
+        points: 80,
+        icon: 'water-outline',
+      },
+      {
+        name: 'Casita de aves',
+        points: 120,
+        icon: 'home-outline',
+      },
+      {
+        name: 'Estación',
+        points: 160,
+        icon: 'trash-bin-outline',
+      },
+      {
+        name: 'EcoCasa',
+        points: 200,
+        icon: 'home',
+      },
+    ];
 
 
   constructor(
@@ -111,8 +123,10 @@ export class HomePage implements OnInit {
       AuthService,
   ) {
 
-    this.scanUiService.completed$
+    this.scanUiService
+      .completed$
       .subscribe(() => {
+
         this.loadActivity();
       });
   }
@@ -139,6 +153,9 @@ export class HomePage implements OnInit {
 
   private loadActivity(): void {
 
+    this.loadingActivity = true;
+    this.activityError = false;
+
     this.historialService
       .findAll()
       .subscribe({
@@ -147,13 +164,9 @@ export class HomePage implements OnInit {
           history: HistorialItem[],
         ) => {
 
-          console.log(
-            'Historial recibido en Home:',
-            history,
-          );
-
           this.totalScans =
             history.length;
+
 
           this.recyclableWaste =
             history.filter(
@@ -168,6 +181,11 @@ export class HomePage implements OnInit {
                 scan.estado === 'apto',
             ).length;
 
+
+          this.suitableWaste =
+            aptScans;
+
+
           this.ecoPoints =
             aptScans * 10;
 
@@ -179,12 +197,16 @@ export class HomePage implements OnInit {
             this.lastScan =
               null;
 
+            this.loadingActivity =
+              false;
+
             return;
           }
 
 
           const lastScan =
             history[0];
+
 
           this.lastScan = {
 
@@ -210,13 +232,14 @@ export class HomePage implements OnInit {
               this.getCategoryIcon(
                 lastScan.categoria,
               ),
+
+            imagenUrl:
+              lastScan.imagenUrl,
           };
 
 
-          console.log(
-            'Último escaneo:',
-            this.lastScan,
-          );
+          this.loadingActivity =
+            false;
         },
 
 
@@ -233,9 +256,17 @@ export class HomePage implements OnInit {
 
           this.recyclableWaste = 0;
 
+          this.suitableWaste = 0;
+
           this.ecoPoints = 0;
 
           this.lastScan = null;
+
+          this.loadingActivity =
+            false;
+
+          this.activityError =
+            true;
         },
       });
   }
@@ -342,16 +373,20 @@ export class HomePage implements OnInit {
             this.ecoPoints,
         );
 
+
     const previousPoints =
       previous?.points ?? 0;
+
 
     const range =
       next.points -
       previousPoints;
 
+
     const progress =
       this.ecoPoints -
       previousPoints;
+
 
     return Math.min(
       100,
@@ -363,22 +398,43 @@ export class HomePage implements OnInit {
       ),
     );
   }
-get unlockedEcoCount(): number {
-  return this.ecoUnlocks.filter(
-    (item) =>
-      this.isEcoUnlocked(item.points),
-  ).length;
-}
-get ecoWorldStage(): number {
-  return this.unlockedEcoCount;
-}
 
-get ecoWorldImage(): string {
-  return (
-    `assets/ecomundo/` +
-    `mundo-${this.ecoWorldStage}.png`
-  );
-}
+
+  get unlockedEcoCount():
+    number {
+
+    return (
+      this.ecoUnlocks
+        .filter(
+          (item) =>
+            this.isEcoUnlocked(
+              item.points,
+            ),
+        )
+        .length
+    );
+  }
+
+
+  get ecoWorldStage():
+    number {
+
+    return (
+      this.unlockedEcoCount
+    );
+  }
+
+
+  get ecoWorldImage():
+    string {
+
+    return (
+      `assets/ecomundo/` +
+      `mundo-${this.ecoWorldStage}.png`
+    );
+  }
+
+
   isEcoUnlocked(
     requiredPoints: number,
   ): boolean {
@@ -390,7 +446,7 @@ get ecoWorldImage(): string {
   }
 
 
-  get recyclablePercentage():
+  get suitablePercentage():
     number {
 
     if (
@@ -401,10 +457,16 @@ get ecoWorldImage(): string {
 
     return Math.round(
       (
-        this.recyclableWaste /
+        this.suitableWaste /
         this.totalScans
       ) * 100,
     );
+  }
+
+
+  retryActivity(): void {
+
+    this.loadActivity();
   }
 
 
@@ -424,10 +486,12 @@ get ecoWorldImage(): string {
       return 'No apto';
     }
 
+
     const object =
       scan.name
         ?.trim()
         .toLowerCase();
+
 
     return (
       scan.categoria ===
@@ -469,9 +533,37 @@ get ecoWorldImage(): string {
         'help-circle-outline',
     };
 
+
     return icons[
       category
     ];
+  }
+
+
+  getImageUrl(
+    imagenUrl: string | null,
+  ): string | null {
+
+    if (!imagenUrl) {
+      return null;
+    }
+
+
+    if (
+      imagenUrl.startsWith(
+        'http://',
+      ) ||
+      imagenUrl.startsWith(
+        'https://',
+      )
+    ) {
+      return imagenUrl;
+    }
+
+
+    return (
+      `http://localhost:3000${imagenUrl}`
+    );
   }
 
 

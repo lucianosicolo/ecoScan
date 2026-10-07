@@ -68,8 +68,8 @@ export class PerfilPage
 
   editing = false;
   saving = false;
-
-  notificationsEnabled = true;
+helpOpen = false;
+aboutOpen = false;
 ecoPoints = 0;
   constructor(
     private readonly alertController:
@@ -94,7 +94,6 @@ ecoPoints = 0;
   ngOnInit(): void {
     this.loadUser();
     this.loadActivity();
-    this.loadNotificationPreference();
   }
 
   private loadUser(): void {
@@ -504,13 +503,7 @@ get levelProgress():
       });
   }
 
-  changeProfilePhoto(): void {
 
-    void this.showToast(
-      'La foto de perfil estará disponible próximamente.',
-      'medium',
-    );
-  }
 
   private formatMemberSince(
     createdAt: string,
@@ -544,47 +537,22 @@ get levelProgress():
     );
   }
 
-  private loadNotificationPreference():
-    void {
 
-    const savedPreference =
-      localStorage.getItem(
-        'ecoscan-notifications',
-      );
+ openHelp(): void {
+  this.helpOpen = true;
+}
 
-    if (
-      savedPreference !== null
-    ) {
-      this.notificationsEnabled =
-        savedPreference ===
-        'true';
-    }
-  }
+closeHelp(): void {
+  this.helpOpen = false;
+}
 
-  saveNotificationPreference():
-    void {
+openAbout(): void {
+  this.aboutOpen = true;
+}
 
-    localStorage.setItem(
-      'ecoscan-notifications',
-      String(
-        this.notificationsEnabled,
-      ),
-    );
-  }
-
-  openHelp(): void {
-
-    console.log(
-      'Abrir ayuda',
-    );
-  }
-
-  openAbout(): void {
-
-    console.log(
-      'Abrir información de EcoScan',
-    );
-  }
+closeAbout(): void {
+  this.aboutOpen = false;
+}
 
   async logout():
     Promise<void> {

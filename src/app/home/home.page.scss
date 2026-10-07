@@ -402,7 +402,8 @@ button {
   gap: 13px;
   width: 100%;
   padding: 13px;
-
+appearance: none;
+-webkit-appearance: none;
   text-align: left;
 
   background: #ffffff;
@@ -423,25 +424,58 @@ button {
     border-color: rgba(37, 168, 101, 0.4);
   }
 }
-
 .waste-thumbnail {
   display: flex;
   align-items: center;
   justify-content: center;
 
+  flex-shrink: 0;
+
   width: 61px;
   height: 67px;
 
-  color: var(--ecoscan-primary-dark);
+  overflow: hidden;
+
+  color:
+    var(--ecoscan-primary-dark);
+
   background:
-    linear-gradient(145deg,
+    linear-gradient(
+      145deg,
       #eff9f2,
-      #daf0e1);
+      #daf0e1
+    );
 
   border-radius: 13px;
 
+
   ion-icon {
     font-size: 31px;
+  }
+
+
+  img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+  }
+
+
+  &.has-image {
+    background: #eef3ef;
+
+    border:
+      2px solid #ffffff;
+
+    box-shadow:
+      0 5px 14px
+      rgba(
+        24,
+        83,
+        47,
+        0.10
+      );
   }
 }
 
@@ -735,509 +769,6 @@ button {
   }
 }
 
-/* EcoMundo */
-
-.eco-world-section {
-  margin-bottom: 25px;
-}
-
-.eco-level-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  min-height: 27px;
-  padding: 6px 10px;
-
-  color: var(--ecoscan-primary-dark);
-  background: var(--ecoscan-primary-soft);
-  border: 1px solid rgba(37, 168, 101, 0.14);
-  border-radius: 20px;
-
-  font-size: 10px;
-  font-weight: 850;
-}
-
-.eco-world-card {
-  overflow: hidden;
-
-  background: #ffffff;
-  border: 1px solid var(--ecoscan-border);
-  border-radius: 22px;
-
-  box-shadow:
-    0 8px 22px rgba(22, 58, 35, 0.07);
-}
-
-
-/* Escena */
-
-.eco-world-scene {
-  position: relative;
-
-  height: 205px;
-  overflow: hidden;
-
-  background:
-    linear-gradient(180deg,
-      #bfe8ff 0%,
-      #dff4ff 58%,
-      #eaf7e6 100%);
-}
-
-.eco-world-card.level-2 .eco-world-scene {
-  background:
-    linear-gradient(180deg,
-      #b8e6ff 0%,
-      #ddf5ff 55%,
-      #e5f7df 100%);
-}
-
-.eco-world-card.level-3 .eco-world-scene,
-.eco-world-card.level-4 .eco-world-scene,
-.eco-world-card.level-5 .eco-world-scene {
-  background:
-    linear-gradient(180deg,
-      #aee0fb 0%,
-      #d7f2ff 52%,
-      #dff3d8 100%);
-}
-
-
-/* Sol */
-
-.eco-sun {
-  position: absolute;
-  top: 22px;
-  right: 28px;
-
-  width: 43px;
-  height: 43px;
-
-  background:
-    radial-gradient(circle,
-      #fff9ba 0%,
-      #f8d85c 68%,
-      #efc643 100%);
-
-  border-radius: 50%;
-
-  box-shadow:
-    0 0 0 10px rgba(255, 229, 116, 0.18),
-    0 0 28px rgba(255, 210, 80, 0.34);
-}
-
-
-/* Nubes */
-
-.eco-cloud {
-  position: absolute;
-
-  width: 55px;
-  height: 17px;
-
-  background: rgba(255, 255, 255, 0.88);
-  border-radius: 30px;
-
-  opacity: 0.9;
-
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-
-    background: inherit;
-    border-radius: 50%;
-  }
-
-  &::before {
-    width: 25px;
-    height: 25px;
-    left: 9px;
-    bottom: 4px;
-  }
-
-  &::after {
-    width: 19px;
-    height: 19px;
-    right: 8px;
-    bottom: 3px;
-  }
-}
-
-.cloud-one {
-  top: 37px;
-  left: 30px;
-}
-
-.cloud-two {
-  top: 76px;
-  right: 83px;
-
-  transform: scale(0.7);
-  opacity: 0.65;
-}
-
-
-/* Colinas */
-
-.eco-hill {
-  position: absolute;
-  bottom: -55px;
-
-  border-radius: 50% 50% 0 0;
-}
-
-.hill-back {
-  left: -50px;
-
-  width: 340px;
-  height: 150px;
-
-  background:
-    linear-gradient(180deg,
-      #91cf83,
-      #65b96f);
-
-  transform: rotate(2deg);
-}
-
-.hill-front {
-  right: -70px;
-
-  width: 340px;
-  height: 135px;
-
-  background:
-    linear-gradient(180deg,
-      #66bd6f,
-      #3d9a5d);
-
-  transform: rotate(-3deg);
-}
-
-
-/* Semilla */
-
-.eco-seed {
-  position: absolute;
-  z-index: 5;
-  left: 50%;
-  bottom: 47px;
-
-  width: 38px;
-  height: 30px;
-
-  transform: translateX(-50%);
-}
-
-.seed {
-  position: absolute;
-  left: 15px;
-  top: 4px;
-
-  width: 12px;
-  height: 17px;
-
-  background: #85603a;
-
-  border-radius:
-    70% 30% 70% 30%;
-
-  transform: rotate(28deg);
-}
-
-.seed-ground {
-  position: absolute;
-  left: 1px;
-  bottom: 0;
-
-  width: 36px;
-  height: 9px;
-
-  background: rgba(92, 70, 39, 0.28);
-
-  border-radius: 50%;
-}
-
-
-/* Brote */
-
-.eco-sprout {
-  position: absolute;
-  z-index: 6;
-  left: 50%;
-  bottom: 45px;
-
-  width: 48px;
-  height: 62px;
-
-  transform: translateX(-50%);
-}
-
-.sprout-stem {
-  position: absolute;
-  left: 23px;
-  bottom: 0;
-
-  width: 4px;
-  height: 43px;
-
-  background: #328e50;
-  border-radius: 10px;
-}
-
-.sprout-leaf {
-  position: absolute;
-
-  width: 23px;
-  height: 13px;
-
-  background:
-    linear-gradient(135deg,
-      #72d487,
-      #329c59);
-
-  border-radius:
-    100% 0 100% 0;
-}
-
-.sprout-leaf.left {
-  left: 4px;
-  top: 19px;
-
-  transform: rotate(17deg);
-}
-
-.sprout-leaf.right {
-  right: 2px;
-  top: 8px;
-
-  transform: scaleX(-1) rotate(17deg);
-}
-
-
-/* Árboles */
-
-.eco-tree {
-  position: absolute;
-  z-index: 7;
-
-  width: 66px;
-  height: 100px;
-}
-
-.tree-trunk {
-  position: absolute;
-  z-index: 1;
-  left: 27px;
-  bottom: 0;
-
-  width: 13px;
-  height: 45px;
-
-  background:
-    linear-gradient(90deg,
-      #7a4d2e,
-      #a96f42);
-
-  border-radius: 5px;
-}
-
-.tree-crown {
-  position: absolute;
-  z-index: 2;
-  top: 3px;
-  left: 4px;
-
-  width: 58px;
-  height: 65px;
-
-  background:
-    radial-gradient(circle at 35% 30%,
-      #76d88d,
-      #36a85d 70%);
-
-  border-radius:
-    48% 52% 44% 56% / 56% 46% 54% 44%;
-
-  box-shadow:
-    -13px 12px 0 -5px #46b969,
-    13px 13px 0 -5px #299c53;
-}
-
-.tree-one {
-  left: 20%;
-  bottom: 40px;
-
-  transform: scale(0.82);
-}
-
-.tree-two {
-  right: 18%;
-  bottom: 39px;
-
-  transform: scale(0.9);
-}
-
-.tree-three {
-  left: 44%;
-  bottom: 43px;
-
-  transform: translateX(-50%) scale(1.08);
-}
-
-.tree-four {
-  right: 4%;
-  bottom: 34px;
-
-  transform: scale(0.72);
-}
-
-
-/* Etapa */
-
-.eco-world-stage {
-  position: absolute;
-  z-index: 10;
-  left: 14px;
-  top: 14px;
-
-  padding: 6px 10px;
-
-  color: #1a603b;
-  background: rgba(255, 255, 255, 0.86);
-
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  border-radius: 20px;
-
-  box-shadow:
-    0 4px 12px rgba(27, 87, 50, 0.09);
-
-  font-size: 10px;
-  font-weight: 850;
-
-  backdrop-filter: blur(7px);
-}
-
-
-/* Info inferior */
-
-.eco-world-info {
-  padding: 15px 16px 16px;
-}
-
-.eco-world-summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 15px;
-
-  >div:first-child {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  span {
-    color: var(--ecoscan-muted);
-    font-size: 10px;
-    font-weight: 650;
-  }
-
-  strong {
-    color: var(--ecoscan-text);
-    font-size: 16px;
-    font-weight: 850;
-  }
-}
-
-.eco-world-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-
-  width: 40px;
-  height: 40px;
-
-  color: var(--ecoscan-primary-dark);
-  background: var(--ecoscan-primary-soft);
-
-  border-radius: 13px;
-
-  ion-icon {
-    font-size: 23px;
-  }
-}
-
-
-/* Progreso */
-
-.eco-world-progress {
-  margin-top: 15px;
-}
-
-.eco-progress-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  gap: 10px;
-  margin-bottom: 7px;
-
-  span {
-    color: var(--ecoscan-muted);
-    font-size: 10px;
-  }
-
-  strong {
-    color: var(--ecoscan-primary-dark);
-    font-size: 10px;
-    font-weight: 800;
-  }
-}
-
-.eco-progress-track {
-  width: 100%;
-  height: 7px;
-
-  overflow: hidden;
-
-  background: #e8eee9;
-  border-radius: 20px;
-}
-
-.eco-progress-value {
-  height: 100%;
-
-  background:
-    linear-gradient(90deg,
-      var(--ecoscan-primary),
-      var(--ecoscan-accent));
-
-  border-radius: 20px;
-
-  transition:
-    width 500ms ease;
-}
-
-
-/* Mensaje */
-
-.eco-world-message {
-  margin: 10px 0 0;
-
-  color: var(--ecoscan-muted);
-  font-size: 10px;
-  line-height: 1.45;
-
-  &.completed {
-    color: var(--ecoscan-primary-dark);
-    font-weight: 700;
-  }
-}
 
 /* ==================================================
    ECOSCAN - ECOMUNDO
@@ -1808,10 +1339,11 @@ button {
     }
   }
 
-  .eco-world-image {
-    width: 100%;
-    height: auto;
-  }
+.eco-world-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
   .eco-collection {
     padding-right: 14px;

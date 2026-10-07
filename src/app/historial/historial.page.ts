@@ -1,4 +1,7 @@
-
+import {
+  Component,
+  OnInit,
+} from '@angular/core';
 
 import {
   AlertController,
@@ -10,25 +13,30 @@ import {
 } from 'rxjs';
 
 import {
-  Component,
-} from '@angular/core';
-import {
   RecyclingStatus,
   WasteCategory,
 } from '../scan/services/scan.service';
+
+import {
+  ScanUiService,
+} from '../scan/services/scan-ui.service';
+
 import {
   HistorialItem,
   HistorialService,
 } from './historial.service';
 
+
 type HistoryFilter =
   | 'todos'
   | WasteCategory;
+
 
 interface FilterOption {
   value: HistoryFilter;
   label: string;
 }
+
 
 @Component({
   selector: 'app-historial',
@@ -38,7 +46,8 @@ interface FilterOption {
   ],
   standalone: false,
 })
-export class HistorialPage {
+export class HistorialPage
+  implements OnInit {
 
   selectedFilter:
     HistoryFilter = 'todos';
@@ -48,9 +57,16 @@ export class HistorialPage {
 
   isDetailOpen = false;
 
+  imageViewerOpen = false;
+
+  imageViewerUrl:
+    string | null = null;
+
   loading = false;
 
-  history: HistorialItem[] = [];
+  history:
+    HistorialItem[] = [];
+
 
   readonly filters:
     FilterOption[] = [
@@ -84,6 +100,7 @@ export class HistorialPage {
       },
     ];
 
+
   constructor(
     private readonly alertController:
       AlertController,
@@ -93,26 +110,31 @@ export class HistorialPage {
 
     private readonly historialService:
       HistorialService,
-  ) { }
+
+    private readonly scanUiService:
+      ScanUiService,
+  ) {}
 
 
   ngOnInit(): void {
+
     this.loadHistory();
   }
 
+
   loadHistory(): void {
+
     this.loading = true;
+
 
     this.historialService
       .findAll()
       .subscribe({
+
         next: (
-          history: HistorialItem[],
+          history:
+            HistorialItem[],
         ) => {
-          console.log(
-            'Historial recibido:',
-            history,
-          );
 
           this.history =
             history;
@@ -121,9 +143,11 @@ export class HistorialPage {
             false;
         },
 
+
         error: async (
           error: unknown,
         ) => {
+
           console.error(
             'Error cargando historial:',
             error,
@@ -132,20 +156,30 @@ export class HistorialPage {
           this.loading =
             false;
 
+
           const toast =
             await this.toastController
               .create({
+
                 message:
                   'No se pudo cargar el historial.',
-                duration: 2500,
-                color: 'danger',
-                position: 'bottom',
+
+                duration:
+                  2500,
+
+                color:
+                  'danger',
+
+                position:
+                  'bottom',
               });
+
 
           await toast.present();
         },
       });
   }
+
 
   get filteredHistory():
     HistorialItem[] {
@@ -154,8 +188,10 @@ export class HistorialPage {
       this.selectedFilter ===
       'todos'
     ) {
+
       return this.history;
     }
+
 
     return this.history.filter(
       (scan) =>
@@ -164,40 +200,27 @@ export class HistorialPage {
     );
   }
 
-  get recyclableCount():
+
+  get suitableCount():
     number {
 
     return this.history.filter(
       (scan) =>
-        scan.reciclable,
+        scan.estado ===
+        'apto',
     ).length;
   }
 
-  get averageConfidence():
+
+  get ecoPoints():
     number {
 
-    if (
-      this.history.length === 0
-    ) {
-      return 0;
-    }
-
-    const total =
-      this.history.reduce(
-        (
-          sum,
-          scan,
-        ) =>
-          sum +
-          scan.confianza,
-        0,
-      );
-
-    return Math.round(
-      total /
-      this.history.length,
+    return (
+      this.suitableCount *
+      10
     );
   }
+
 
   selectFilter(
     filter: HistoryFilter,
@@ -206,6 +229,14 @@ export class HistorialPage {
     this.selectedFilter =
       filter;
   }
+
+
+  openScan(): void {
+
+    this.scanUiService
+      .open();
+  }
+
 
   openDetail(
     scan: HistorialItem,
@@ -218,18 +249,24 @@ export class HistorialPage {
       true;
   }
 
+
   closeDetail(): void {
+
     this.isDetailOpen =
       false;
 
+
     setTimeout(
       () => {
+
         this.selectedScan =
           null;
+
       },
       250,
     );
   }
+
 
   async confirmDelete(
     scan: HistorialItem,
@@ -238,9 +275,11 @@ export class HistorialPage {
 
     event.stopPropagation();
 
+
     const alert =
       await this.alertController
         .create({
+
           header:
             'Eliminar escaneo',
 
@@ -249,14 +288,21 @@ export class HistorialPage {
 
           buttons: [
             {
-              text: 'Cancelar',
-              role: 'cancel',
+              text:
+                'Cancelar',
+
+              role:
+                'cancel',
             },
             {
-              text: 'Eliminar',
-              role: 'destructive',
+              text:
+                'Eliminar',
+
+              role:
+                'destructive',
 
               handler: () => {
+
                 this.deleteScan(
                   scan.id,
                 );
@@ -265,16 +311,21 @@ export class HistorialPage {
           ],
         });
 
+
     await alert.present();
   }
+
 
   private deleteScan(
     id: number,
   ): void {
 
     this.historialService
-      .remove(id)
+      .remove(
+        id,
+      )
       .subscribe({
+
         next: () => {
 
           this.history =
@@ -283,73 +334,100 @@ export class HistorialPage {
                 item.id !== id,
             );
 
+
           if (
             this.selectedScan?.id ===
             id
           ) {
+
             this.closeDetail();
           }
         },
 
+
         error: async (
           error: unknown,
         ) => {
+
           console.error(
             'Error eliminando escaneo:',
             error,
           );
 
+
           const toast =
             await this.toastController
               .create({
+
                 message:
                   'No se pudo eliminar el escaneo.',
-                duration: 2500,
-                color: 'danger',
-                position: 'bottom',
+
+                duration:
+                  2500,
+
+                color:
+                  'danger',
+
+                position:
+                  'bottom',
               });
+
 
           await toast.present();
         },
       });
   }
 
+
   async confirmClearHistory():
     Promise<void> {
 
     if (
-      this.history.length === 0
+      this.history.length ===
+      0
     ) {
+
       return;
     }
+
 
     const alert =
       await this.alertController
         .create({
+
           header:
             'Vaciar historial',
 
           message:
-            'Se eliminarán todos los escaneos guardados.',
+            'Se eliminarán todos los escaneos guardados y se reiniciará el progreso de EcoMundo.',
 
           buttons: [
             {
-              text: 'Cancelar',
-              role: 'cancel',
+              text:
+                'Cancelar',
+
+              role:
+                'cancel',
             },
             {
-              text: 'Vaciar',
-              role: 'destructive',
+              text:
+                'Vaciar',
+
+              role:
+                'destructive',
 
               handler: () => {
+
                 this.clearHistory();
               },
             },
           ],
         });
 
+
     await alert.present();
   }
+
 
   private clearHistory():
     void {
@@ -363,49 +441,68 @@ export class HistorialPage {
             ),
       );
 
+
     if (
-      requests.length === 0
+      requests.length ===
+      0
     ) {
+
       return;
     }
 
+
     forkJoin(
       requests,
-    ).subscribe({
-      next: () => {
+    )
+      .subscribe({
 
-        this.history = [];
+        next: () => {
 
-        this.selectedFilter =
-          'todos';
+          this.history = [];
 
-        this.closeDetail();
-      },
+          this.selectedFilter =
+            'todos';
 
-      error: async (
-        error: unknown,
-      ) => {
-        console.error(
-          'Error vaciando historial:',
-          error,
-        );
+          this.closeDetail();
+        },
 
-        const toast =
-          await this.toastController
-            .create({
-              message:
-                'No se pudo vaciar completamente el historial.',
-              duration: 2500,
-              color: 'danger',
-              position: 'bottom',
-            });
 
-        await toast.present();
+        error: async (
+          error: unknown,
+        ) => {
 
-        this.loadHistory();
-      },
-    });
+          console.error(
+            'Error vaciando historial:',
+            error,
+          );
+
+
+          const toast =
+            await this.toastController
+              .create({
+
+                message:
+                  'No se pudo vaciar completamente el historial.',
+
+                duration:
+                  2500,
+
+                color:
+                  'danger',
+
+                position:
+                  'bottom',
+              });
+
+
+          await toast.present();
+
+          this.loadHistory();
+        },
+      });
   }
+
+
   isOutOfScope(
     scan: HistorialItem,
   ): boolean {
@@ -415,26 +512,35 @@ export class HistorialPage {
         ?.trim()
         .toLowerCase();
 
+
     return (
-      scan.categoria === 'desconocido' &&
+      scan.categoria ===
+        'desconocido' &&
       !!object &&
-      object !== 'objeto no identificado'
+      object !==
+        'objeto no identificado'
     );
   }
+
 
   getHistoryCategoryName(
     scan: HistorialItem,
   ): string {
 
     if (
-      scan.categoria !== 'desconocido'
+      scan.categoria !==
+      'desconocido'
     ) {
+
       return this.getCategoryName(
         scan.categoria,
       );
     }
 
-    return this.isOutOfScope(scan)
+
+    return this.isOutOfScope(
+      scan,
+    )
       ? 'Fuera del alcance'
       : 'No identificado';
   }
@@ -445,21 +551,30 @@ export class HistorialPage {
   ): string {
 
     if (
-      scan.estado === 'apto'
+      scan.estado ===
+      'apto'
     ) {
+
       return 'Apto';
     }
 
+
     if (
-      scan.estado === 'no_apto'
+      scan.estado ===
+      'no_apto'
     ) {
+
       return 'No apto';
     }
 
-    return this.isOutOfScope(scan)
+
+    return this.isOutOfScope(
+      scan,
+    )
       ? 'Fuera del alcance'
       : 'No identificado';
   }
+
 
   getStatusIcon(
     status: RecyclingStatus,
@@ -470,6 +585,7 @@ export class HistorialPage {
         RecyclingStatus,
         string
       > = {
+
       apto:
         'checkmark-circle',
 
@@ -480,40 +596,13 @@ export class HistorialPage {
         'help-circle',
     };
 
+
     return icons[
       status
     ];
   }
-  imageViewerOpen = false;
 
-  imageViewerUrl: string | null = null;
-  openImageViewer(
-    scan: HistorialItem,
-  ): void {
 
-    if (!scan.imagenUrl) {
-      return;
-    }
-
-    this.imageViewerUrl =
-      this.getImageUrl(
-        scan.imagenUrl,
-      );
-
-    this.imageViewerOpen = true;
-  }
-
-  closeImageViewer(): void {
-
-    this.imageViewerOpen = false;
-
-    setTimeout(
-      () => {
-        this.imageViewerUrl = null;
-      },
-      200,
-    );
-  }
   getStatusClass(
     status: RecyclingStatus,
   ): string {
@@ -522,6 +611,7 @@ export class HistorialPage {
       `status-${status}`
     );
   }
+
 
   getCategoryName(
     category: WasteCategory,
@@ -532,6 +622,7 @@ export class HistorialPage {
         WasteCategory,
         string
       > = {
+
       plastico:
         'Plástico',
 
@@ -551,22 +642,13 @@ export class HistorialPage {
         'Desconocido',
     };
 
+
     return names[
       category
     ];
   }
-  getImageUrl(
-    imagenUrl: string | null,
-  ): string | null {
 
-    if (!imagenUrl) {
-      return null;
-    }
 
-    return (
-      `http://localhost:3000${imagenUrl}`
-    );
-  }
   getCategoryIcon(
     category: WasteCategory,
   ): string {
@@ -576,6 +658,7 @@ export class HistorialPage {
         WasteCategory,
         string
       > = {
+
       plastico:
         'water-outline',
 
@@ -595,10 +678,81 @@ export class HistorialPage {
         'help-circle-outline',
     };
 
+
     return icons[
       category
     ];
   }
+
+
+  getImageUrl(
+    imagenUrl: string | null,
+  ): string | null {
+
+    if (!imagenUrl) {
+      return null;
+    }
+
+
+    if (
+      imagenUrl.startsWith(
+        'http://',
+      ) ||
+      imagenUrl.startsWith(
+        'https://',
+      )
+    ) {
+
+      return imagenUrl;
+    }
+
+
+    return (
+      `http://localhost:3000${imagenUrl}`
+    );
+  }
+
+
+  openImageViewer(
+    scan: HistorialItem,
+  ): void {
+
+    if (
+      !scan.imagenUrl
+    ) {
+
+      return;
+    }
+
+
+    this.imageViewerUrl =
+      this.getImageUrl(
+        scan.imagenUrl,
+      );
+
+
+    this.imageViewerOpen =
+      true;
+  }
+
+
+  closeImageViewer(): void {
+
+    this.imageViewerOpen =
+      false;
+
+
+    setTimeout(
+      () => {
+
+        this.imageViewerUrl =
+          null;
+
+      },
+      200,
+    );
+  }
+
 
   formatDate(
     date: string,
@@ -608,10 +762,17 @@ export class HistorialPage {
       .DateTimeFormat(
         'es-AR',
         {
-          day: '2-digit',
-          month: 'short',
-          hour: '2-digit',
-          minute: '2-digit',
+          day:
+            '2-digit',
+
+          month:
+            'short',
+
+          hour:
+            '2-digit',
+
+          minute:
+            '2-digit',
         },
       )
       .format(
@@ -620,6 +781,7 @@ export class HistorialPage {
         ),
       );
   }
+
 
   trackById(
     _index: number,
