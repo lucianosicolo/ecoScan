@@ -150,15 +150,6 @@ export class LoginPage
     }
   }
 
-  async forgotPassword():
-    Promise<void> {
-
-    await this.showToast(
-      'La recuperación de contraseña estará disponible próximamente.',
-      'medium',
-    );
-  }
-
   private getErrorMessage(
     error: unknown,
   ): string {
