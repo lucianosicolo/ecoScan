@@ -22,8 +22,6 @@ import {
 
 interface RegisterForm {
   nombre: string;
-  apellido: string;
-  ciudad: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -42,8 +40,6 @@ export class RegistroPage {
 
   form: RegisterForm = {
     nombre: '',
-    apellido: '',
-    ciudad: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -68,7 +64,7 @@ export class RegistroPage {
 
     private readonly alertController:
       AlertController,
-  ) { }
+  ) {}
 
   get passwordsDoNotMatch():
     boolean {
@@ -95,11 +91,15 @@ export class RegistroPage {
     this.showConfirmPassword =
       !this.showConfirmPassword;
   }
-  async register(): Promise<void> {
+
+  async register():
+    Promise<void> {
+
     this.formSubmitted = true;
 
     const fullName =
-      this.form.nombre.trim();
+      this.form.nombre
+        .trim();
 
     const email =
       this.form.email
@@ -110,7 +110,7 @@ export class RegistroPage {
       fullName
         .split(' ')
         .filter(
-          (part: string | any[]) =>
+          (part: string) =>
             part.length > 0,
         );
 
@@ -142,12 +142,12 @@ export class RegistroPage {
 
     const request:
       RegisterRequest = {
-      nombre,
-      apellido,
-      email,
-      password:
-        this.form.password,
-    };
+        nombre,
+        apellido,
+        email,
+        password:
+          this.form.password,
+      };
 
     this.loading = true;
 
@@ -179,7 +179,7 @@ export class RegistroPage {
         );
 
     } catch (
-    error: unknown
+      error: unknown
     ) {
       console.error(
         'Error registrando usuario:',
@@ -248,8 +248,8 @@ export class RegistroPage {
           status?: number;
           error?: {
             message?:
-            string |
-            string[];
+              string |
+              string[];
           };
         };
 
