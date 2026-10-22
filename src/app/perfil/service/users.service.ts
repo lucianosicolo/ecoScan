@@ -23,7 +23,6 @@ export interface UsersDto {
   nombre?: string;
   apellido?: string;
   email?: string;
-  password?: string;
   ciudad?: string;
 }
 
@@ -39,33 +38,6 @@ export class UsersService {
     private readonly http:
       HttpClient,
   ) {}
-
-  create(
-    usersDto: UsersDto,
-  ): Observable<User> {
-
-    return this.http.post<User>(
-      this.apiUrl,
-      usersDto,
-    );
-  }
-
-  findAll():
-    Observable<User[]> {
-
-    return this.http.get<User[]>(
-      this.apiUrl,
-    );
-  }
-
-  findOne(
-    id: number,
-  ): Observable<User> {
-
-    return this.http.get<User>(
-      `${this.apiUrl}/${id}`,
-    );
-  }
 
   update(
     id: number,
