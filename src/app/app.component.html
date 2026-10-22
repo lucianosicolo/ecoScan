@@ -37,12 +37,19 @@
         (click)="navigateTo('/app/perfil')"
       >
         <div class="user-avatar">
-          <span>LS</span>
+          <span>
+            {{ menuUserInitials }}
+          </span>
         </div>
 
         <div class="user-information">
-          <strong>Luciano Sicolo</strong>
-          <span>Explorador ecológico</span>
+          <strong>
+            {{ menuUserName }}
+          </strong>
+
+          <span>
+            {{ menuUserSubtitle }}
+          </span>
         </div>
 
         <ion-icon
