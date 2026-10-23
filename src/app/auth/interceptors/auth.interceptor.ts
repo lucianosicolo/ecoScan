@@ -1,3 +1,4 @@
+import { isBackendRequest as isBackendRequestUrl } from '../../config/api.config';
 import {
   Injectable,
 } from '@angular/core';
@@ -44,10 +45,7 @@ export class AuthInterceptor
     const token =
       this.authService.getToken();
 
-    const isBackendRequest =
-      request.url.startsWith(
-        'http://localhost:3000',
-      );
+    const isBackendRequest = isBackendRequestUrl(request.url);
 
     if (
       !token ||
