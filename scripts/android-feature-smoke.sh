@@ -155,7 +155,7 @@ else
 fi
 
 snapshot 05-before-scan
-if ui text "Escanear" "$OUT/05-before-scan.xml"; then
+if ui text "Identificar un residuo" "$OUT/05-before-scan.xml"; then
   sleep 2
   snapshot 06-scan-options
   if grep -q "Tomar una foto" "$OUT/06-scan-options.xml"; then
