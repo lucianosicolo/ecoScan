@@ -18,6 +18,8 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+      - name: Check pinned Android package metadata
+        run: npm view @capacitor/android@7.1.0 dist.integrity dist.tarball peerDependencies --json
       - name: Install dependencies
         run: npm ci
       - name: Compile production app
