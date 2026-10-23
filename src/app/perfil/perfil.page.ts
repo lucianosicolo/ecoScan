@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
 } from '@angular/core';
 
 import {
@@ -48,8 +47,7 @@ interface UserProfile {
   ],
   standalone: false,
 })
-export class PerfilPage
-  implements OnInit {
+export class PerfilPage {
 
   user: UserProfile = {
     name: '',
@@ -91,7 +89,7 @@ export class PerfilPage
       UsersService,
   ) { }
 
-  ngOnInit(): void {
+  ionViewWillEnter(): void {
     this.loadUser();
     this.loadActivity();
   }
