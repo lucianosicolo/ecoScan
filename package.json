@@ -1,8 +1,7 @@
 {
-  "name": "ionic-app-base",
-  "version": "0.0.0",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "name": "ecoscan",
+  "version": "1.0.0",
+  "author": "Luciano Sicolo",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
