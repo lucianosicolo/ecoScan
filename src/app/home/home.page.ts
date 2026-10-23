@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
 } from '@angular/core';
 
 import {
@@ -49,8 +48,7 @@ interface ScanResult {
   ],
   standalone: false,
 })
-export class HomePage
-  implements OnInit {
+export class HomePage {
 
   totalScans = 0;
 
@@ -132,22 +130,30 @@ export class HomePage
   }
 
 
-  ngOnInit(): void {
+  ionViewWillEnter(): void {
 
+    this.loadUserIdentity();
     this.loadActivity();
+  }
+
+
+  private loadUserIdentity(): void {
 
     const user =
       this.authService.getUser();
 
-    if (user) {
-
-      this.userName =
-        user.nombre;
-
-      this.userInitials =
-        `${user.nombre.charAt(0)}${user.apellido.charAt(0)}`
-          .toUpperCase();
+    if (!user) {
+      this.userName = '';
+      this.userInitials = '';
+      return;
     }
+
+    this.userName =
+      user.nombre;
+
+    this.userInitials =
+      `${user.nombre.charAt(0)}${user.apellido.charAt(0)}`
+        .toUpperCase();
   }
 
 
