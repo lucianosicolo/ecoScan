@@ -1,0 +1,56 @@
+name: EcoScan Android Native Smoke
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/android-emulator.yml'
+      - 'scripts/android-emulator-smoke.sh'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  android-device-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install frontend
+        run: npm ci
+      - name: Compile Angular for native device
+        run: npm run build
+      - name: Synchronize Android
+        run: npx cap sync android
+      - name: Enable Linux KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Run Android emulator smoke test
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          emulator-boot-timeout: 600
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
+          script: bash scripts/android-emulator-smoke.sh
+      - name: Upload native screenshots and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecoscan-android-native-smoke
+          path: android-native-audit/
+          if-no-files-found: warn
+          retention-days: 7
