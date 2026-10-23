@@ -125,9 +125,36 @@
   </section>
 
 
+  <!-- Error de carga -->
+
+  <section
+    *ngIf="!loading && loadError"
+    class="empty-state compact"
+  >
+    <div class="empty-icon small">
+      <ion-icon name="cloud-offline-outline"></ion-icon>
+    </div>
+
+    <h2>No pudimos cargar tu historial</h2>
+
+    <p>
+      Verificá la conexión con el servidor e intentá nuevamente.
+    </p>
+
+    <button
+      type="button"
+      class="empty-scan-button"
+      (click)="loadHistory()"
+    >
+      <ion-icon name="refresh-outline"></ion-icon>
+      <span>Reintentar</span>
+    </button>
+  </section>
+
+
   <!-- Contenido cargado -->
 
-  <ng-container *ngIf="!loading">
+  <ng-container *ngIf="!loading && !loadError">
 
     <!-- Resumen -->
 
@@ -257,8 +284,7 @@
         "
         class="history-card"
         tabindex="0"
-        (click)="openDetail(scan)"
-        (keyup.enter)="openDetail(scan)"
+        (click)="openDetail(scan)"        (keyup.enter)="openDetail(scan)"
       >
 
         <!-- Imagen -->
@@ -517,8 +543,7 @@
         class="detail-container"
       >
 
-        <button
-          type="button"
+        <button          type="button"
           class="modal-close"
           aria-label="Cerrar detalle"
           (click)="closeDetail()"
