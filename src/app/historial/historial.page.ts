@@ -1,3 +1,4 @@
+import { scanImageUrl } from '../config/api.config';
 import {
   Component,
 } from '@angular/core';
@@ -687,16 +688,7 @@ export class HistorialPage {
   }
 
 
-  getImageUrl(
-    imagenUrl: string | null,
-  ): string | null {
-
-    if (!imagenUrl) {
-      return null;
-    }
-
-
-    if (
-      imagenUrl.startsWith(
-        'http://',
-      ) ||
+  getImageUrl(imagenUrl: string | null): string | null {
+    return scanImageUrl(imagenUrl);
+  }
+}
