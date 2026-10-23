@@ -89,6 +89,10 @@ export class PerfilPage {
       UsersService,
   ) { }
 
+  ngOnInit(): void {
+    this.ionViewWillEnter();
+  }
+
   ionViewWillEnter(): void {
     this.loadUser();
     this.loadActivity();
