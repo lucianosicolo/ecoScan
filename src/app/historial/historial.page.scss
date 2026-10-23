@@ -251,6 +251,8 @@ button {
 
 .history-list {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
   gap: 11px;
 }
 
@@ -258,6 +260,9 @@ button {
   display: flex;
   align-items: center;
   gap: 13px;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 
   padding: 13px;
 
@@ -430,6 +435,8 @@ button {
 
     color: #849087;
     font-size: 9px;
+    min-width: 0;
+    overflow-wrap: anywhere;
 
     ion-icon {
       font-size: 12px;
