@@ -49,7 +49,14 @@ if mode=="edit":
         sys.exit(4)
     matched=matched[index:index+1]
 elif mode=="text":
-    matched=[n for n in nodes if term.lower() in (n.attrib.get("text","")+" "+n.attrib.get("content-desc","")).lower()]
+    term=term.strip().lower()
+    available=[n for n in nodes if n.attrib.get("bounds") not in ("[0,0][0,0]",None)]
+    def fields(node):
+        return (node.attrib.get("text","").strip().lower(),node.attrib.get("content-desc","").strip().lower())
+    exact=[n for n in available if term in fields(n)]
+    partial=[n for n in available if term in (" ".join(fields(n))).lower()]
+    matched=exact if exact else partial
+    matched.sort(key=lambda n: n.attrib.get("clickable")!="true")
 else:sys.exit(2)
 for node in matched:
     match=re.match(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]",node.attrib.get("bounds",""))
@@ -127,6 +134,12 @@ native_alive
 if ui text "Puntos" "$OUT/03-after-login.xml";then
   sleep 13
   snapshot 04-map
+  if grep -q "Puntos verdes" "$OUT/04-map.xml"; then
+    record "NATIVE_MAP_NAVIGATION_CONFIRMED"
+  else
+    record "NATIVE_FAIL_MAP_PAGE_NOT_OPEN"
+    exit 1
+  fi
   if grep -q "No pudimos cargar el mapa" "$OUT/04-map.xml"; then
     record "NATIVE_MAP_API_ERROR_FALLBACK_VISIBLE"
   elif grep -q "Cargando mapa" "$OUT/04-map.xml"; then
@@ -177,9 +190,23 @@ PY
     snapshot 07-native-photo-picker
     record "NATIVE_GALLERY_PICKER_LAUNCHED"
     # Prefer a picker tile with an accessible image label, do not choose an arbitrary private photo.
-    if ui text "ecoscan-fixture" "$OUT/07-native-photo-picker.xml"; then
+    if ui text "Photo taken on" "$OUT/07-native-photo-picker.xml"; then
       sleep 3
       snapshot 08-after-gallery-selection
+      if ui text "Add" "$OUT/08-after-gallery-selection.xml"; then
+        sleep 2
+        record "NATIVE_PHOTO_PICKER_CONFIRMED"
+      fi
+      sleep 7
+      snapshot 08b-after-scan
+      if grep -q '"path": "/scan"' "$OUT/requests.jsonl"; then
+        record "NATIVE_GALLERY_IMAGE_UPLOAD_CONFIRMED"
+      else
+        record "NATIVE_GALLERY_IMAGE_UPLOAD_NOT_OBSERVED"
+      fi
+      if grep -q "Finalizar" "$OUT/08b-after-scan.xml"; then
+        ui text "Finalizar" "$OUT/08b-after-scan.xml" || true
+      fi
     else
       record "NATIVE_GALLERY_FIXTURE_NOT_SELECTABLE_AUTOMATICALLY"
     fi
@@ -197,6 +224,22 @@ PY
       sleep 5
       snapshot 11-camera-intent
       record "NATIVE_CAMERA_ACTION_INVOKED"
+      if ui text "Shutter" "$OUT/11-camera-intent.xml"; then
+        sleep 3
+        snapshot 11b-after-shutter
+        record "NATIVE_CAMERA_SHUTTER_TAPPED"
+        if ui text "Done" "$OUT/11b-after-shutter.xml"; then
+          sleep 3
+        elif ui text "Use photo" "$OUT/11b-after-shutter.xml"; then
+          sleep 3
+        fi
+        snapshot 11c-after-camera
+        if grep -q '"path": "/scan"' "$OUT/requests.jsonl"; then
+          record "NATIVE_CAMERA_OR_GALLERY_UPLOAD_OBSERVED"
+        fi
+      else
+        record "NATIVE_CAMERA_SHUTTER_NOT_ACCESSIBLE"
+      fi
       adb shell input keyevent 4 || true
     else
       record "NATIVE_CAMERA_ACTION_NOT_ACCESSIBLE"
