@@ -1,3 +1,4 @@
+import { apiUrl } from '../config/api.config';
 import {
     Injectable,
 } from '@angular/core';
@@ -40,8 +41,9 @@ export interface HistorialItem {
 })
 export class HistorialService {
 
-    private readonly apiUrl =
-        'http://localhost:3000/historial';
+    private get apiUrl(): string {
+    return apiUrl('historial');
+  }
 
     constructor(
         private readonly http: HttpClient,
