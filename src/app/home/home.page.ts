@@ -1,3 +1,4 @@
+import { scanImageUrl } from '../config/api.config';
 import {
   Component,
 } from '@angular/core';
@@ -567,9 +568,7 @@ export class HomePage {
     }
 
 
-    return (
-      `http://localhost:3000${imagenUrl}`
-    );
+    return scanImageUrl(imagenUrl);
   }
 
 
