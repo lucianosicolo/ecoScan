@@ -1,3 +1,4 @@
+import { getApiBaseUrl, setApiBaseUrl } from '../../config/api.config';
 import {
   Component,
   OnInit,
@@ -8,6 +9,7 @@ import {
 } from '@angular/router';
 
 import {
+  AlertController,
   ToastController,
 } from '@ionic/angular';
 
@@ -45,6 +47,9 @@ export class LoginPage
     private readonly toastController:
       ToastController,
 
+    private readonly alertController:
+      AlertController,
+
     private readonly authService:
       AuthService,
   ) {}
@@ -62,6 +67,44 @@ export class LoginPage
       this.rememberMe =
         true;
     }
+  }
+
+  get serverAddress(): string {
+    return getApiBaseUrl();
+  }
+
+  async configureServer(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Configurar servidor',
+      message: 'Para usar EcoScan desde un celular conectado a la misma red Wi-Fi que la computadora, ingresá la dirección IP de la computadora y el puerto 3000.',
+      inputs: [{
+        name: 'baseUrl',
+        type: 'url',
+        value: getApiBaseUrl(),
+        placeholder: 'http://192.168.1.100:3000',
+      }],
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Guardar',
+          handler: (values: { baseUrl?: string }) => {
+            try {
+              setApiBaseUrl(values.baseUrl ?? '');
+              void this.showToast('Servidor actualizado.', 'success');
+              return true;
+            } catch (error) {
+              void this.showToast(
+                error instanceof Error ? error.message : 'Dirección no válida.',
+                'danger',
+              );
+              return false;
+            }
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 
   togglePassword(): void {
