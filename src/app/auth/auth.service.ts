@@ -211,3 +211,4 @@ isAuthenticated(): boolean {
     return false;
   }
 }
+}
