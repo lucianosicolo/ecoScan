@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
 } from '@angular/core';
 
 import {
@@ -46,8 +45,7 @@ interface FilterOption {
   ],
   standalone: false,
 })
-export class HistorialPage
-  implements OnInit {
+export class HistorialPage {
 
   selectedFilter:
     HistoryFilter = 'todos';
@@ -63,6 +61,8 @@ export class HistorialPage
     string | null = null;
 
   loading = false;
+
+  loadError = false;
 
   history:
     HistorialItem[] = [];
@@ -116,7 +116,7 @@ export class HistorialPage
   ) {}
 
 
-  ngOnInit(): void {
+  ionViewWillEnter(): void {
 
     this.loadHistory();
   }
@@ -125,6 +125,7 @@ export class HistorialPage
   loadHistory(): void {
 
     this.loading = true;
+    this.loadError = false;
 
 
     this.historialService
@@ -155,6 +156,9 @@ export class HistorialPage
 
           this.loading =
             false;
+
+          this.loadError =
+            true;
 
 
           const toast =
@@ -217,8 +221,7 @@ export class HistorialPage
 
     return (
       this.suitableCount *
-      10
-    );
+      10    );
   }
 
 
@@ -437,8 +440,7 @@ export class HistorialPage
         (scan) =>
           this.historialService
             .remove(
-              scan.id,
-            ),
+              scan.id,            ),
       );
 
 
@@ -698,96 +700,3 @@ export class HistorialPage
       imagenUrl.startsWith(
         'http://',
       ) ||
-      imagenUrl.startsWith(
-        'https://',
-      )
-    ) {
-
-      return imagenUrl;
-    }
-
-
-    return (
-      `http://localhost:3000${imagenUrl}`
-    );
-  }
-
-
-  openImageViewer(
-    scan: HistorialItem,
-  ): void {
-
-    if (
-      !scan.imagenUrl
-    ) {
-
-      return;
-    }
-
-
-    this.imageViewerUrl =
-      this.getImageUrl(
-        scan.imagenUrl,
-      );
-
-
-    this.imageViewerOpen =
-      true;
-  }
-
-
-  closeImageViewer(): void {
-
-    this.imageViewerOpen =
-      false;
-
-
-    setTimeout(
-      () => {
-
-        this.imageViewerUrl =
-          null;
-
-      },
-      200,
-    );
-  }
-
-
-  formatDate(
-    date: string,
-  ): string {
-
-    return new Intl
-      .DateTimeFormat(
-        'es-AR',
-        {
-          day:
-            '2-digit',
-
-          month:
-            'short',
-
-          hour:
-            '2-digit',
-
-          minute:
-            '2-digit',
-        },
-      )
-      .format(
-        new Date(
-          date,
-        ),
-      );
-  }
-
-
-  trackById(
-    _index: number,
-    scan: HistorialItem,
-  ): number {
-
-    return scan.id;
-  }
-}
