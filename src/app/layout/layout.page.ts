@@ -260,17 +260,22 @@ export class LayoutPage implements AfterViewInit, OnInit {
     }, 200);
   }
 
+  // Un único punto de acceso al plugin permite probar cámara y galería
+  // sin abrir el selector web de Capacitor dentro de Jasmine.
+  private requestPhoto(source: CameraSource): Promise<Photo> {
+    return Camera.getPhoto({
+      source,
+      resultType: CameraResultType.Uri,
+      quality: 75,
+      width: 1280,
+      height: 1280,
+      correctOrientation: true,
+    });
+  }
+
   async takePhoto(): Promise<void> {
     try {
-      const photo = await Camera.getPhoto({
-        source: CameraSource.Camera,
-        resultType: CameraResultType.Uri,
-        quality: 75,
-        width: 1280,
-        height: 1280,
-        correctOrientation: true,
-      });
-
+      const photo = await this.requestPhoto(CameraSource.Camera);
       await this.processPhoto(photo);
     } catch (error) {
       await this.handleCameraError(error);
@@ -279,15 +284,7 @@ export class LayoutPage implements AfterViewInit, OnInit {
 
   async selectFromGallery(): Promise<void> {
     try {
-      const photo = await Camera.getPhoto({
-        source: CameraSource.Photos,
-        resultType: CameraResultType.Uri,
-        quality: 75,
-        width: 1280,
-        height: 1280,
-        correctOrientation: true,
-      });
-
+      const photo = await this.requestPhoto(CameraSource.Photos);
       await this.processPhoto(photo);
     } catch (error) {
       await this.handleCameraError(error);
