@@ -519,3 +519,31 @@ ion-input::part(native)::-ms-clear {
     padding: 30px;
   }
 }
+/* Ajuste opcional para la conexión desde Android físico */
+.server-config {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-top: 16px;
+  text-align: center;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 0;
+    background: transparent;
+    color: var(--ecoscan-primary-dark);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  small {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    color: var(--ecoscan-muted);
+    font-size: 10px;
+  }
+}
