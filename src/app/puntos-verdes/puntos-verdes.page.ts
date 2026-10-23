@@ -480,7 +480,7 @@ export class PuntosVerdesPage
           zoom: 13,
 
           mapId:
-            'AIzaSyCdGznVSGC88QcS3OiqoYkfPwVLSTqeDhQ',
+            'DEMO_MAP_ID',
 
           disableDefaultUI:
             true,
