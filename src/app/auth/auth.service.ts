@@ -1,3 +1,4 @@
+import { apiUrl } from '../config/api.config';
 import {
   Injectable,
 } from '@angular/core';
@@ -37,8 +38,9 @@ export interface AuthResponse {
 })
 export class AuthService {
 
-  private readonly apiUrl =
-    'http://localhost:3000/auth';
+  private get apiUrl(): string {
+    return apiUrl('auth');
+  }
 
   constructor(
     private readonly http:
