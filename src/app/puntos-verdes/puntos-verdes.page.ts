@@ -1264,6 +1264,18 @@ selectPoint(
 
     event.stopPropagation();
 
+    // La clave existente sólo autoriza el mapa del navegador local.
+    // En Android, abrir el punto en Google Maps mediante Maps URLs
+    // no requiere cambiar esa clave ni modificar el mapa de escritorio.
+    if (this.mapError) {
+      const destination = `${point.address}, Argentina`;
+      const url =
+        'https://www.google.com/maps/search/?api=1' +
+        `&query=${encodeURIComponent(destination)}`;
+
+      window.open(url, '_blank', 'noopener,noreferrer');
+      return;
+    }
 
     this.selectPoint(
       point,
