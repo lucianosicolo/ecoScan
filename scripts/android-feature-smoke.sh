@@ -74,7 +74,24 @@ native_alive(){
 }
 
 snapshot 00-login
-if ! grep -q "Iniciar sesión" "$OUT/00-login.xml";then
+# Android 15 Google APIs emulator may cold-start with a Pixel Launcher ANR.
+# Dismiss the system overlay and verify login after the OS becomes responsive.
+for attempt in 1 2 3 4; do
+  if grep -Eqi "isn.t responding|not responding" "$OUT/00-login.xml"; then
+    record "NATIVE_OS_ANR_OVERLAY_DISMISSED attempt=$attempt"
+    ui text "Close app" "$OUT/00-login.xml" || adb shell input keyevent 4 || true
+    sleep 6
+    snapshot 00-login
+    continue
+  fi
+  if grep -q "Iniciar sesión" "$OUT/00-login.xml"; then
+    break
+  fi
+  record "NATIVE_LOGIN_WAITING attempt=$attempt"
+  sleep 5
+  snapshot 00-login
+done
+if ! grep -q "Iniciar sesión" "$OUT/00-login.xml"; then
   record "NATIVE_FAIL_LOGIN_NOT_RENDERED"
   exit 1
 fi
