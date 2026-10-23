@@ -1,3 +1,4 @@
+import { apiUrl } from '../../config/api.config';
 import {
   Injectable,
 } from '@angular/core';
@@ -31,8 +32,9 @@ export interface UsersDto {
 })
 export class UsersService {
 
-  private readonly apiUrl =
-    'http://localhost:3000/users';
+  private get apiUrl(): string {
+    return apiUrl('users');
+  }
 
   constructor(
     private readonly http:
