@@ -28,7 +28,6 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - uses: android-actions/setup-android@v3
       - name: Build Android debug APK
         working-directory: android
         run: ./gradlew assembleDebug --no-daemon
