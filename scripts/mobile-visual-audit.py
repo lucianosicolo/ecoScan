@@ -133,7 +133,19 @@ def shot(page,name, preview=False):
 def visit(page,name,url,selector,preview=False):
     page.goto(BASE+url,wait_until="domcontentloaded",timeout=20000)
     page.locator(selector).first.wait_for(state="visible",timeout=16000)
-    page.wait_for_timeout(500)
+    # No aceptamos capturas con datos vacíos o loaders permanentes.
+    if name.endswith("-home"):
+        page.wait_for_function("""() =>
+          document.querySelector('.welcome-section h1')?.textContent?.includes('Luciano')
+          && document.querySelectorAll('.stat-card').length === 3
+        """,timeout=12000)
+    elif name.endswith("-historial"):
+        page.locator(".history-card").first.wait_for(state="visible",timeout=12000)
+    elif name.endswith("-perfil"):
+        page.wait_for_function("""() =>
+          document.querySelector('.profile-main-information h1')?.textContent?.includes('Luciano')
+        """,timeout=12000)
+    page.wait_for_timeout(300)
     audit(page,name)
     shot(page,name,preview)
 
@@ -159,7 +171,7 @@ def visual_test(browser,width,height):
         for name,url,selector in ROUTES:
             full=screen+"-"+name
             try:
-                visit(page,full,url,selector,preview=width==390 and name=="home")
+                visit(page,full,url,selector,preview=width==390 and name in ("home","historial","puntos-verdes","perfil"))
                 if width in (320,390):
                     el=page.locator("ion-content.layout-content")
                     if el.count():
