@@ -41,3 +41,10 @@ jobs:
             }
           }
           NODE
+
+      - name: Preview compatible Capacitor 7 security update
+        if: always()
+        run: |
+          npm install --package-lock-only --ignore-scripts --save-exact @capacitor/android@7.6.9 @capacitor/core@7.6.9 @capacitor/cli@7.6.9 || true
+          git diff --stat -- package.json package-lock.json
+          git diff --unified=1 -- package.json package-lock.json
