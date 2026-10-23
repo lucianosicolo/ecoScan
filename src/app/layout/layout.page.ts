@@ -1,3 +1,4 @@
+import { scanImageUrl } from '../config/api.config';
 import { Location } from '@angular/common';
 
 import {
@@ -149,9 +150,7 @@ export class LayoutPage implements AfterViewInit, OnInit {
   }
 
 
-  return (
-    `http://localhost:3000${imagenUrl}`
-  );
+  return scanImageUrl(imagenUrl);
 }
   isOutOfScope(
     result: ScanResult,
