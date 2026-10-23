@@ -77,11 +77,11 @@ export class HistorialPage {
       },
       {
         value: 'plastico',
-        label: 'Plástico',
+        label: 'PET',
       },
       {
         value: 'lata',
-        label: 'Latas',
+        label: 'Aluminio',
       },
       {
         value: 'vidrio',
@@ -627,10 +627,10 @@ export class HistorialPage {
       > = {
 
       plastico:
-        'Plástico',
+        'PET',
 
       lata:
-        'Lata',
+        'Aluminio',
 
       vidrio:
         'Vidrio',
