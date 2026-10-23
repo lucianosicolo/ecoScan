@@ -102,6 +102,14 @@ export class PuntosVerdesPage
     .AdvancedMarkerElement | null =
     null;
 
+  // Evita que Google Maps deje un spinner permanente cuando hay fallas
+  // de autorización o Geocoding tarda demasiado.
+  private mapInitializationTimeoutMs = 15000;
+
+  private readonly onGoogleMapsAuthFailure = (): void => {
+    this.mapError = true;
+    this.mapLoading = false;
+  };
 
   userPosition = {
     latitude: -38.9339,
@@ -345,8 +353,40 @@ export class PuntosVerdesPage
   async ngAfterViewInit():
     Promise<void> {
 
+    window.addEventListener(
+      'ecoscan-google-maps-auth-failure',
+      this.onGoogleMapsAuthFailure,
+    );
+
     await this.loadMap();
   }
+
+  ngOnDestroy(): void {
+    window.removeEventListener(
+      'ecoscan-google-maps-auth-failure',
+      this.onGoogleMapsAuthFailure,
+    );
+  }
+
+  private async initializeMapWithTimeout(): Promise<void> {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+    try {
+      await Promise.race([
+        this.initializeMap(),
+        new Promise<never>((_, reject) => {
+          timeoutId = setTimeout(() => {
+            reject(new Error('Google Maps tardó demasiado en responder.'));
+          }, this.mapInitializationTimeoutMs);
+        }),
+      ]);
+    } finally {
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+    }
+  }
+
   private async loadMap():
     Promise<void> {
 
@@ -357,7 +397,14 @@ export class PuntosVerdesPage
 
       await this.waitForGoogleMaps();
 
-      await this.initializeMap();
+      await this.initializeMapWithTimeout();
+
+      if (
+        (window as Window & { ecoScanGoogleMapsAuthFailed?: boolean })
+          .ecoScanGoogleMapsAuthFailed
+      ) {
+        throw new Error('Google Maps rechazó el origen de la aplicación.');
+      }
 
     } catch (
     error: unknown
@@ -384,6 +431,13 @@ export class PuntosVerdesPage
   }
   private async waitForGoogleMaps():
     Promise<void> {
+
+    if (
+      (window as Window & { ecoScanGoogleMapsAuthFailed?: boolean })
+        .ecoScanGoogleMapsAuthFailed
+    ) {
+      throw new Error('La clave de Google Maps no está autorizada para este origen.');
+    }
 
     const maxAttempts = 100;
 
