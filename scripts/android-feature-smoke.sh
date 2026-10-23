@@ -217,10 +217,11 @@ PY
   fi
 
   snapshot 09-after-gallery
-  if ui text "Escanear" "$OUT/09-after-gallery.xml";then
+  if ui text "Identificar un residuo" "$OUT/09-after-gallery.xml";then
     sleep 1
     snapshot 10-options-camera
     if ui text "Tomar una foto" "$OUT/10-options-camera.xml";then
+      SCANS_BEFORE_CAMERA="$(grep -c '"path": "/scan"' "$OUT/requests.jsonl" || true)"
       sleep 5
       snapshot 11-camera-intent
       record "NATIVE_CAMERA_ACTION_INVOKED"
@@ -229,13 +230,29 @@ PY
         snapshot 11b-after-shutter
         record "NATIVE_CAMERA_SHUTTER_TAPPED"
         if ui text "Done" "$OUT/11b-after-shutter.xml"; then
-          sleep 3
+          record "NATIVE_CAMERA_PHOTO_CONFIRMED"
+          sleep 5
         elif ui text "Use photo" "$OUT/11b-after-shutter.xml"; then
-          sleep 3
+          record "NATIVE_CAMERA_PHOTO_CONFIRMED"
+          sleep 5
+        elif ui text "OK" "$OUT/11b-after-shutter.xml"; then
+          record "NATIVE_CAMERA_PHOTO_CONFIRMED"
+          sleep 5
+        else
+          record "NATIVE_CAMERA_CONFIRM_NOT_ACCESSIBLE"
         fi
         snapshot 11c-after-camera
-        if grep -q '"path": "/scan"' "$OUT/requests.jsonl"; then
-          record "NATIVE_CAMERA_OR_GALLERY_UPLOAD_OBSERVED"
+        sleep 6
+        snapshot 11d-after-scan
+        SCANS_AFTER_CAMERA="$(grep -c '"path": "/scan"' "$OUT/requests.jsonl" || true)"
+        if (( SCANS_AFTER_CAMERA > SCANS_BEFORE_CAMERA )); then
+          record "NATIVE_CAMERA_IMAGE_UPLOAD_CONFIRMED"
+          if grep -q "Finalizar" "$OUT/11d-after-scan.xml"; then
+            record "NATIVE_CAMERA_SCAN_RESULT_RENDERED"
+            ui text "Finalizar" "$OUT/11d-after-scan.xml" || true
+          fi
+        else
+          record "NATIVE_CAMERA_IMAGE_UPLOAD_NOT_OBSERVED"
         fi
       else
         record "NATIVE_CAMERA_SHUTTER_NOT_ACCESSIBLE"
