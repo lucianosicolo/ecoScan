@@ -1,3 +1,4 @@
+import { apiUrl } from '../../config/api.config';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -32,8 +33,9 @@ export interface ScanResult {
 })
 export class ScanService {
 
-  private readonly apiUrl =
-    'http://localhost:3000/scan';
+  private get apiUrl(): string {
+    return apiUrl('scan');
+  }
 
   constructor(
     private readonly http: HttpClient,
