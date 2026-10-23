@@ -166,6 +166,14 @@
 
       </form>
 
+      <div class="server-config">
+        <button type="button" (click)="configureServer()">
+          <ion-icon name="settings-outline" aria-hidden="true"></ion-icon>
+          Configurar servidor
+        </button>
+        <small>Conectado a: {{ serverAddress }}</small>
+      </div>
+
       <!-- Registro -->
       <div class="register-section">
         <span>¿Todavía no tenés una cuenta?</span>
