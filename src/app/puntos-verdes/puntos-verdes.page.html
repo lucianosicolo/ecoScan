@@ -108,8 +108,9 @@
       </strong>
 
       <p>
-        Podés seguir consultando los puntos
-        verdes desde la lista.
+        El mapa integrado no está autorizado en este dispositivo.
+        Podés tocar «Ver en Google Maps» en cada punto de la lista
+        para abrirlo sin cambiar la clave.
       </p>
 
 
@@ -237,7 +238,7 @@
         <div class="point-actions">
           <button type="button" class="details-button" (click)="viewDetails(point, $event)">
             <ion-icon name="map-outline"></ion-icon>
-            Ver en el mapa
+            {{ mapError ? 'Ver en Google Maps' : 'Ver en el mapa' }}
           </button>
 
           <button type="button" class="directions-button" (click)="openDirections(point, $event)">
