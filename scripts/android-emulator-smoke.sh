@@ -6,8 +6,7 @@ echo "DEVICE_SMOKE Android emulator, no real login or cloud API calls"
 adb wait-for-device
 adb shell getprop ro.build.version.release | tr -d '\r' > "$OUT/android-version.txt"
 adb shell wm size | tr -d '\r' > "$OUT/display-size.txt"
-echo "Compiling native debug APK..."
-(cd android && bash gradlew assembleDebug --no-daemon)
+echo "Using debug APK compiled before emulator boot"
 APK="android/app/build/outputs/apk/debug/app-debug.apk"
 test -s "$APK"
 adb install -r "$APK"
@@ -65,9 +64,30 @@ if not found:
 PY
 }
 echo "Taking login screenshots and accessibility tree..."
+snapshot "00-first-frame"
+CURRENT_UI="$OUT/00-first-frame.xml"
+for attempt in 1 2 3; do
+  # The Android emulator may leave a Pixel Launcher ANR over the app on cold boot.
+  # This is an OS overlay and not an EcoScan crash. Clear it before asserting UI.
+  if [[ ! -f "$CURRENT_UI" ]] || ! grep -Eqi "isn't responding|not responding" "$CURRENT_UI"; then
+    break
+  fi
+  echo "NATIVE_OS_OVERLAY Pixel Launcher/system ANR (attempt $attempt)"
+  tap_text "Close app" "$CURRENT_UI" || adb shell input keyevent 4 || true
+  sleep 4
+  snapshot "00-after-os-dialog-$attempt"
+  CURRENT_UI="$OUT/00-after-os-dialog-$attempt.xml"
+done
+if [[ -f "$CURRENT_UI" ]] && grep -Eqi "isn't responding|not responding" "$CURRENT_UI"; then
+  echo "NATIVE_FAIL Android OS overlay still blocking the application"
+  exit 1
+fi
 snapshot "01-login"
 sleep 4
 snapshot "02-login-settled"
+if [[ -f "$OUT/02-login-settled.xml" ]] && ! grep -Eqi "Iniciar sesi|Crear cuenta|Configurar servidor" "$OUT/02-login-settled.xml"; then
+  echo "NATIVE_UI_WARNING WebView login labels are not accessible via UIAutomator"
+fi
 if tap_text "Configurar servidor" "$OUT/02-login-settled.xml"; then
   sleep 2
   snapshot "03-server-dialog"
