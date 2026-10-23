@@ -437,8 +437,8 @@ export class LayoutPage implements AfterViewInit, OnInit {
       ScanResult['categoria'],
       string
     > = {
-      plastico: 'Plástico',
-      lata: 'Lata',
+      plastico: 'PET',
+      lata: 'Aluminio',
       vidrio: 'Vidrio',
       papel: 'Papel',
       carton: 'Cartón',
