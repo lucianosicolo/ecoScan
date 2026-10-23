@@ -131,6 +131,10 @@ export class HomePage {
   }
 
 
+  ngOnInit(): void {
+    this.ionViewWillEnter();
+  }
+
   ionViewWillEnter(): void {
 
     this.loadUserIdentity();
