@@ -30,8 +30,13 @@ button {
 .history-container {
   width: 100%;
   max-width: 760px;
+  min-width: 0;
   margin: 0 auto;
   padding: 28px 18px 120px;
+
+  // Los filtros conservan su scroll horizontal propio; el resto de la
+  // pantalla no debe desplazar el viewport en teléfonos angostos.
+  overflow-x: clip;
 }
 
 /* ============================= */
