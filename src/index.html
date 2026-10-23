@@ -22,6 +22,12 @@
 
 <body>
   <app-root></app-root>
+   <script>
+     window.gm_authFailure = function () {
+       window.ecoScanGoogleMapsAuthFailed = true;
+       window.dispatchEvent(new Event('ecoscan-google-maps-auth-failure'));
+     };
+   </script>
    <script
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdGznVSGC88QcS3OiqoYkfPwVLSTqeDhQ&libraries=places,marker&v=weekly"
   async
