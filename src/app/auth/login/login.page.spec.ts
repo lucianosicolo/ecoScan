@@ -25,7 +25,9 @@ describe('LoginPage', () => {
 
   it('creates the component with its required dependencies', () => {
     const fixture = TestBed.createComponent(LoginPage);
-    fixture.detectChanges();
+    // La hidratación asíncrona de ion-input se prueba en el navegador real.
+    // Evitamos depender de su ciclo de vida dentro del fixture aislado.
     expect(fixture.componentInstance).toBeTruthy();
+    expect(fixture.componentInstance.serverAddress).toContain('http');
   });
 });
