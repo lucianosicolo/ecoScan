@@ -36,6 +36,9 @@ interface RecyclingPoint {
 
   longitude: number | null;
 
+  // True cuando el pin usa una referencia barrial/proxima, no el cruce exacto.
+  coordinatesEstimated: boolean;
+
   materials: MaterialType[];
 
   schedule: string;
@@ -183,9 +186,10 @@ export class PuntosVerdesPage
 
   /*
    * Puntos Limpios de Cipolletti.
-   * Las coordenadas se obtienen
-   * automáticamente mediante
-   * Google Geocoding.
+   * Referencias geograficas aproximadas tomadas de lugares identificados
+   * en OpenStreetMap. La geocodificacion intenta afinar cada ubicacion
+   * en segundo plano, pero un error no impide mostrar los marcadores.
+   * Para navegar se utiliza la direccion escrita cuando es aproximada.
    */
   recyclingPoints:
     RecyclingPoint[] = [
@@ -199,9 +203,12 @@ export class PuntosVerdesPage
         address:
           'Los Cipreses y Maipú, Cipolletti, Río Negro',
 
-        latitude: null,
+        // Referencia: Barrio El Manzanar; confirmar cruce exacto con Geocoding.
+        latitude: -38.95217,
 
-        longitude: null,
+        longitude: -67.98326,
+
+        coordinatesEstimated: true,
 
         materials: [
           'plastic',
@@ -228,9 +235,12 @@ export class PuntosVerdesPage
         address:
           'Antonio Turrín y La Esmeralda, Cipolletti, Río Negro',
 
-        latitude: null,
+        // Referencia: Parque Madre Teresa de Calcuta, Parque Norte; confirmar cruce exacto con Geocoding.
+        latitude: -38.91903,
 
-        longitude: null,
+        longitude: -67.99242,
+
+        coordinatesEstimated: true,
 
         materials: [
           'plastic',
@@ -257,9 +267,12 @@ export class PuntosVerdesPage
         address:
           'Domingo Savio y Las Jarillas, Cipolletti, Río Negro',
 
-        latitude: null,
+        // Referencia: Delegacion Municipal DVNe; confirmar cruce exacto con Geocoding.
+        latitude: -38.92085,
 
-        longitude: null,
+        longitude: -67.95461,
+
+        coordinatesEstimated: true,
 
         materials: [
           'plastic',
@@ -286,9 +299,12 @@ export class PuntosVerdesPage
         address:
           'San Luis y Los Rosales, Ferri, Cipolletti, Río Negro',
 
-        latitude: null,
+        // Referencia: San Luis / Los Rosales, Ferri; confirmar cruce exacto con Geocoding.
+        latitude: -38.88989,
 
-        longitude: null,
+        longitude: -68.00791,
+
+        coordinatesEstimated: true,
 
         materials: [
           'plastic',
@@ -315,9 +331,12 @@ export class PuntosVerdesPage
         address:
           'Mengelle y Teniente Ibáñez, Cipolletti, Río Negro',
 
-        latitude: null,
+        // Referencia: Correo Argentino / Teniente Ibanez; confirmar cruce exacto con Geocoding.
+        latitude: -38.93395,
 
-        longitude: null,
+        longitude: -68.00002,
+
+        coordinatesEstimated: true,
 
         materials: [
           'plastic',
@@ -545,14 +564,31 @@ export class PuntosVerdesPage
       );
 
 
-    await this
-      .resolvePointCoordinates();
+    // Dibujamos inmediatamente usando referencias, sin esperar Geocoding.
+    await this.renderMarkers();
+    this.fitMapToPoints();
 
-
-    await this
-      .renderMarkers();
+    // Si Google habilita Geocoding, actualizamos los pines en segundo plano.
+    void this.resolvePointCoordinates();
   }
 
+
+  private fitMapToPoints(): void {
+    if (!this.map) {
+      return;
+    }
+
+    const bounds = new google.maps.LatLngBounds();
+    for (const point of this.filteredPoints) {
+      if (point.latitude !== null && point.longitude !== null) {
+        bounds.extend({ lat: point.latitude, lng: point.longitude });
+      }
+    }
+
+    if (!bounds.isEmpty()) {
+      this.map.fitBounds(bounds, 32);
+    }
+  }
 
   private async resolvePointCoordinates():
     Promise<void> {
@@ -562,11 +598,7 @@ export class PuntosVerdesPage
       of this.recyclingPoints
     ) {
 
-      if (
-        point.latitude !== null &&
-        point.longitude !== null
-      ) {
-
+      if (!point.coordinatesEstimated) {
         continue;
       }
 
@@ -606,6 +638,10 @@ export class PuntosVerdesPage
           result.geometry
             .location
             .lng();
+
+        point.coordinatesEstimated = false;
+        this.calculateDistances();
+        await this.renderMarkers();
 
       } catch (
       error: unknown
@@ -1293,6 +1329,7 @@ selectPoint(
 
     const destination =
 
+      !point.coordinatesEstimated &&
       point.latitude !== null &&
         point.longitude !== null
 
